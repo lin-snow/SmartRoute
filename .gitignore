@@ -38,6 +38,8 @@ dist/
 npm-debug.log
 yarn-error.log
 
+build/*
+
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
@@ -448,3 +450,4 @@ FodyWeavers.xsd
 
 # Local History for Visual Studio Code
 .history/
+
