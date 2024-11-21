@@ -1,5 +1,8 @@
 # SmartRoute
+developing...
+
 ## 项目结构
+```
 D:.
 │  build.sh              # 构建脚本
 │  CMakeLists.txt        # CMake 构建文件
@@ -20,3 +23,4 @@ D:.
 │  ├─server              # 后端服务相关模块（后期可扩展为 Web 服务）
 │  └─utils               # 工具类文件
 └─test                   # 测试代码目录
+```
