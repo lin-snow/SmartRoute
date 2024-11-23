@@ -1,5 +1,5 @@
 #pragma once
 
-void printHello();
+void start();
 
 #include "./main.hpp"

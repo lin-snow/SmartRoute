@@ -10,8 +10,8 @@ D:.
 │  
 ├─app                    # 存放可执行文件或应用程序的目录
 ├─build                  # 用于存放构建文件、临时文件等
-├─config                 # 配置文件目录
-├─data                   # 数据文件存放目录
+├─config                 # 配置文件目录 (yaml)
+├─data                   # 数据文件存放目录 (json)
 ├─docs                   # 文档和说明文件
 ├─frontend               # 前端代码目录（后期 Web 支持）
 ├─include                # 管理外部依赖目录

@@ -15,10 +15,14 @@ set(FKYAML_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/fkYAML/include")
 add_definitions(-DASIO_STANDALONE)
 
 # 添加可执行文件
+file(GLOB_RECURSE SRC_FILES
+    src/*.cpp
+    src/*.hpp
+    src/*.h
+)
+
 add_executable(SmartRoute
-    src/main.cpp
-    src/function/main.h
-    src/function/main.hpp
+    ${SRC_FILES}
 )
 
 # 为目标设置包含目录
