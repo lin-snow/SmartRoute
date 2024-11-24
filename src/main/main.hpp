@@ -14,5 +14,11 @@ void start() {
 
     // addCity();
     system.addCity();
+
+    // addRoute();
+    system.addRoute();
+
+    // displaySystem();
+    system.displaySystem();
 }
 

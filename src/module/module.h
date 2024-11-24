@@ -2,40 +2,29 @@
 
 #include <string>
 
-#include "../graph/graph.h"
-
-enum class VehicleType {
+typedef enum {
     TRAIN = 0,
-    PLAIN = 1
-};
+    PLANE = 1
+} VehicleType;
 
 class Time {
     public:
         Time();
-        Time(int year, int month, int day, int hour, int minute);
+        Time(int hour, int minute);
 
         // setters
-        void setYear(int year) { this->year = year; }
-        void setMonth(int month) { this->month = month; }
-        void setDay(int day) { this->day = day; }
         void setHour(int hour) { this->hour = hour; }
         void setMinute(int minute) { this->minute = minute; }
 
         // getters
-        int getYear() const { return year; }
-        int getMonth() const { return month; }
-        int getDay() const { return day; }
         int getHour() const { return hour; }
         int getMinute() const { return minute; }
 
         // methods
-        long diffInMinutes(const Time &t) const; // difference in minutes
-        std::string getTimeStamp() const; // "2024-01-01 00:00"
+        long diffInMinutes(const Time &t) const; // difference in minutes (t - this)
+        std::string getTimeStamp() const; // "00:00"
 
     private:
-        int year; // 2024
-        int month; // 1-12
-        int day; // 1-31
         int hour; // 0-23
         int minute; // 0-59
 };
@@ -69,7 +58,7 @@ class Vehicle {
 
     private:
         VehicleType vehicleType; // BUS or TRAIN
-        std::string vehicleCode; // 型号 e.g. "G1234"
+        std::string vehicleCode; // 型号 e.g. "G1234" or "CA9091"
 };
 
 class Route {
