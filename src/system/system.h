@@ -14,11 +14,10 @@ class System {
 
         // methods
         void launch();
-
+        bool isCityValid(City* city);
         void addCity();
-
+        bool isRouteValid(Route* route);
         void addRoute();
-
         void displaySystem();
 
     private:

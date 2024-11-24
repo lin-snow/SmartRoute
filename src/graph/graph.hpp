@@ -48,10 +48,8 @@ bool AdjacencyList::isRouteExists(Route* route) {
                         // 检查路线是否存在
                         // 检查是否使用相同的交通工具
                         if (r->getVehicle()->getVehicleType() == route->getVehicle()->getVehicleType()) {
-                            std::cout << "Vehicle type is the same" << std::endl;
                             // 检查是否使用相同的交通工具型号
                             if (r->getVehicle()->getVehicleCode() == route->getVehicle()->getVehicleCode()) {
-                                std::cout << "Vehicle code is the same" << std::endl;
                                 // 检查时间是否冲突
                                 if (route->getDepartureTime().diffInMinutes(r->getDepartureTime()) >= 0) {
                                     if (route->getArrivalTime().diffInMinutes(r->getDepartureTime()) <= 0 ) {
@@ -124,18 +122,19 @@ void AdjacencyList::addRoute(Route* route) {
 
     // add route to adjacency list
     // 查找起点城市
-    std::cout << "Finding the starting city" << std::endl;
     for (AdjacencyListPair adjacencyListPair : *adjacencyList) {
         if (adjacencyListPair.getCity()->getCityCode() == route->getFrom()) { // 找到起点城市
-            std::cout << "Starting city found" << std::endl;
             // 查找终点城市
             for (AdjacencyListNode adjacencyListNode : *adjacencyListPair.getNodes()) {
                 if (adjacencyListNode.getDestinationCity()->getCityCode() == route->getTo()) { // 找到终点城市
-                    std::cout << "Destination city found" << std::endl;
                     // 添加路线
                     adjacencyListNode.getRoutes()->push_back(route);
-                    std::cout << "Route added" << std::endl;
-                    break;
+
+                    std::cout << "Route added successfully" << std::endl;
+
+                    numberOfRoutes++;
+
+                    return;
                 }
             }
 
@@ -152,10 +151,11 @@ void AdjacencyList::addRoute(Route* route) {
             adjacencyListNode->getRoutes()->push_back(route);
 
             adjacencyListPair.getNodes()->push_back(*adjacencyListNode);
-            std::cout << "Destination city added" << std::endl;
             break;
         }
     }
+
+    std::cout << "Route added successfully" << std::endl;
 
     numberOfRoutes++;
 }
@@ -167,6 +167,7 @@ void AdjacencyList::displayAdjacencyList() {
     }
 
     // display info
+    std::cout << "-------------------------------------------------------------------- " << std::endl;
     std::cout << "Number of cities: " << numberOfCities << std::endl;
     std::cout << "Number of routes: " << numberOfRoutes << std::endl;
 
