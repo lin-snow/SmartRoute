@@ -1,0 +1,13 @@
+[
+    {
+        "arrivalTime": "10:20",
+        "cost": 999,
+        "departureTime": "08:00",
+        "distance": 1000,
+        "duration": 140,
+        "from": 1,
+        "to": 2,
+        "vehicleCode": "G1234",
+        "vehicleType": 0
+    }
+]

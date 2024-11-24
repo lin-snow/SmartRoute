@@ -12,13 +12,21 @@ void start() {
     System system;
     system.launch();
 
-    // addCity();
-    system.addCity();
+    system.loadData();
 
-    // addRoute();
-    system.addRoute();
+    // addCity();
+    // system.addCity(system.inputCity());
+    // system.addCity(system.inputCity());
+
+    // // displaySystem();
+    // system.displaySystem();
+
+    // // addRoute();
+    // system.addRoute(system.inputRoute());
 
     // displaySystem();
     system.displaySystem();
+
+    system.saveData();
 }
 

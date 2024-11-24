@@ -15,10 +15,15 @@ class System {
         // methods
         void launch();
         bool isCityValid(City* city);
-        void addCity();
+        void addCity(City* theCity);
         bool isRouteValid(Route* route);
-        void addRoute();
+        void addRoute(Route* theRoute);
         void displaySystem();
+        City* inputCity();
+        Route* inputRoute();
+
+        void loadData(); // load data from json file
+        void saveData(); // save data to json file
 
     private:
         AdjacencyList* graph;

@@ -11,6 +11,10 @@ class Time {
     public:
         Time();
         Time(int hour, int minute);
+        Time(std::string timeStamp) {
+            hour = std::stoi(timeStamp.substr(0, 2));
+            minute = std::stoi(timeStamp.substr(3, 2));
+        }
 
         // setters
         void setHour(int hour) { this->hour = hour; }
