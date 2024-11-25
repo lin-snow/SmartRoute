@@ -29,10 +29,6 @@ class System {
         City* inputCity();
         Route* inputRoute();
 
-        nlohmann::json city2json(City* city);
-        nlohmann::json route2json(Route* route);
-        City* json2city(nlohmann::json cityJson);
-        Route* json2route(nlohmann::json routeJson);
         void loadData(); // load data from json file
         void saveData(); // save data to json file
 

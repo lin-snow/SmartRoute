@@ -1,32 +1,20 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 
 #include "./main.h"
 
 #include "../system/system.h"
 
 void start() {
-    std::cout << "Starting the system..." << std::endl;
+    std::cout << "Starting the server..." << std::endl;
 
-    System system;
-    system.launch();
+    auto system = std::make_shared<System>();
 
-    system.loadData();
+    Server server(system);
+    server.run();
 
-    // addCity();
-    // system.addCity(system.inputCity());
-    // system.addCity(system.inputCity());
-
-    // // displaySystem();
-    // system.displaySystem();
-
-    // // addRoute();
-    // system.addRoute(system.inputRoute());
-
-    // displaySystem();
-    system.displaySystem();
-
-    system.saveData();
+    std::cout << "Server started successfully" << std::endl;
 }
 

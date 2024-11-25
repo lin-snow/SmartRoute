@@ -70,6 +70,9 @@ class Route {
         Route(int from, int to, long distance, long duration, Vehicle* vehicle, const Time &departureTime, const Time &arrivalTime, long cost);
 
         // getters and setters
+        long getRouteId() const { return routeId; }
+        void setRouteId(long routeId) { this->routeId = routeId; }
+
         int getFrom() const { return from; }
         void setFrom(int from) { this->from = from; }
 
@@ -95,6 +98,7 @@ class Route {
         void setCost(long cost) { this->cost = cost; }
 
     private:
+        long routeId; // unique route id
         int from; // cityCode of the starting city
         int to; // cityCode of the destination city
         long distance; // in meters (m)

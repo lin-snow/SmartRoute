@@ -118,6 +118,8 @@ void AdjacencyList::addRoute(Route* route) {
         return;
     }
 
+    route->setRouteId(numberOfRoutes + 1);
+
     routesList->push_back(route);
 
     // add route to adjacency list
@@ -197,7 +199,8 @@ void AdjacencyList::displayAdjacencyList() {
             std::cout << "Routes:" << std::endl;
 
             for (Route* route : *adjacencyListNode.getRoutes()) {
-                std::cout << "Route: " << route->getFrom() << " -> " << route->getTo() << " (" << route->getDistance() << " km, " << route->getDuration() << " minutes, " << route->getCost() << " yuan " << 
+                std::cout << "Route: " << "(" << route->getRouteId() << ") " <<
+                route->getFrom() << " -> " << route->getTo() << " (" << route->getDistance() << " km, " << route->getDuration() << " minutes, " << route->getCost() << " yuan " << 
                 "vehicle: " << "[" << route->getVehicle()->getVehicleType() << "] " <<
                 route->getVehicle()->getVehicleCode() << 
                 "[" << route->getDepartureTime().getHour() << ":" << route->getDepartureTime().getMinute() << " -> " << route->getArrivalTime().getHour() << ":" << route->getArrivalTime().getMinute() << "]" <<

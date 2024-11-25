@@ -1,5 +1,12 @@
 #include "main/main.h"
 
+#include <winsock2.h>
+#include <asio.hpp>
+#include "crow.h"
+#include "nlohmann/json.hpp"
+
+#include "utils/yamlTool.hpp"
+
 
 int main() {
     system("chcp 65001"); // UTF-8

@@ -10,6 +10,7 @@
 #include "nlohmann/json.hpp"
 
 #include "system.h"
+#include "../server/server.h"
 #include "../module/module.h"
 #include "../graph/graph.h"
 
@@ -242,3 +243,4 @@ void System::saveData() {
 
     system("pause");
 }
+

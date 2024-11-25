@@ -6,7 +6,7 @@
 #include "../module/module.h"
 #include "../system/system.h"
 
-nlohmann::json System::city2json(City* city) {
+nlohmann::json city2json(City* city) {
     nlohmann::json cityJson;
     cityJson["name"] = city->getName();
     cityJson["cityCode"] = city->getCityCode();
@@ -14,7 +14,7 @@ nlohmann::json System::city2json(City* city) {
     return cityJson;
 }
 
-nlohmann::json System::route2json(Route* route) {
+nlohmann::json route2json(Route* route) {
     nlohmann::json routeJson;
     routeJson["from"] = route->getFrom();
     routeJson["to"] = route->getTo();
@@ -29,10 +29,10 @@ nlohmann::json System::route2json(Route* route) {
     return routeJson;
 }
 
-City* System::json2city(nlohmann::json cityJson) {
+City* json2city(nlohmann::json cityJson) {
     return new City(cityJson["name"], cityJson["cityCode"]);
 }
 
-Route* System::json2route(nlohmann::json routeJson) {
+Route* json2route(nlohmann::json routeJson) {
     return new Route(routeJson["from"], routeJson["to"], routeJson["distance"], routeJson["duration"], new Vehicle((VehicleType)routeJson["vehicleType"], routeJson["vehicleCode"]), Time(routeJson["departureTime"]), Time(routeJson["arrivalTime"]), routeJson["cost"]);
 }

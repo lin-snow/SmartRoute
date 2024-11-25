@@ -38,6 +38,7 @@ Vehicle::Vehicle(VehicleType vehicleType, const std::string &vehicleCode) {
 }
 
 Route::Route(int from, int to, long distance, long duration, Vehicle* vehicle, const Time &departureTime, const Time &arrivalTime, long cost) {
+    this->routeId = -1;
     this->from = from;
     this->to = to;
     this->distance = distance;
