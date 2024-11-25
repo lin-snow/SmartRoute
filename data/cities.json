@@ -1,10 +1,82 @@
 [
     {
         "cityCode": 1,
-        "name": "A"
+        "name": "北京"
     },
     {
         "cityCode": 2,
-        "name": "B"
+        "name": "上海"
+    },
+    {
+        "cityCode": 3,
+        "name": "广州"
+    },
+    {
+        "cityCode": 4,
+        "name": "深圳"
+    },
+    {
+        "cityCode": 5,
+        "name": "成都"
+    },
+    {
+        "cityCode": 6,
+        "name": "杭州"
+    },
+    {
+        "cityCode": 7,
+        "name": "武汉"
+    },
+    {
+        "cityCode": 8,
+        "name": "西安"
+    },
+    {
+        "cityCode": 9,
+        "name": "重庆"
+    },
+    {
+        "cityCode": 10,
+        "name": "南京"
+    },
+    {
+        "cityCode": 11,
+        "name": "天津"
+    },
+    {
+        "cityCode": 12,
+        "name": "苏州"
+    },
+    {
+        "cityCode": 13,
+        "name": "大连"
+    },
+    {
+        "cityCode": 14,
+        "name": "宁波"
+    },
+    {
+        "cityCode": 15,
+        "name": "青岛"
+    },
+    {
+        "cityCode": 16,
+        "name": "厦门"
+    },
+    {
+        "cityCode": 17,
+        "name": "沈阳"
+    },
+    {
+        "cityCode": 18,
+        "name": "长沙"
+    },
+    {
+        "cityCode": 19,
+        "name": "福州"
+    },
+    {
+        "cityCode": 20,
+        "name": "合肥"
     }
 ]

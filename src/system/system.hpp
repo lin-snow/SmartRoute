@@ -172,8 +172,7 @@ void System::loadData() {
 
     // load cities
     for (nlohmann::json cityJson : citiesJson) {
-        City* city = new City(cityJson["name"], cityJson["cityCode"]);
-        addCity(city);
+        addCity(json2city(cityJson));
     }
 
     // load routes
@@ -188,8 +187,7 @@ void System::loadData() {
 
     // load routes
     for (nlohmann::json routeJson : routesJson) {
-        Route* route = new Route(routeJson["from"], routeJson["to"], routeJson["distance"], routeJson["duration"], new Vehicle((VehicleType)routeJson["vehicleType"], routeJson["vehicleCode"]), Time(routeJson["departureTime"]), Time(routeJson["arrivalTime"]), routeJson["cost"]);
-        addRoute(route);
+        addRoute(json2route(routeJson));
     }
 
     citiesFile.close();
@@ -206,14 +204,10 @@ void System::saveData() {
     // using nlohmann json
     nlohmann::json citiesJson;
     for (City* city : *graph->getCitiesList()) {
-        nlohmann::json cityJson;
-        cityJson["name"] = city->getName();
-        cityJson["cityCode"] = city->getCityCode();
-
-        citiesJson.push_back(cityJson);
+        citiesJson.push_back(city2json(city));
     }
 
-    std::cout << citiesJson.dump() << std::endl;
+    // std::cout << citiesJson.dump() << std::endl;
     std::string serialisedCitiesData = citiesJson.dump(4);
 
     // write to file
@@ -231,21 +225,10 @@ void System::saveData() {
     // using nlohmann json
     nlohmann::json routesJson;
     for (Route* route : *graph->getRoutesList()) {
-        nlohmann::json routeJson;
-        routeJson["from"] = route->getFrom();
-        routeJson["to"] = route->getTo();
-        routeJson["distance"] = route->getDistance();
-        routeJson["duration"] = route->getDuration();
-        routeJson["cost"] = route->getCost();
-        routeJson["vehicleType"] = route->getVehicle()->getVehicleType();
-        routeJson["vehicleCode"] = route->getVehicle()->getVehicleCode();
-        routeJson["departureTime"] = route->getDepartureTime().getTimeStamp();
-        routeJson["arrivalTime"] = route->getArrivalTime().getTimeStamp();
-
-        routesJson.push_back(routeJson);
+        routesJson.push_back(route2json(route));
     }
 
-    std::cout << routesJson.dump() << std::endl;
+    // std::cout << routesJson.dump() << std::endl;
     std::string serialisedRoutesData = routesJson.dump(4);
 
     // write to file
@@ -258,6 +241,4 @@ void System::saveData() {
     }
 
     system("pause");
-    
-
 }

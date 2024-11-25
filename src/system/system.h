@@ -1,7 +1,14 @@
 #pragma once
 
+#include <string>
+
 #include "../module/module.h"
 #include "../graph/graph.h"
+
+#include <winsock2.h>
+#include <asio.hpp>
+#include "crow.h"
+#include "nlohmann/json.hpp"
 
 class System {
     public:
@@ -22,6 +29,10 @@ class System {
         City* inputCity();
         Route* inputRoute();
 
+        nlohmann::json city2json(City* city);
+        nlohmann::json route2json(Route* route);
+        City* json2city(nlohmann::json cityJson);
+        Route* json2route(nlohmann::json routeJson);
         void loadData(); // load data from json file
         void saveData(); // save data to json file
 
@@ -30,3 +41,4 @@ class System {
 };
 
 #include "system.hpp"
+#include "../utils/jsonTool.hpp"
