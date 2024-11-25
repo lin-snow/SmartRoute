@@ -5,6 +5,11 @@ project(SmartRoute VERSION 1.0) # 指定项目名称和版本
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# 设置默认的 CMAKE_BUILD_TYPE 为 Debug
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug)
+endif()
+
 # 添加外部库路径
 set(ASIO_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/asio/include")
 set(CROW_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include/crow/include")
