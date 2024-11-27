@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <limits>
+#include <tuple>
 #include <algorithm>
 
 
@@ -447,9 +448,10 @@ int AdjacencyList::findAllRoutes(int from, int to, int vehicleType, std::vector<
 }
 
 // 最快到达算法
-int AdjacencyList::mostFastestWay(int from, int to, int vehicleType) {
-    // 最快到达算法（以时间为权重）
+int AdjacencyList::mostFastestWay(int from, int to, int vehicleType, std::vector<Route*>& result) {
+    // 最快到达算法（以时间为权重） 
     // 使用 Dijkstra 算法
+    // 考虑时间的合理性和两天路线之间的时间间隔，即等待时间
 
     // 定义一个从记录从起点到每个城市的最短时间
     std::unordered_map<int, long> recordTable; // 记录到达每个城市的最短时间
@@ -460,44 +462,40 @@ int AdjacencyList::mostFastestWay(int from, int to, int vehicleType) {
     // 起点时间为 0
     recordTable[from] = 0;
 
-    // 定义一个优先队列 （定义为 <时间, 城市>）
-    std::priority_queue<std::pair<long, int>, std::vector<std::pair<long, int>>, std::greater<std::pair<long, int>>> pq;
-    pq.push(std::make_pair(0, from));
+    // 定义一个优先队列 （定义为 <时间, 城市, 到达时间, 路线指针>）
+    std::priority_queue<std::tuple<long, int, Time, Route*>, 
+                        std::vector<std::tuple<long, int, Time, Route*>>, 
+                        std::greater<>> pq;
 
-    // 定义一个记录路径的表 (key: cityCode, value: previous cityCode)
-    std::unordered_map<int, int> pathTable;
+    pq.push(std::make_tuple(0, from, Time(0, 0) , nullptr));
 
-    // 开始遍历
-    while (!pq.empty()) {
-        // 取出队列中的第一个元素
-        std::pair<long, int> top = pq.top();
+    // 路径表：记录到达每个城市的路线指针
+    std::unordered_map<int, Route*> routeTable;
+
+    while(!pq.empty()) {
+        auto [time, cityCode, arrivalTime, route] = pq.top();
         pq.pop();
 
-        // 取出城市编号
-        int cityCode = top.second;
-        // 取出时间
-        long time = top.first;
-
-        // 如果已经访问过该城市，则跳过
-        if (recordTable[cityCode] < time) { // 如果访问时间小于当前时间，则跳过
+        // 如果当前时间已经大于记录的时间，则跳过
+        if (recordTable[cityCode] < time) {
             continue;
         }
 
         // 遍历邻接表
         for (AdjacencyListPair pair : *adjacencyList) {
-            if (pair.getCity()->getCityCode() == cityCode) { // 找到起点城市
-                // 遍历该城市到其他城市的路线
+            if (pair.getCity()->getCityCode() == cityCode) {
+                // 找到起点城市
                 for (AdjacencyListNode node : *pair.getNodes()) {
-                    // 遍历每一个邻接城市节点
                     for (Route* route : *node.getRoutes()) {
-                        // 遍历每一条路线
-                        // 判断是否是同一种交通工具
-                        if (route->getVehicle()->getVehicleType() == vehicleType) {
-                            // 判断是否是最短时间
-                            if (time + route->getDuration() < recordTable[route->getTo()]) {
-                                recordTable[route->getTo()] = time + route->getDuration();
-                                pq.push(std::make_pair(time + route->getDuration(), route->getTo()));
-                                pathTable[route->getTo()] = cityCode;
+                        if (route->getVehicle()->getVehicleType() == vehicleType) { // 判断是否是同一种交通工具
+                            // 判断时间是否合理（当前路线的出发时间是否晚于上一条路线的到达时间）
+                            if (route->getDepartureTime().diffInMinutes(arrivalTime) >= 0) {
+                                // 判断是否是最短时间 (考虑等待时间,即前一条route的到达时间和当前route的出发时间之间的间隔)
+                                if (time + route->getDuration() + route->getDepartureTime().diffInMinutes(arrivalTime) < recordTable[route->getTo()]) {
+                                    recordTable[route->getTo()] = time + route->getDuration() + route->getDepartureTime().diffInMinutes(arrivalTime);
+                                    pq.push(std::make_tuple(time + route->getDuration() + route->getDepartureTime().diffInMinutes(arrivalTime), route->getTo(), route->getArrivalTime(), route));
+                                    routeTable[route->getTo()] = route;
+                                }
                             }
                         }
                     }
@@ -512,34 +510,36 @@ int AdjacencyList::mostFastestWay(int from, int to, int vehicleType) {
         return ERROR;
     }
 
-    // 输出结果
-    std::cout << "From " << from << " to " << to << " by " << vehicleType << std::endl;
-
-    std::cout << "The fastest way is: " << std::endl;
-    std::cout << "Time: " << recordTable[to] << " minutes" << std::endl;
-
     // 回溯路径
-    std::vector<int> path;
     int currentCity = to;
     while (currentCity != from) {
-        path.push_back(currentCity);
-        currentCity = pathTable[currentCity];
+        if (routeTable.find(currentCity) == routeTable.end()) {
+            std::cout << "No way to reach" << std::endl;
+            return ERROR;
+        }
+        result.push_back(routeTable[currentCity]);
+        currentCity = routeTable[currentCity]->getFrom();
     }
-    path.push_back(from);
+
     // 反转路径
-    std::reverse(path.begin(), path.end());
+    std::reverse(result.begin(), result.end());
+
+    // 输出结果
+    std::cout << "From " << from << " to " << to << " by " << vehicleType << std::endl;
+    std::cout << "The most fastest way is: " << std::endl;
+    std::cout << "Time: " << recordTable[to] << " minutes" << std::endl;
 
     // 输出路径
     std::cout << "Path: ";
-    for (int cityCode : path) {
-        std::cout << cityCode << " -> ";
+    for (Route* route : result) {
+        std::cout << route->getFrom() << "(routeid: " << route->getRouteId() << ") -> ";
     }
-    std::cout << std::endl;
+    std::cout << to << std::endl;
 
     return SUCCESS;
 }
 
-int AdjacencyList::mostEconomicWay(int from, int to, int vehicleType) {
+int AdjacencyList::mostEconomicWay(int from, int to, int vehicleType, std::vector<Route*>& result) {
     // 最省钱到达算法（以费用为权重）
     // 使用 Dijkstra 算法
 
@@ -591,6 +591,8 @@ int AdjacencyList::mostEconomicWay(int from, int to, int vehicleType) {
                                 recordTable[route->getTo()] = cost + route->getCost();
                                 pq.push(std::make_pair(cost + route->getCost(), route->getTo()));
                                 pathTable[route->getTo()] = cityCode;
+                                // 存储route
+                                result.push_back(route);
                             }
                         }
                     }
@@ -625,10 +627,10 @@ int AdjacencyList::mostEconomicWay(int from, int to, int vehicleType) {
 
     // 输出路径
     std::cout << "Path: ";
-    for (int cityCode : path) {
-        std::cout << cityCode << " -> ";
+    for (Route* route : result) {
+        std::cout << route->getFrom() << " -> ";
     }
-    std::cout << std::endl;
+    std::cout << to << std::endl;
 
     return SUCCESS;
 }

@@ -40,9 +40,11 @@ void Server::test() {
     std::vector<std::vector<Route*>> result;
     theSystem->findAllRoutes(1, 3, 0, result);
 
-    theSystem->getGraph()->mostFastestWay(1, 3, 0);
+    std::vector<Route*> fastestResult;
 
-    theSystem->getGraph()->mostEconomicWay(1, 3, 0);
+    theSystem->getGraph()->mostFastestWay(1, 3, 0, fastestResult);
+
+    // theSystem->getGraph()->mostEconomicWay(1, 3, 0);
 
     // theSystem->displaySystem();
 }
@@ -83,7 +85,6 @@ void Server::run() {
     CROW_ROUTE(app, "/data/get")
     ([serverSys](){
         // return crow_json;
-
         try {
             nlohmann::json response;
 

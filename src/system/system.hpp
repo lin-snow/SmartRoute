@@ -175,13 +175,13 @@ int System::findAllRoutes(int from, int to, int vehicleType, std::vector<std::ve
     return graph->findAllRoutes(from, to, vehicleType, result);
 }
 
-int System::mostFastestWay(int from, int to, int vehicleType) {
-    return graph->mostFastestWay(from, to, vehicleType);
+int System::mostFastestWay(int from, int to, int vehicleType, std::vector<Route*>& result) {
+    return graph->mostFastestWay(from, to, vehicleType, result);
 }
 
-int System::mostEconomicWay(int from, int to, int vehicleType) {
-    return graph->mostEconomicWay(from, to, vehicleType);
-}
+// int System::mostEconomicWay(int from, int to, int vehicleType) {
+//     return graph->mostEconomicWay(from, to, vehicleType);
+// }
 
 // load data from json file
 void System::loadData() {

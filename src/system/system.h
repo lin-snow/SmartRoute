@@ -32,7 +32,7 @@ class System {
         Route* inputRoute();
 
         int findAllRoutes(int from, int to, int vehicleType, std::vector<std::vector<Route*>>& result);
-        int mostFastestWay(int from, int to, int vehicleType);
+        int mostFastestWay(int from, int to, int vehicleType, std::vector<Route*>& result);
         int mostEconomicWay(int from, int to, int vehicleType);
 
         void loadData(); // load data from json file

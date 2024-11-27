@@ -28,6 +28,17 @@ class Time {
         long diffInMinutes(const Time &t) const; // difference in minutes (t - this)
         std::string getTimeStamp() const; // "00:00"
 
+        // operator
+        bool operator<(const Time &other) const {
+            if (hour < other.hour) {
+                return true;
+            } else if (hour == other.hour) {
+                return minute < other.minute;
+            } else {
+                return false;
+            }
+        }
+
     private:
         int hour; // 0-23
         int minute; // 0-59
