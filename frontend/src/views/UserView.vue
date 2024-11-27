@@ -1,10 +1,12 @@
 <template>
   <div>
-    <adminPanel />
+    <userPage />
   </div>
 </template>
+
 <script setup lang="ts">
-import adminPanel from '@/components/admin/adminPanel.vue';
+import userPage from '@/components/user/userPage.vue';
 </script>
+
 <style>
 </style>

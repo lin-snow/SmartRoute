@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <memory>
+#include <unordered_set>
 
 #include "../module/module.h"
 
@@ -62,10 +64,18 @@ class AdjacencyList {
         // methods
         bool isCityExists(City* city);
         bool isRouteExists(Route* route);
-        void addCity(City* city);
-        void addRoute(Route* route);
+        int addCity(City* city);
+        int deleteCity(int cityCode);
+        int addRoute(Route* route);
+        int deleteRoute(int routeId, int from, int to);
 
         void displayAdjacencyList();
+
+        // algorithms
+        void dfsFindRoutes(int from, int to, int vehicleType, std::vector<std::vector<Route*>>& result, std::vector<Route*> currentRoute, std::unordered_set<int> visited, std::vector<AdjacencyListPair>* adjacencyList);
+        int findAllRoutes(int from, int to, int vehicleType, std::vector<std::vector<Route*>>& result);
+        int mostFastestWay(int from, int to, int vehicleType);
+        int mostEconomicWay(int from, int to, int vehicleType);
 
     private:
         int numberOfCities;

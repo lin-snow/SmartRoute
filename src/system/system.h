@@ -22,12 +22,18 @@ class System {
         // methods
         void launch();
         bool isCityValid(City* city);
-        void addCity(City* theCity);
+        int addCity(City* theCity);
+        int deleteCity(int cityCode);
         bool isRouteValid(Route* route);
-        void addRoute(Route* theRoute);
+        int addRoute(Route* theRoute);
+        int deleteRoute(int routeId,int from, int to);
         void displaySystem();
         City* inputCity();
         Route* inputRoute();
+
+        int findAllRoutes(int from, int to, int vehicleType, std::vector<std::vector<Route*>>& result);
+        int mostFastestWay(int from, int to, int vehicleType);
+        int mostEconomicWay(int from, int to, int vehicleType);
 
         void loadData(); // load data from json file
         void saveData(); // save data to json file

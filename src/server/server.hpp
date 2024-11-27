@@ -1,21 +1,51 @@
 #pragma once
 
+
 #include <iostream>
 #include <string>
 #include <winsock2.h>
 #include <asio.hpp>
 #include "crow.h"
 #include "nlohmann/json.hpp"
+#include <thread>
+#include <future>
 
 #include "../system/system.h"
 #include "../utils/yamlTool.hpp"
 #include "crow/middlewares/cors.h"
+#include "crow/multipart.h"
 
 #include "server.h"
 
 #include "../module/module.h"
 #include "../graph/graph.h"
 #include "../utils/jsonTool.hpp"
+
+void Server::test() {
+    std::cout << "Server test" << std::endl;
+
+    theSystem->loadData();
+    theSystem->displaySystem();
+
+    // test the delete city function
+    // theSystem->deleteCity(1);
+    // theSystem->deleteCity(1);
+    // // theSystem->deleteCity(1);
+    // theSystem->deleteCity(2);
+
+    // test the delete route function
+    // theSystem->deleteRoute(16);
+
+    // test the mostFastestWay function
+    std::vector<std::vector<Route*>> result;
+    theSystem->findAllRoutes(1, 3, 0, result);
+
+    theSystem->getGraph()->mostFastestWay(1, 3, 0);
+
+    theSystem->getGraph()->mostEconomicWay(1, 3, 0);
+
+    // theSystem->displaySystem();
+}
 
 
 void Server::run() {
@@ -54,35 +84,85 @@ void Server::run() {
     ([serverSys](){
         // return crow_json;
 
-        nlohmann::json response;
+        try {
+            nlohmann::json response;
 
-        // 构建城市列表
-        nlohmann::json cities;
-        for (City* city : *(serverSys->getGraph()->getCitiesList())) {
-            cities.push_back(city2json(city));
+            std::cout << "dfsfs" << std::endl;
+
+            // 构建城市列表
+            nlohmann::json cities;
+            for (City* city : *(serverSys->getGraph()->getCitiesList())) {
+                cities.push_back(city2json(city));
+            }
+        
+            // 包装成包含 "data" 和 "list" 的结构
+            response["data"] = {
+                {"cities", cities}
+            };
+
+            std::cout << "hi" << std::endl;
+        
+            // 构建路线列表
+            nlohmann::json routes;
+            for (AdjacencyListPair pair : *(serverSys->getGraph()->getAdjacencyList())) {
+                for (AdjacencyListNode node : *(pair.getNodes())) {
+                    for (Route* route : *(node.getRoutes())) {
+                        routes.push_back(route2json(route));
+                    }
+                }
+            }
+
+            std::cout << "sdf" << std::endl;
+
+            // 包装成包含 "data" 和 "list" 的结构
+            response["data"]["routes"] = routes;
+        
+            // 返回构建的 JSON 数据
+            crow::json::wvalue res = crow::json::load(response.dump());
+
+            std::cout << "fsfh" << std::endl;
+            return res;
+        } catch(std::exception& e) {
+            std::cout << "Error: " << e.what() << std::endl;
+
+            nlohmann::json response;
+            response["msg"] = "Data Get Failed!";
+            response["code"] = 400;
+            response["data"] = {};
+            crow::json::wvalue res = crow::json::load(response.dump());
+            return res;
         }
-    
-        // 包装成包含 "data" 和 "list" 的结构
-        response["data"] = {
-            {"list", cities}
-        };
-    
-        std::cout << response.dump() << std::endl;
-    
-        // 返回构建的 JSON 数据
-        crow::json::wvalue res = crow::json::load(response.dump());
-        return res;
     });
 
     /* USER CONTROLLER */
     CROW_ROUTE(app, "/user/query").methods("GET"_method)
-    ([](){
-        // return json data
-        crow::json::wvalue res;
-        res["msg"] = "Hello, User Query!";
-        res["code"] = 200;
+    ([serverSys](const crow::request& req){
+        auto query = req.url_params;
+        int from = std::stoi(query.get("from"));
+        int to = std::stoi(query.get("to"));
+        int vehicleType = std::stoi(query.get("vehicleType"));
 
-        return res;
+        try {
+            // 返回所有路线
+
+            // 返回最快路线
+
+            // 返回最省钱路线
+
+            nlohmann::json response;
+            response["msg"] = "Query Success!";
+            response["code"] = 200;
+            response["data"] = {};
+            crow::json::wvalue res = crow::json::load(response.dump());
+            return res;
+        } catch (std::exception& e) {
+            nlohmann::json response;
+            response["msg"] = "Query Failed!";
+            response["code"] = 400;
+            response["data"] = {};
+            crow::json::wvalue res = crow::json::load(response.dump());
+            return res;
+        }
     });
 
     /* ADMIN CONTROLLER */
@@ -107,23 +187,61 @@ void Server::run() {
     });
 
     CROW_ROUTE(app, "/admin/city/add").methods("POST"_method)
-    ([](){
+    ([serverSys](const crow::request& req){
         // return json data
-        crow::json::wvalue res;
-        res["msg"] = "Hello, Admin City Add!";
-        res["code"] = 200;
+        crow::multipart::message x(req);
+        std::string name = x.get_part_by_name("name").body;
+        std::string cityCode = x.get_part_by_name("cityCode").body;
+        std::cout << "City Name: " << name << std::endl;
+        std::cout << "City Code: " << cityCode << std::endl;
+
+        City* city = new City(name, std::stoi(cityCode));
+        if (serverSys->addCity(city) == ERROR) {
+            Result result(400, "City Add Failed!", {});
+            crow::json::wvalue res = crow::json::load(result.error().dump());
+            return res;
+        }
+
+        Result result(200, "City added successfully", city2json(city));
+        crow::json::wvalue res = crow::json::load(result.success().dump());
 
         return res;
     });
 
-    CROW_ROUTE(app, "/admin/city/delete").methods("POST"_method)
-    ([](){
-        // return json data
-        crow::json::wvalue res;
-        res["msg"] = "Hello, Admin City Delete!";
-        res["code"] = 200;
+    CROW_ROUTE(app, "/admin/city/delete").methods("GET"_method)
+    ([serverSys](const crow::request& req){        
+        // delete city
+        try {
+            auto query = req.url_params;
+            int theCityCode = std::stoi(query.get("cityCode"));
 
-        return res;
+            std::cout << "City Code: " << theCityCode << std::endl;
+
+            crow::json::wvalue res;
+
+            if (serverSys->deleteCity(theCityCode) == ERROR) {
+                nlohmann::json response;
+                response["msg"] = "City Delete Failed!";
+                response["code"] = 400;
+                response["data"] = {};
+                res = crow::json::load(response.dump());
+            } else {
+                nlohmann::json response;
+                response["msg"] = "City deleted successfully";
+                response["code"] = 200;
+                response["data"] = {};
+                res = crow::json::load(response.dump());
+            }
+
+            return res;
+        } catch(std::exception& e) {
+            nlohmann::json response;
+            response["msg"] = "City Delete Failed!";
+            response["code"] = 400;
+            response["data"] = {};
+            crow::json::wvalue res = crow::json::load(response.dump());
+            return res;
+        }
     });
 
     CROW_ROUTE(app, "/admin/city/update").methods("PUT"_method)
@@ -137,23 +255,83 @@ void Server::run() {
     });
 
     CROW_ROUTE(app, "/admin/route/add").methods("POST"_method)
-    ([](){
-        // return json data
-        crow::json::wvalue res;
-        res["msg"] = "Hello, Admin Route Add!";
-        res["code"] = 200;
+    ([serverSys](const crow::request& req){
+        crow::multipart::message x(req);
+        std::string from = x.get_part_by_name("from").body;
+        std::string to = x.get_part_by_name("to").body;
+        std::string distance = x.get_part_by_name("distance").body;
+        // std::string duration = x.get_part_by_name("duration").body;
+        std::string cost = x.get_part_by_name("cost").body;
+        std::string vehicleType = x.get_part_by_name("vehicleType").body;
+        std::string vehicleCode = x.get_part_by_name("vehicleCode").body;
+        std::string departureTime = x.get_part_by_name("departureTime").body;
+        std::string arrivalTime = x.get_part_by_name("arrivalTime").body;
 
-        return res;
+        std::cout << "From: " << from << std::endl;
+        std::cout << "To: " << to << std::endl;
+        std::cout << "Distance: " << distance << std::endl;
+        // std::cout << "Duration: " << duration << std::endl;
+        std::cout << "Cost: " << cost << std::endl;
+        std::cout << "Vehicle Type: " << vehicleType << std::endl;
+        std::cout << "Vehicle Code: " << vehicleCode << std::endl;
+        std::cout << "Departure Time: " << departureTime << std::endl;
+        std::cout << "Arrival Time: " << arrivalTime << std::endl;
+
+        Time departureTimeObj(departureTime);
+        Time arrivalTimeObj(arrivalTime);
+        long duration = departureTimeObj.diffInMinutes(arrivalTimeObj);
+
+
+        try {
+            Route* route = new Route(std::stoi(from), std::stoi(to), std::stol(distance), duration, new Vehicle((VehicleType)std::stoi(vehicleType), vehicleCode), Time(departureTime), Time(arrivalTime), std::stol(cost));
+            if (serverSys->addRoute(route) == ERROR) {
+                Result result(400, "Route Add Failed!", {});
+                crow::json::wvalue res = crow::json::load(result.error().dump());
+                return res;
+            }
+
+            Result result(200, "Route added successfully", route2json(route));
+            crow::json::wvalue res = crow::json::load(result.success().dump());
+
+            return res;
+        } catch(std::exception& e) {
+            Result result(400, "Route Add Failed!", {});
+            crow::json::wvalue res = crow::json::load(result.error().dump());
+            return res;
+        }
     });
 
-    CROW_ROUTE(app, "/admin/route/delete").methods("POST"_method)
-    ([](){
-        // return json data
-        crow::json::wvalue res;
-        res["msg"] = "Hello, Admin Route Delete!";
-        res["code"] = 200;
+    CROW_ROUTE(app, "/admin/route/delete").methods("GET"_method)
+    ([serverSys](const crow::request& req){
+        auto query = req.url_params;
+        int theRouteId = std::stoi(query.get("routeId"));
+        int from = std::stoi(query.get("from"));
+        int to = std::stoi(query.get("to"));
 
-        return res;
+        try {
+            nlohmann::json response;
+
+            // delete route
+            if (serverSys->deleteRoute(theRouteId, from, to) == ERROR) {
+                response["msg"] = "Route Delete Failed!";
+                response["code"] = 400;
+                response["data"] = {};
+            } else {
+                response["msg"] = "Route deleted successfully";
+                response["code"] = 200;
+                response["data"] = {};
+            }
+
+            crow::json::wvalue res = crow::json::load(response.dump());
+            return res;
+        } catch(std::exception& e) {
+            nlohmann::json response;
+            response["msg"] = "Route Delete Failed!";
+            response["code"] = 400;
+            response["data"] = {};
+            crow::json::wvalue res = crow::json::load(response.dump());
+            return res;
+        }
     });
 
     CROW_ROUTE(app, "/admin/route/update").methods("PUT"_method)

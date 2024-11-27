@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <thread>
+#include <future>
 
 #include <winsock2.h>
 #include <asio.hpp>
@@ -80,17 +82,32 @@ bool System::isRouteValid(Route* route) {
 }
 
 // Add city to the system
-void System::addCity(City* theCity) {
+int System::addCity(City* theCity) {
     if (isCityValid(theCity)) {
-        graph->addCity(theCity);
+        return graph->addCity(theCity);
     }
+    return ERROR;
+}
+
+int System::deleteCity(int cityCode) {
+    return graph->deleteCity(cityCode);
 }
 
 // Add route to the system
-void System::addRoute(Route* theRoute) {
+int System::addRoute(Route* theRoute) {
     if (isRouteValid(theRoute)) {
-        graph->addRoute(theRoute);
+        return graph->addRoute(theRoute);
     }
+    return ERROR;
+}
+
+int System::deleteRoute(int routeId, int from, int to) {
+    if (routeId <= 0) {
+        std::cout << "Invalid route id" << std::endl;
+        return ERROR;
+    }
+
+    return graph->deleteRoute(routeId, from, to);
 }
 
 void System::displaySystem() {
@@ -152,6 +169,18 @@ Route* System::inputRoute() {
     duration = departureTime.diffInMinutes(arrivalTime);
 
     return new Route(from, to, distance, duration, new Vehicle((VehicleType)vehicleType, vehicleCode), departureTime, arrivalTime, cost);
+}
+
+int System::findAllRoutes(int from, int to, int vehicleType, std::vector<std::vector<Route*>>& result) {
+    return graph->findAllRoutes(from, to, vehicleType, result);
+}
+
+int System::mostFastestWay(int from, int to, int vehicleType) {
+    return graph->mostFastestWay(from, to, vehicleType);
+}
+
+int System::mostEconomicWay(int from, int to, int vehicleType) {
+    return graph->mostEconomicWay(from, to, vehicleType);
 }
 
 // load data from json file

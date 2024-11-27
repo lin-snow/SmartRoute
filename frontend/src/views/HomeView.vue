@@ -1,10 +1,10 @@
-<script setup lang="ts">
-import UserQuery from '@/components/userQuery.vue';
-
-</script>
-
 <template>
   <main>
-    <UserQuery />
+    <homePage />
   </main>
 </template>
+
+<script setup lang="ts">
+import HomePage from '@/components/homePage.vue';
+
+</script>

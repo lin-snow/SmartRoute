@@ -16,6 +16,7 @@ nlohmann::json city2json(City* city) {
 
 nlohmann::json route2json(Route* route) {
     nlohmann::json routeJson;
+    routeJson["routeId"] = route->getRouteId();
     routeJson["from"] = route->getFrom();
     routeJson["to"] = route->getTo();
     routeJson["distance"] = route->getDistance();

@@ -38,6 +38,12 @@ target_include_directories(SmartRoute PRIVATE
     ${FKYAML_INCLUDE_DIR}
 )
 
+target_compile_options(SmartRoute 
+    PRIVATE 
+    $<$<CXX_COMPILER_ID:MSVC>:/bigobj> 
+	$<$<CXX_COMPILER_ID:GNU>:-Wa,-mbig-obj>
+)
+
 # 链接 Windows Socket 库
 target_link_libraries(SmartRoute PRIVATE ws2_32 mswsock)
 

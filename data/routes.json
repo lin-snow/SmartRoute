@@ -30,7 +30,7 @@
         "from": 1,
         "to": 3,
         "vehicleCode": "F1001",
-        "vehicleType": 1
+        "vehicleType": 0
     },
     {
         "arrivalTime": "15:45",

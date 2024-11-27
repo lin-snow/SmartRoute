@@ -19,10 +19,39 @@ class Server {
             : theSystem(sys) {}
 
         void run();
+        void test();
 
     private:
         crow::SimpleApp app;
         std::shared_ptr<System> theSystem;
+};
+
+class Result {
+    public:
+        Result(int code, std::string msg, nlohmann::json data)
+            : code(code), msg(msg), data(data) {}
+
+        nlohmann::json success() {
+            nlohmann::json response;
+            response["code"] = code;
+            response["msg"] = msg;
+            response["data"] = data;
+
+            return response;
+        }
+
+        nlohmann::json error() {
+            nlohmann::json response;
+            response["code"] = code;
+            response["msg"] = msg;
+
+            return response;
+        }
+        
+    private:
+        int code;
+        std::string msg;
+        nlohmann::json data;
 };
 
 
