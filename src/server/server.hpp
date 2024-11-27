@@ -44,7 +44,17 @@ void Server::test() {
 
     theSystem->getGraph()->mostFastestWay(1, 3, 0, fastestResult);
 
-    // theSystem->getGraph()->mostEconomicWay(1, 3, 0);
+    fastestResult.clear();
+
+    theSystem->getGraph()->mostFastestWay(1, 3, 1, fastestResult);
+
+    std::vector<Route*> economicResult;
+
+    theSystem->getGraph()->mostEconomicWay(1, 3, 0, economicResult);
+
+    economicResult.clear();
+
+    theSystem->getGraph()->mostEconomicWay(1, 3, 1, economicResult);
 
     // theSystem->displaySystem();
 }
@@ -145,23 +155,48 @@ void Server::run() {
 
         try {
             // 返回所有路线
+            std::vector<std::vector<Route*>> allRoutes;
+            serverSys->findAllRoutes(from, to, vehicleType, allRoutes);
 
             // 返回最快路线
+            std::vector<Route*> fastestRoute;
+            serverSys->mostFastestWay(from, to, vehicleType, fastestRoute);
 
             // 返回最省钱路线
+            std::vector<Route*> economicRoute;
+            serverSys->mostEconomicWay(from, to, vehicleType, economicRoute);
 
             nlohmann::json response;
-            response["msg"] = "Query Success!";
-            response["code"] = 200;
-            response["data"] = {};
-            crow::json::wvalue res = crow::json::load(response.dump());
+            nlohmann::json data;
+            nlohmann::json allRoutesData;
+            nlohmann::json fastestRouteData;
+            nlohmann::json economicRouteData;
+
+            for (std::vector<Route*> routes : allRoutes) {
+                for (Route* r : routes) {
+                    allRoutesData.push_back(route2json(r));
+                }
+            }
+
+            for (Route* r : fastestRoute) {
+                fastestRouteData.push_back(route2json(r));
+            }
+
+            for (Route* r : economicRoute) {
+                economicRouteData.push_back(route2json(r));
+            }
+
+            data["allRoutes"] = allRoutesData;
+            data["fastestRoute"] = fastestRouteData;
+            data["economicRoute"] = economicRouteData;
+
+            Result result(200, "Query Success!", data);
+            crow::json::wvalue res = crow::json::load(result.success().dump());
+            
             return res;
         } catch (std::exception& e) {
-            nlohmann::json response;
-            response["msg"] = "Query Failed!";
-            response["code"] = 400;
-            response["data"] = {};
-            crow::json::wvalue res = crow::json::load(response.dump());
+            Result result(400, "Query Failed!", {});
+            crow::json::wvalue res = crow::json::load(result.success().dump());
             return res;
         }
     });
@@ -245,15 +280,15 @@ void Server::run() {
         }
     });
 
-    CROW_ROUTE(app, "/admin/city/update").methods("PUT"_method)
-    ([](){
-        // return json data
-        crow::json::wvalue res;
-        res["msg"] = "Hello, Admin City Update!";
-        res["code"] = 200;
+    // CROW_ROUTE(app, "/admin/city/update").methods("PUT"_method)
+    // ([](){
+    //     // return json data
+    //     crow::json::wvalue res;
+    //     res["msg"] = "Hello, Admin City Update!";
+    //     res["code"] = 200;
 
-        return res;
-    });
+    //     return res;
+    // });
 
     CROW_ROUTE(app, "/admin/route/add").methods("POST"_method)
     ([serverSys](const crow::request& req){
@@ -335,15 +370,15 @@ void Server::run() {
         }
     });
 
-    CROW_ROUTE(app, "/admin/route/update").methods("PUT"_method)
-    ([](){
-        // return json data
-        crow::json::wvalue res;
-        res["msg"] = "Hello, Admin Route Update!";
-        res["code"] = 200;
+    // CROW_ROUTE(app, "/admin/route/update").methods("PUT"_method)
+    // ([](){
+    //     // return json data
+    //     crow::json::wvalue res;
+    //     res["msg"] = "Hello, Admin Route Update!";
+    //     res["code"] = 200;
 
-        return res;
-    });
+    //     return res;
+    // });
 
     
     app.port(getPort()).multithreaded().run();

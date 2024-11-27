@@ -412,3 +412,94 @@ int main() {
 //     printf("Route from city %d to city %d added successfully!\n", route->getFrom(), route->getTo());
 // }
 
+
+
+
+// // 定义一个从记录从起点到每个城市的最短费用
+    // std::unordered_map<int, long> recordTable; // 记录到达每个城市的最短费用
+    // // 将每个值初始化为无穷大
+    // for (City* city : *citiesList) {
+    //     recordTable[city->getCityCode()] = std::numeric_limits<long>::max();
+    // }   
+
+    // // 起点费用为 0
+    // recordTable[from] = 0;
+
+    // // 定义一个优先队列 （定义为 <费用, 城市>）
+    // std::priority_queue<std::pair<long, int>, std::vector<std::pair<long, int>>, std::greater<std::pair<long, int>>> pq;
+    // pq.push(std::make_pair(0, from));
+
+    // // 定义一个记录路径的表 (key: cityCode, value: previous cityCode)
+    // std::unordered_map<int, int> pathTable;
+
+    // // 开始遍历
+    // while (!pq.empty()) {
+    //     // 取出队列中的第一个元素
+    //     std::pair<long, int> top = pq.top();
+    //     pq.pop();
+
+    //     // 取出城市编号
+    //     int cityCode = top.second;
+    //     // 取出费用
+    //     long cost = top.first;
+
+    //     // 如果已经访问过该城市，则跳过
+    //     if (recordTable[cityCode] < cost) { // 如果访问费用小于当前费用，则跳过
+    //         continue;
+    //     }
+
+    //     // 遍历邻接表
+    //     for (AdjacencyListPair pair : *adjacencyList) {
+    //         if (pair.getCity()->getCityCode() == cityCode) { // 找到起点城市
+    //             // 遍历该城市到其他城市的路线
+    //             for (AdjacencyListNode node : *pair.getNodes()) {
+    //                 // 遍历每一个邻接城市节点
+    //                 for (Route* route : *node.getRoutes()) {
+    //                     // 遍历每一条路线
+    //                     // 判断是否是同一种交通工具
+    //                     if (route->getVehicle()->getVehicleType() == vehicleType) {
+    //                         // 判断是否是最短费用
+    //                         if (cost + route->getCost() < recordTable[route->getTo()]) {
+    //                             recordTable[route->getTo()] = cost + route->getCost();
+    //                             pq.push(std::make_pair(cost + route->getCost(), route->getTo()));
+    //                             pathTable[route->getTo()] = cityCode;
+    //                             // 存储route
+    //                             result.push_back(route);
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // // 判断是否可达
+    // if (recordTable[to] == std::numeric_limits<long>::max()) {
+    //     std::cout << "No way to reach" << std::endl;
+    //     return ERROR;
+    // }
+
+    // // 回溯路径
+    // std::vector<int> path;
+    // int currentCity = to;
+    // while (currentCity != from) {
+    //     path.push_back(currentCity);
+    //     currentCity = pathTable[currentCity];
+    // }
+    // path.push_back(from);
+
+    // // 反转路径
+    // std::reverse(path.begin(), path.end());
+
+    // // 输出结果
+    // std::cout << "From " << from << " to " << to << " by " << vehicleType << std::endl;
+
+    // std::cout << "The most economic way is: " << std::endl;
+    // std::cout << "Cost: " << recordTable[to] << " yuan" << std::endl;
+
+    // // 输出路径
+    // std::cout << "Path: ";
+    // for (Route* route : result) {
+    //     std::cout << route->getFrom() << " -> ";
+    // }
+    // std::cout << to << std::endl;

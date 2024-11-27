@@ -179,9 +179,9 @@ int System::mostFastestWay(int from, int to, int vehicleType, std::vector<Route*
     return graph->mostFastestWay(from, to, vehicleType, result);
 }
 
-// int System::mostEconomicWay(int from, int to, int vehicleType) {
-//     return graph->mostEconomicWay(from, to, vehicleType);
-// }
+int System::mostEconomicWay(int from, int to, int vehicleType, std::vector<Route*>& result) {
+    return graph->mostEconomicWay(from, to, vehicleType, result);
+}
 
 // load data from json file
 void System::loadData() {

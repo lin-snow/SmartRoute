@@ -390,7 +390,53 @@ void AdjacencyList::displayAdjacencyList() {
     }
 }
 
-void AdjacencyList::dfsFindRoutes(int from, int to, int vehicleType, std::vector<std::vector<Route*>>& result, std::vector<Route*> currentRoute, std::unordered_set<int> visited, std::vector<AdjacencyListPair>* adjacencyList) {
+// void AdjacencyList::dfsFindRoutes(int from, int to, int vehicleType, std::vector<std::vector<Route*>>& result, std::vector<Route*> currentRoute, std::unordered_set<int> visited, std::vector<AdjacencyListPair>* adjacencyList) {
+//     // 已经到达终点城市
+//     if (from == to) {
+//         result.push_back(currentRoute);
+//         return;
+//     }
+
+//     // 遍历邻接表
+//     for (AdjacencyListPair pair : *adjacencyList) {
+//         if (pair.getCity()->getCityCode() == from) {
+//             // 找到起点城市
+//             // 遍历该城市到其他城市的路线
+//             for (AdjacencyListNode node : *pair.getNodes()) {
+//                 // 遍历每一个邻接城市节点
+//                 for (Route* route : *node.getRoutes()) {
+//                     // 遍历每一条路线
+//                     // 判断是否是同一种交通工具
+//                     if (route->getVehicle()->getVehicleType() == vehicleType) {
+//                         // 判断是否已经访问过
+//                         if (visited.find(route->getTo()) == visited.end()) {
+//                             // 没有访问过
+//                             // 添加到当前路径
+//                             currentRoute.push_back(route);
+//                             visited.insert(route->getTo());
+//                             // 递归
+//                             dfsFindRoutes(route->getTo(), to, vehicleType, result, currentRoute, visited, adjacencyList);
+//                             // 回溯
+//                             currentRoute.pop_back();
+//                             visited.erase(route->getTo());
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
+
+void AdjacencyList::dfsFindRoutes(
+    int from,
+    int to,
+    int vehicleType,
+    std::vector<std::vector<Route*>>& result,
+    std::vector<Route*> currentRoute,
+    std::unordered_set<int> visited,
+    std::vector<AdjacencyListPair>* adjacencyList,
+    Time previousArrivalTime) {
+
     // 已经到达终点城市
     if (from == to) {
         result.push_back(currentRoute);
@@ -408,14 +454,13 @@ void AdjacencyList::dfsFindRoutes(int from, int to, int vehicleType, std::vector
                     // 遍历每一条路线
                     // 判断是否是同一种交通工具
                     if (route->getVehicle()->getVehicleType() == vehicleType) {
-                        // 判断是否已经访问过
-                        if (visited.find(route->getTo()) == visited.end()) {
-                            // 没有访问过
+                        // 判断时间是否合理（当前路线的出发时间是否晚于上一条路线的到达时间）
+                        if (previousArrivalTime.diffInMinutes(route->getDepartureTime()) >= 0) {
                             // 添加到当前路径
                             currentRoute.push_back(route);
                             visited.insert(route->getTo());
                             // 递归
-                            dfsFindRoutes(route->getTo(), to, vehicleType, result, currentRoute, visited, adjacencyList);
+                            dfsFindRoutes(route->getTo(), to, vehicleType, result, currentRoute, visited, adjacencyList, route->getArrivalTime());
                             // 回溯
                             currentRoute.pop_back();
                             visited.erase(route->getTo());
@@ -431,7 +476,7 @@ int AdjacencyList::findAllRoutes(int from, int to, int vehicleType, std::vector<
     std::vector<Route*> currentRoute;
     std::unordered_set<int> visited;
 
-    dfsFindRoutes(from, to, vehicleType, result, currentRoute, visited, adjacencyList);
+    dfsFindRoutes(from, to, vehicleType, result, currentRoute, visited, adjacencyList, Time(0, 0));
 
     // 输出结果
     std::cout << "From " << from << " to " << to << " by " << vehicleType << std::endl;
@@ -489,11 +534,108 @@ int AdjacencyList::mostFastestWay(int from, int to, int vehicleType, std::vector
                     for (Route* route : *node.getRoutes()) {
                         if (route->getVehicle()->getVehicleType() == vehicleType) { // 判断是否是同一种交通工具
                             // 判断时间是否合理（当前路线的出发时间是否晚于上一条路线的到达时间）
-                            if (route->getDepartureTime().diffInMinutes(arrivalTime) >= 0) {
+                            if (route->getDepartureTime().diffInMinutes(arrivalTime) <= 0) {
                                 // 判断是否是最短时间 (考虑等待时间,即前一条route的到达时间和当前route的出发时间之间的间隔)
-                                if (time + route->getDuration() + route->getDepartureTime().diffInMinutes(arrivalTime) < recordTable[route->getTo()]) {
-                                    recordTable[route->getTo()] = time + route->getDuration() + route->getDepartureTime().diffInMinutes(arrivalTime);
-                                    pq.push(std::make_tuple(time + route->getDuration() + route->getDepartureTime().diffInMinutes(arrivalTime), route->getTo(), route->getArrivalTime(), route));
+                                if ((time + route->getDuration() + arrivalTime.diffInMinutes(route->getDepartureTime())) < recordTable[route->getTo()]) {
+                                    recordTable[route->getTo()] = time + route->getDuration() + arrivalTime.diffInMinutes(route->getDepartureTime());
+                                    int waitHours = (arrivalTime.diffInMinutes(route->getDepartureTime())) / 60;
+                                    int waitMinutes = (arrivalTime.diffInMinutes(route->getDepartureTime())) % 60;
+                                    pq.push(std::make_tuple(time + route->getDuration() + arrivalTime.diffInMinutes(route->getDepartureTime()), route->getTo(), route->getArrivalTime(), route));
+                                    routeTable[route->getTo()] = route;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // 判断是否可达
+    if (recordTable[to] == std::numeric_limits<long>::max()) {
+        std::cout << "No way to reach" << std::endl;
+        return ERROR;
+    }
+
+    // 回溯路径
+    int currentCity = to;
+    while (currentCity != from) {
+        if (routeTable.find(currentCity) == routeTable.end()) {
+            std::cout << "No way to reach" << std::endl;
+            return ERROR;
+        }
+        result.push_back(routeTable[currentCity]);
+        currentCity = routeTable[currentCity]->getFrom();
+    }
+
+    // 最终时间减掉起始时间
+    long startTimeinMinutes = (*result.begin())->getDepartureTime().getHour() * 60 + (*result.begin())->getDepartureTime().getMinute();
+    recordTable[to] -= startTimeinMinutes;
+
+    // 反转路径
+    std::reverse(result.begin(), result.end());
+
+    // 输出结果
+    std::cout << "From " << from << " to " << to << " by " << vehicleType << std::endl;
+    std::cout << "The most fastest way is: " << std::endl;
+    std::cout << "Time: " << recordTable[to] << " minutes" << std::endl;
+
+    // 输出路径
+    std::cout << "Path: ";
+    for (Route* route : result) {
+        std::cout << route->getFrom() << "(routeid: " << route->getRouteId() << ") -> ";
+    }
+    std::cout << to << std::endl;
+
+    return SUCCESS;
+}
+
+int AdjacencyList::mostEconomicWay(int from, int to, int vehicleType, std::vector<Route*>& result) {
+    // 最省钱到达算法（以费用为权重）
+    // 使用 Dijkstra 算法
+
+    // 定义一个从记录从起点到每个城市的最短费用
+    std::unordered_map<int, long> recordTable; // 记录到达每个城市的最短费用
+    // 将每个值初始化为无穷大
+    for (City* city : *citiesList) {
+        recordTable[city->getCityCode()] = std::numeric_limits<long>::max();
+    }
+
+    // 起点费用为 0
+    recordTable[from] = 0;
+
+    // 定义一个优先队列 （定义为 <花费, 城市, 到达时间, 路线指针>)
+    std::priority_queue<std::tuple<long, int, Time, Route*>,
+                        std::vector<std::tuple<long, int, Time, Route*>>,
+                        std::greater<>> pq;
+
+    pq.push(std::make_tuple(0, from, Time(0, 0), nullptr));
+
+    // 路径表：记录到达每个城市的路线指针
+    std::unordered_map<int, Route*> routeTable;
+
+    while (!pq.empty()) {
+        auto [cost, cityCode, arrivalTime, route] = pq.top();
+        pq.pop();
+
+        // 如果当前费用已经大于记录的费用，则跳过
+        if (recordTable[cityCode] < cost) {
+            continue;
+        }
+
+        // 遍历邻接表
+        for (AdjacencyListPair pair : *adjacencyList) {
+            if (pair.getCity()->getCityCode() == cityCode) {
+                // 找到起点城市
+                for (AdjacencyListNode node : *pair.getNodes()) {
+                    for (Route* route : *node.getRoutes()) {
+                        if (route->getVehicle()->getVehicleType() == vehicleType) { // 判断是否是同一种交通工具
+                            // 判断时间是否合理（当前路线的出发时间是否晚于上一条路线的到达时间）
+                            if (arrivalTime.diffInMinutes(route->getDepartureTime()) >= 0) {
+                                // 判断是否是最短费用
+                                if (cost + route->getCost() < recordTable[route->getTo()]) {
+                                    recordTable[route->getTo()] = cost + route->getCost();
+                                    pq.push(std::make_tuple(cost + route->getCost(), route->getTo(), route->getArrivalTime(), route));
                                     routeTable[route->getTo()] = route;
                                 }
                             }
@@ -526,111 +668,14 @@ int AdjacencyList::mostFastestWay(int from, int to, int vehicleType, std::vector
 
     // 输出结果
     std::cout << "From " << from << " to " << to << " by " << vehicleType << std::endl;
-    std::cout << "The most fastest way is: " << std::endl;
-    std::cout << "Time: " << recordTable[to] << " minutes" << std::endl;
-
-    // 输出路径
-    std::cout << "Path: ";
-    for (Route* route : result) {
-        std::cout << route->getFrom() << "(routeid: " << route->getRouteId() << ") -> ";
-    }
-    std::cout << to << std::endl;
-
-    return SUCCESS;
-}
-
-int AdjacencyList::mostEconomicWay(int from, int to, int vehicleType, std::vector<Route*>& result) {
-    // 最省钱到达算法（以费用为权重）
-    // 使用 Dijkstra 算法
-
-    // 定义一个从记录从起点到每个城市的最短费用
-    std::unordered_map<int, long> recordTable; // 记录到达每个城市的最短费用
-    // 将每个值初始化为无穷大
-    for (City* city : *citiesList) {
-        recordTable[city->getCityCode()] = std::numeric_limits<long>::max();
-    }   
-
-    // 起点费用为 0
-    recordTable[from] = 0;
-
-    // 定义一个优先队列 （定义为 <费用, 城市>）
-    std::priority_queue<std::pair<long, int>, std::vector<std::pair<long, int>>, std::greater<std::pair<long, int>>> pq;
-    pq.push(std::make_pair(0, from));
-
-    // 定义一个记录路径的表 (key: cityCode, value: previous cityCode)
-    std::unordered_map<int, int> pathTable;
-
-    // 开始遍历
-    while (!pq.empty()) {
-        // 取出队列中的第一个元素
-        std::pair<long, int> top = pq.top();
-        pq.pop();
-
-        // 取出城市编号
-        int cityCode = top.second;
-        // 取出费用
-        long cost = top.first;
-
-        // 如果已经访问过该城市，则跳过
-        if (recordTable[cityCode] < cost) { // 如果访问费用小于当前费用，则跳过
-            continue;
-        }
-
-        // 遍历邻接表
-        for (AdjacencyListPair pair : *adjacencyList) {
-            if (pair.getCity()->getCityCode() == cityCode) { // 找到起点城市
-                // 遍历该城市到其他城市的路线
-                for (AdjacencyListNode node : *pair.getNodes()) {
-                    // 遍历每一个邻接城市节点
-                    for (Route* route : *node.getRoutes()) {
-                        // 遍历每一条路线
-                        // 判断是否是同一种交通工具
-                        if (route->getVehicle()->getVehicleType() == vehicleType) {
-                            // 判断是否是最短费用
-                            if (cost + route->getCost() < recordTable[route->getTo()]) {
-                                recordTable[route->getTo()] = cost + route->getCost();
-                                pq.push(std::make_pair(cost + route->getCost(), route->getTo()));
-                                pathTable[route->getTo()] = cityCode;
-                                // 存储route
-                                result.push_back(route);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // 判断是否可达
-    if (recordTable[to] == std::numeric_limits<long>::max()) {
-        std::cout << "No way to reach" << std::endl;
-        return ERROR;
-    }
-
-    // 回溯路径
-    std::vector<int> path;
-    int currentCity = to;
-    while (currentCity != from) {
-        path.push_back(currentCity);
-        currentCity = pathTable[currentCity];
-    }
-    path.push_back(from);
-
-    // 反转路径
-    std::reverse(path.begin(), path.end());
-
-    // 输出结果
-    std::cout << "From " << from << " to " << to << " by " << vehicleType << std::endl;
-
     std::cout << "The most economic way is: " << std::endl;
     std::cout << "Cost: " << recordTable[to] << " yuan" << std::endl;
 
     // 输出路径
     std::cout << "Path: ";
     for (Route* route : result) {
-        std::cout << route->getFrom() << " -> ";
+        std::cout << route->getFrom() << "(routeid: " << route->getRouteId() << ") -> ";
     }
-    std::cout << to << std::endl;
 
     return SUCCESS;
 }

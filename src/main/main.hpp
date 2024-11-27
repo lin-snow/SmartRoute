@@ -13,7 +13,7 @@ void start() {
     auto system = std::make_shared<System>();
 
     Server server(system);
-    server.test();
+    server.run();
 
     std::cout << "Server started successfully" << std::endl;
 }
