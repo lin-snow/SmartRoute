@@ -390,42 +390,6 @@ void AdjacencyList::displayAdjacencyList() {
     }
 }
 
-// void AdjacencyList::dfsFindRoutes(int from, int to, int vehicleType, std::vector<std::vector<Route*>>& result, std::vector<Route*> currentRoute, std::unordered_set<int> visited, std::vector<AdjacencyListPair>* adjacencyList) {
-//     // 已经到达终点城市
-//     if (from == to) {
-//         result.push_back(currentRoute);
-//         return;
-//     }
-
-//     // 遍历邻接表
-//     for (AdjacencyListPair pair : *adjacencyList) {
-//         if (pair.getCity()->getCityCode() == from) {
-//             // 找到起点城市
-//             // 遍历该城市到其他城市的路线
-//             for (AdjacencyListNode node : *pair.getNodes()) {
-//                 // 遍历每一个邻接城市节点
-//                 for (Route* route : *node.getRoutes()) {
-//                     // 遍历每一条路线
-//                     // 判断是否是同一种交通工具
-//                     if (route->getVehicle()->getVehicleType() == vehicleType) {
-//                         // 判断是否已经访问过
-//                         if (visited.find(route->getTo()) == visited.end()) {
-//                             // 没有访问过
-//                             // 添加到当前路径
-//                             currentRoute.push_back(route);
-//                             visited.insert(route->getTo());
-//                             // 递归
-//                             dfsFindRoutes(route->getTo(), to, vehicleType, result, currentRoute, visited, adjacencyList);
-//                             // 回溯
-//                             currentRoute.pop_back();
-//                             visited.erase(route->getTo());
-//                         }
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// }
 
 void AdjacencyList::dfsFindRoutes(
     int from,
