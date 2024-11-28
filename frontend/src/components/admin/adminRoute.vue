@@ -71,7 +71,7 @@
     </el-form>
 
     <h2>Manage Route</h2>
-    <el-table :data="formattedTableData" style="width: 100%">
+    <el-table :data="formattedTableData" style="width: 100%" empty-text="no routes available!">
     <el-table-column label="Route ID" prop="routeId" />
     <el-table-column label="From" prop="from" />
     <el-table-column label="To" prop="to" />
@@ -193,6 +193,7 @@ const onSubmit = async () => {
           console.error('Error:', error);
         });
         ElMessage.success('Route added successfully');
+        routesStore.fetchRoutes();
         onReset();
       } catch {
         ElMessage.error('Failed to add route');
@@ -234,13 +235,7 @@ interface Route {
 }
 
 const allTableRoutes = ref<Route[]>(routesStore.allRoutes);
-// // 编辑按钮事件处理
-// const handleEdit = (index: number, row: Route) => {
-//   console.log('Edit row:', index, row);
-//   // 这里可以添加编辑逻辑，例如打开一个包含表单的对话框
-// };
 
-// 格式化城市名称的函数
 // 格式化城市名称的函数
 const formatCityName = (cityCode: string) => {
   console.log("Searching for city code:", cityCode); // 打印正在搜索的城市代码
@@ -255,20 +250,48 @@ const formatCityName = (cityCode: string) => {
 
 // 计算属性：格式化后的表格数据
 const formattedTableData = computed(() => {
-  return routesStore.allRoutes.map((route) => ({
-    ...route,
-    from: formatCityName(route.from.toString()), // 确保 route.from 是字符串
-    to: formatCityName(route.to.toString()), // 确保 route.to 是字符串
-  }));
+  // 检查 routesStore.allRoutes 是否有数据
+  if (routesStore.allRoutes.length > 0) {
+    return routesStore.allRoutes.map((route) => ({
+      ...route,
+      from: formatCityName(route.from.toString()), // 确保 route.from 是字符串
+      to: formatCityName(route.to.toString()), // 确保 route.to 是字符串
+    }));
+  } else {
+    // 如果没有数据，返回空数组或其他默认值
+    return [];
+  }
 });
 
 
 // 删除按钮事件处理
+// 删除按钮事件处理
 const handleDelete = async (index: number, row: Route) => {
   try {
-    await apiClient.delete(`/data/delete/${row.routeId}`); // 确保路径正确
-    ElMessage.success('Route deleted successfully');
-    routesStore.allRoutes.splice(index, 1);
+    // 将from和to转成对应的cityCode
+    const fromCity = cityStore.selectableCities.find(city => city.CityName == row.from.toString());
+    const toCity = cityStore.selectableCities.find(city => city.CityName == row.to.toString());
+
+    // 构建查询参数
+    const params = {
+      routeId: row.routeId,
+      from: fromCity ? fromCity.CityCode : '',
+      to: toCity ? toCity.CityCode : ''
+    };
+
+    console.log(params);
+
+    // 发送带有查询参数的 GET 请求
+    const response = await apiClient.get(`admin/route/delete`, { params });
+
+    // 检查响应状态码是否表示成功
+    if (response.status === 200) {
+      ElMessage.success('Route deleted successfully');
+      routesStore.allRoutes.splice(index, 1);
+    } else {
+      // 如果状态码不是 200，显示错误消息
+      ElMessage.error('Failed to delete route');
+    }
   } catch (error) {
     console.error('Error deleting route:', error);
     ElMessage.error('Failed to delete route');
@@ -277,9 +300,10 @@ const handleDelete = async (index: number, row: Route) => {
 
 onMounted(async () => {
   await cityStore.fetchCities();
-  await cityStore.genSelectableCities();
   await routesStore.fetchRoutes();
-  selectableCities.value = cityStore.selectableCities;
-  allTableRoutes.value = routesStore.allRoutes;
+  if (cityStore.allCities.length > 0) {
+    selectableCities.value = cityStore.selectableCities;
+    allTableRoutes.value = routesStore.allRoutes;
+  }
 })
 </script>

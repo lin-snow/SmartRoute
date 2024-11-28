@@ -12,7 +12,7 @@
     />
 
     <!-- 动态显示子组件 -->
-    <component :is="currentComponent" />
+    <component :is="currentComponent" :key="componentKey"/>
   </div>
 </template>
 
@@ -24,18 +24,29 @@ import { useCityStore } from '@/stores/cityStore';
 const cityStore = useCityStore();
 
 // 切换状态
-const value1 = ref(true);
+const value1 = ref(false);
 
 // 动态导入组件
 const AdminCity = defineAsyncComponent(() => import('@/components/admin/adminCity.vue'));
 const AdminRoute = defineAsyncComponent(() => import('@/components/admin/adminRoute.vue'));
 
 // 计算当前显示的组件
-const currentComponent = computed(() => (value1.value ? AdminRoute : AdminCity ));
+const currentComponent = computed(() => {
+  try {
+    return value1.value ? AdminRoute : AdminCity;
+  } catch (error) {
+    console.error('Error:', error);
+    return AdminCity;
+  }
+});
 
-onMounted(() => {
-  cityStore.fetchCities();
-  console.log('Admin Panel Mounted');
+const componentKey = computed(() => {
+  return value1.value ? 'AdminRoute' : 'AdminCity';
+});
+
+
+onMounted(async () => {
+  await cityStore.fetchCities();
 });
 
 </script>

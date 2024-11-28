@@ -2,10 +2,21 @@
   <div>
     <h1>Admin City Management</h1>
     <!-- add city by post -->
-    <h2> Show all cities</h2>
-    <el-table :data="tableData" border style="width: 100%">
-      <el-table-column prop="CityName" label="CityName" width="270" />
-      <el-table-column prop="CityCode" label="CityCode" width="270" />
+    <h2>Manage Cities!</h2>
+    <el-table :data="allCities" style="width: 100%" empty-text="no cities available!">
+      <el-table-column label="City Name" prop="name" />
+      <el-table-column label="City Code" prop="cityCode" />
+      <el-table-column label="Actions" align="right">
+        <template #default="scope">
+          <el-button
+            size="small"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+          >
+            Delete
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
 
 
@@ -37,41 +48,45 @@
     </el-form-item>
   </el-form>
 
-
-    <h2> Delete City </h2>
-    <h3>Choose what to del</h3>
-    <div>
-    <!-- 城市选择框 -->
-    <el-select
-      v-model="cityToDelete"
-      placeholder="请选择城市"
-      filterable
-      style="width: 300px"
-    >
-      <el-option
-        v-for="city in selectableCities"
-        :key="city.CityCode"
-        :label="city.CityName"
-        :value="city.CityCode"
-      />
-    </el-select>
-    </div>
-
-    <el-button type="danger" @click="deleteCity(cityToDelete)">Delete</el-button>
-
-    <!-- <h2> Edit City </h2> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, watch, computed} from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
+import { ElMessage } from 'element-plus';
 import { useCityStore } from '@/stores/cityStore';
 import { apiClient } from '@/utils/axios/axios';
 
+interface City {
+  name: string;
+  cityCode: string;
+}
+
+// 计算属性：格式化后的表格数据
+const allCities = computed(() => cityStore.allCities);
+
+// 删除按钮事件处理
+const handleDelete = async (index: number, row: City) => {
+  try {
+    if (!row.cityCode) return;
+    await apiClient.get(`admin/city/delete?cityCode=${row.cityCode}`)
+      .then((res) => {
+        console.log(res);
+        cityStore.fetchCities();
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+    ElMessage.success('City deleted successfully');
+    cityStore.allCities.splice(index, 1); // 更新状态
+  } catch (error) {
+    console.error('Error deleting city:', error);
+    ElMessage.error('Failed to delete city');
+  }
+};
 
 const cityStore = useCityStore();
-const cityToDelete = ref(null);
 const selectableCities = ref<Array<{ CityName: string; CityCode: string }>>([]);
 
 const ruleFormRef = ref<FormInstance>()
@@ -81,7 +96,7 @@ const tableData = ref<Array<{ CityName: string; CityCode: string }>>([]);
 
 
 
-const validateName = (rule: any, value: any, callback: fun) => {
+const validateName = (rule: any, value: any, callback: any) => {
   if (value === '') {
     callback(new Error('Please input the Name'))
   } else {
@@ -108,6 +123,10 @@ const validateCode = (rule: any, value: any, callback: any) => {
     callback()
   }
 }
+
+watch(cityStore.allCities, () => {
+  updateTableData();
+})
 
 const ruleForm = reactive({
   name: '',
@@ -136,6 +155,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
         .then((res) => {
           console.log(res);
           cityStore.fetchCities();
+          updateTableData();
+          resetForm(formEl);
         })
         .catch((error) => {
           console.error('Error:', error);
@@ -146,33 +167,28 @@ const submitForm = (formEl: FormInstance | undefined) => {
   })
 }
 
-// get query
-const deleteCity = (cityCode: string | null) => {
-  if (!cityCode) return;
-  apiClient.get(`admin/city/delete?cityCode=${cityCode}`)
-    .then((res) => {
-      console.log(res);
-      cityStore.fetchCities();
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-}
-
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.resetFields()
+}
+const updateTableData = () => {
+  tableData.value = cityStore.allCities.map((city) => ({
+    CityName: city.name,
+    CityCode: city.cityCode,
+  }));
 }
 
 onMounted(async () => {
   await cityStore.fetchCities();
   await cityStore.genSelectableCities();
 
-  selectableCities.value = cityStore.selectableCities;
-  tableData.value = cityStore.allCities.map((city) => ({
-    CityName: city.name,
-    CityCode: city.cityCode,
-  }));
+  if (cityStore.allCities.length > 0) {
+    selectableCities.value = cityStore.selectableCities;
+    tableData.value = cityStore.allCities.map((city) => ({
+      CityName: city.name,
+      CityCode: city.cityCode,
+    }));
+  }
 })
 
 

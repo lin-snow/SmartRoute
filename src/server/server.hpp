@@ -167,9 +167,11 @@ void Server::run() {
             nlohmann::json economicRouteData;
 
             for (std::vector<Route*> routes : allRoutes) {
+                nlohmann::json oneAvailblePlan;
                 for (Route* r : routes) {
-                    allRoutesData.push_back(route2json(r));
+                    oneAvailblePlan.push_back(route2json(r));
                 }
+                allRoutesData.push_back(oneAvailblePlan);
             }
 
             for (Route* r : fastestRoute) {

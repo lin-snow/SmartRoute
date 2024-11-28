@@ -18,6 +18,10 @@ export const useCityStore = defineStore('allCitys', () => {
   const fetchCities = async () => {
     try {
       const response = await apiClient.get('data/get');
+      console.log(response.data.data.cities);
+      if (response.data.data.cities === null) {
+        return [];
+      }
 
       allCities.value = response.data.data.cities
       if (response.data.data.routes.length > 0) {
@@ -25,16 +29,22 @@ export const useCityStore = defineStore('allCitys', () => {
         loading.value = false;
       }
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error) {
+        console.error(error.message);
+      }
     }
   }
 
   // construct selectableCities
   function genSelectableCities() {
-    selectableCities.value = allCities.value.map((city) => ({
-      CityName: city.name,
-      CityCode: city.cityCode
-    }))
+    if (allCities.value != null) {
+      selectableCities.value = allCities.value.map((city) => ({
+        CityName: city.name,
+        CityCode: city.cityCode
+      }))
+    } else {
+      return [];
+    }
   }
 
   fetchCities();
