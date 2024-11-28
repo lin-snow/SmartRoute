@@ -75,7 +75,7 @@ void Server::run() {
 
     // 全局 CORS 规则
     cors.global()
-        .headers("X-Custom-Header", "Upgrade-Insecure-Requests") // 自定义响应头
+        .headers("X-Custom-Header", "Upgrade-Insecure-Requests", "Content-Type") // 自定义请求头
         .methods("GET"_method, "POST"_method, "OPTIONS"_method) // 支持的方法
         .origin("*") // 允许所有来源（生产环境需限制具体来源）
         .max_age(3600); // 预检请求缓存时间（秒）
@@ -98,8 +98,6 @@ void Server::run() {
         try {
             nlohmann::json response;
 
-            std::cout << "dfsfs" << std::endl;
-
             // 构建城市列表
             nlohmann::json cities;
             for (City* city : *(serverSys->getGraph()->getCitiesList())) {
@@ -111,7 +109,6 @@ void Server::run() {
                 {"cities", cities}
             };
 
-            std::cout << "hi" << std::endl;
         
             // 构建路线列表
             nlohmann::json routes;
@@ -123,7 +120,6 @@ void Server::run() {
                 }
             }
 
-            std::cout << "sdf" << std::endl;
 
             // 包装成包含 "data" 和 "list" 的结构
             response["data"]["routes"] = routes;
@@ -290,8 +286,9 @@ void Server::run() {
     //     return res;
     // });
 
-    CROW_ROUTE(app, "/admin/route/add").methods("POST"_method)
+    CROW_ROUTE(app, "/admin/route/add").methods("POST"_method, "OPTIONS"_method)
     ([serverSys](const crow::request& req){
+    
         crow::multipart::message x(req);
         std::string from = x.get_part_by_name("from").body;
         std::string to = x.get_part_by_name("to").body;

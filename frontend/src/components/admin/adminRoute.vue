@@ -9,9 +9,9 @@
       label-width="auto"
       style="max-width: 600px"
     >
-      <el-form-item label="Departure City" prop="departureCity">
+      <el-form-item label="Departure City" prop="from">
         <el-select
-          v-model="form.departureCity"
+          v-model="form.from"
           placeholder="Please select your departure city"
           filterable
         >
@@ -23,9 +23,9 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="Destination City" prop="destinationCity">
+      <el-form-item label="Destination City" prop="to">
         <el-select
-          v-model="form.destinationCity"
+          v-model="form.to"
           placeholder="Please select your destination city"
           filterable
         >
@@ -43,8 +43,8 @@
           <el-radio :label="'1'">Plane</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="Vehicle Name" prop="vehicleName">
-        <el-input v-model="form.vehicleName" placeholder="Enter vehicle name" />
+      <el-form-item label="Vehicle Code" prop="vehicleCode">
+        <el-input v-model="form.vehicleCode" placeholder="Enter vehicle code" />
       </el-form-item>
       <el-form-item label="Time Range">
         <el-time-picker
@@ -80,19 +80,18 @@ import { useCityStore } from '@/stores/cityStore';
 import { apiClient } from '@/utils/axios/axios';
 
 // 初始化两个时间范围
-const value1 = ref<[Date, Date]>([
-  new Date(2016, 9, 10, 8, 40),
-  new Date(2016, 9, 10, 9, 40),
-]);
+const value1 = ref<[Date, Date]>()
 // 初始化出发时间和到达时间
-const departureTime = ref('');
-const arrivalTime = ref('');
+const departureTime = ref<string>('');
+const arrivalTime = ref<string>('');
 
 // 处理时间变化的函数
 const handleTimeChange = (value: [Date, Date]) => {
   if (value) {
-    departureTime.value = value[0].toTimeString().split(' ')[0];
-    arrivalTime.value = value[1].toTimeString().split(' ')[0];
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    console.log(value);
+    departureTime.value = value[0].getHours().toString().padStart(2, '0') + ':' + value[0].getMinutes().toString().padStart(2, '0');
+    arrivalTime.value = value[1].getHours().toString().padStart(2, '0') + ':' + value[1].getMinutes().toString().padStart(2, '0');
   }
 };
 
@@ -106,21 +105,21 @@ const selectableCities = ref(cityStore.selectableCities); // 出发城市
 const destinationCities = ref(cityStore.selectableCities); // 目的地城市
 
 const form = reactive({
-  departureCity: '',
-  destinationCity: '',
+  from: '',
+  to: '',
   vehicleType: '',
-  vehicleName: '',
-  departureDate: '',
+  vehicleCode: '',
+  departureTime: '',
   arrivalTime: '',
-  cost: null,
-  distance: null,
+  cost: '',
+  distance: '',
 });
 
 const rules = reactive({
-  departureCity: [{ required: true, message: 'Please select a departure city', trigger: 'change' }],
-  destinationCity: [{ required: true, message: 'Please select a destination city', trigger: 'change' }],
+  from: [{ required: true, message: 'Please select a departure city', trigger: 'change' }],
+  to: [{ required: true, message: 'Please select a destination city', trigger: 'change' }],
   vehicleType: [{ required: true, message: 'Please select a vehicle type', trigger: 'change' }],
-  vehicleName: [{ required: true, message: 'Please enter the vehicle name', trigger: 'blur' }],
+  vehicleCode: [{ required: true, message: 'Please enter the vehicle name', trigger: 'blur' }],
   departureDate: [{ required: true, message: 'Please select a departure date', trigger: 'change' }],
   arrivalTime: [
     { required: true, message: 'Please select an arrival time', trigger: 'change' },
@@ -141,16 +140,30 @@ const onSubmit = async () => {
   routeFormRef.value?.validate(async (valid) => {
     if (valid) {
       try {
-        const { departureCity, destinationCity, vehicleType, vehicleName, departureDate, arrivalTime, cost, distance } = form;
-        await apiClient.post('/admin/route/add', {
-          departureCity,
-          destinationCity,
-          vehicleType,
-          vehicleName,
-          departureDate,
-          arrivalTime,
-          cost,
-          distance,
+        // 将两个时间分别转成字符串
+        form.departureTime = departureTime.value;
+        form.arrivalTime = arrivalTime.value;
+        console.log(form);
+        console.log("submit")
+
+        const formData = new FormData();
+        formData.append('from', form.from);
+        formData.append('to', form.to);
+        formData.append('vehicleType', form.vehicleType);
+        formData.append('vehicleCode', form.vehicleCode);
+        formData.append('departureTime', form.departureTime);
+        formData.append('arrivalTime', form.arrivalTime);
+        formData.append('cost', form.cost);
+        formData.append('distance', form.distance);
+
+        // 提交表单
+      await apiClient.post('admin/route/add', formData) // 直接发送 formData 对象
+        .then((res) => {
+          console.log(res);
+          cityStore.fetchCities();
+        })
+        .catch((error) => {
+          console.error('Error:', error);
         });
         ElMessage.success('Route added successfully');
         onReset();
