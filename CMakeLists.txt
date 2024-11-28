@@ -47,6 +47,9 @@ target_compile_options(SmartRoute
 # 链接 Windows Socket 库
 target_link_libraries(SmartRoute PRIVATE ws2_32 mswsock)
 
+# 静态链接选项
+target_link_options(SmartRoute PRIVATE -static -static-libgcc -static-libstdc++)
+
 # 添加自定义命令
 # 将配置文件config.yaml复制到输出目录
 add_custom_command(TARGET SmartRoute POST_BUILD

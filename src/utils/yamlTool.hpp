@@ -44,3 +44,22 @@ long getPort() {
     }
 }
 
+std::string getWebPath() {
+    std::string configPath = "config/config.yaml";
+    std::ifstream ifs(configPath);
+
+    if (ifs.is_open()) {
+        // deserialize the yaml file contents
+        fkyaml::node root = fkyaml::node::deserialize(ifs);
+
+        std::string webPath = root["server"][2]["webPath"].get_value_ref<std::string&>();
+
+        std::cout << "Web path: " << webPath << std::endl;
+
+        return webPath;
+    } else {
+        std::cout << "Unable to open file" << std::endl;
+        return "dist";
+    }
+}
+

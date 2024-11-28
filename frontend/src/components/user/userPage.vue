@@ -114,8 +114,8 @@ const vehicleType = ref<string>('');
 
 const allRoutesData = ref<Array<Array<Route>>>([]);
 const allRoutes = ref<Array<RoutePlan>>([])
-const fastestRoute = ref<Route>()
-const cheapestRoute = ref<Route>()
+const fastestRoute = ref<Array<Route>>()
+const cheapestRoute = ref<Array<Route>>()
 
 interface RoutePlan {
   index: string;
@@ -194,22 +194,20 @@ const formattedTableData = computed(() => {
 });
 
 const formattedFastestRoute = computed(() => {
-  return fastestRoute.value ? fastestRoute.value.map((route: Route) => ({
+  return fastestRoute.value?.map((route: Route) => ({
     ...route,
     from: formatCityName(route.from.toString()), // 转换出发城市ID为城市名
     to: formatCityName(route.to.toString()), // 转换到达城市ID为城市名
-  })) : [];
+  }));
 })
 
 const formattedCheapestRoute = computed(() => {
-  return cheapestRoute.value ? cheapestRoute.value.map((route: Route) => ({
+  return cheapestRoute.value?.map((route: Route) => ({
     ...route,
     from: formatCityName(route.from.toString()), // 转换出发城市ID为城市名
     to: formatCityName(route.to.toString()), // 转换到达城市ID为城市名
-  })) : [];
+  }));
 })
-
-
 
 
 onMounted(async () => {

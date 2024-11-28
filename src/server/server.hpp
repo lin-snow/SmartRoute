@@ -12,6 +12,7 @@
 
 #include "../system/system.h"
 #include "../utils/yamlTool.hpp"
+#include "../utils/webTool.hpp"
 #include "crow/middlewares/cors.h"
 #include "crow/multipart.h"
 
@@ -70,6 +71,9 @@ void Server::run() {
 
     std::shared_ptr<System> serverSys = this->theSystem;
 
+    // 配置静态文件路径
+    const std::string staticPath = getWebPath();
+
     // 获取 CORSHandler 中间件
     auto& cors = app.get_middleware<crow::CORSHandler>();
 
@@ -80,16 +84,32 @@ void Server::run() {
         .origin("*") // 允许所有来源（生产环境需限制具体来源）
         .max_age(3600); // 预检请求缓存时间（秒）
 
+    // 提供静态资源
+    CROW_ROUTE(app, "/assets/<string>")
+        ([staticPath](const std::string& filename) {
+            std::string filepath = staticPath + "/assets/" + filename;
+            if (!std::filesystem::exists(filepath)) {
+                return crow::response(404, "File Not Found");
+            }
+
+            std::string mimeType = getMimeType(filepath); // 获取 MIME 类型
+            crow::response res(readFile(filepath));
+            res.add_header("Content-Type", mimeType); // 设置 MIME 类型
+            return res;
+        });
+
+    // 提供 index.html
     CROW_ROUTE(app, "/")
-    ([](){
-        // return json data
-        crow::json::wvalue res;
-        res["msg"] = "Hello, SmartRoute!";
-        res["code"] = 200;
+        ([staticPath]() {
+            std::string filepath = staticPath + "/index.html";
+            if (!std::filesystem::exists(filepath)) {
+                return crow::response(404, "Index Not Found");
+            }
 
-        return res;
-    });
-
+            crow::response res(readFile(filepath));
+            res.add_header("Content-Type", "text/html"); // 设置 MIME 类型
+            return res;
+        });
 
     /* PUBLIC CONTROLLER */
     CROW_ROUTE(app, "/data/get")
@@ -367,6 +387,7 @@ void Server::run() {
         }
     });
 
+
     // CROW_ROUTE(app, "/admin/route/update").methods("PUT"_method)
     // ([](){
     //     // return json data
@@ -376,7 +397,19 @@ void Server::run() {
 
     //     return res;
     // });
+    
+    // 动态路由返回 index.html（支持前端 Vue Router 的路径）
+    CROW_ROUTE(app, "/<path>")
+        ([staticPath](const std::string& path) {
+            std::string indexFile = staticPath + "/index.html";
+            if (!std::filesystem::exists(indexFile)) {
+                return crow::response(404, "Index Not Found");
+            }
 
+            crow::response res(readFile(indexFile));
+            res.add_header("Content-Type", "text/html"); // 设置 MIME 类型
+            return res;
+        });
     
     app.port(getPort()).multithreaded().run();
     
