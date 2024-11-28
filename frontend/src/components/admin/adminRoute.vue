@@ -69,14 +69,43 @@
         <el-button @click="onReset">Cancel</el-button>
       </el-form-item>
     </el-form>
+
+    <h2>Manage Route</h2>
+    <el-table :data="formattedTableData" style="width: 100%">
+    <el-table-column label="Route ID" prop="routeId" />
+    <el-table-column label="From" prop="from" />
+    <el-table-column label="To" prop="to" />
+    <el-table-column label="Distance" prop="distance" />
+    <el-table-column label="Duration" prop="duration" />
+    <el-table-column label="Cost" prop="cost" />
+    <el-table-column label="Vehicle Type" prop="vehicleType" />
+    <el-table-column label="Vehicle Code" prop="vehicleCode" />
+    <el-table-column label="Departure Time" prop="departureTime" />
+    <el-table-column label="Arrival Time" prop="arrivalTime" />
+    <el-table-column label="Actions" align="right">
+      <template #default="scope">
+        <!-- <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
+          Edit
+        </el-button> -->
+        <el-button
+          size="small"
+          type="danger"
+          @click="handleDelete(scope.$index, scope.row)"
+        >
+          Delete
+        </el-button>
+      </template>
+    </el-table-column>
+  </el-table>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import type { FormInstance } from 'element-plus';
 import { useCityStore } from '@/stores/cityStore';
+import { useRoutesStore } from '@/stores/routesStore';
 import { apiClient } from '@/utils/axios/axios';
 
 // 初始化两个时间范围
@@ -88,8 +117,6 @@ const arrivalTime = ref<string>('');
 // 处理时间变化的函数
 const handleTimeChange = (value: [Date, Date]) => {
   if (value) {
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-    console.log(value);
     departureTime.value = value[0].getHours().toString().padStart(2, '0') + ':' + value[0].getMinutes().toString().padStart(2, '0');
     arrivalTime.value = value[1].getHours().toString().padStart(2, '0') + ':' + value[1].getMinutes().toString().padStart(2, '0');
   }
@@ -192,10 +219,67 @@ const onReset = () => {
   });
 };
 
+const routesStore = useRoutesStore();
+interface Route {
+  routeId: number;
+  from: number;
+  to: number;
+  distance: number;
+  duration: number;
+  vehicleType: number;
+  vehicleCode: string;
+  departureTime: string;
+  arrivalTime: string;
+  cost: number;
+}
+
+const allTableRoutes = ref<Route[]>(routesStore.allRoutes);
+// // 编辑按钮事件处理
+// const handleEdit = (index: number, row: Route) => {
+//   console.log('Edit row:', index, row);
+//   // 这里可以添加编辑逻辑，例如打开一个包含表单的对话框
+// };
+
+// 格式化城市名称的函数
+// 格式化城市名称的函数
+const formatCityName = (cityCode: string) => {
+  console.log("Searching for city code:", cityCode); // 打印正在搜索的城市代码
+  const city = cityStore.selectableCities.find(city => city.CityCode == cityCode);
+  if (city) {
+    console.log("Found city:", city.CityName); // 如果找到城市，打印城市名称
+  } else {
+    console.log("City not found for code:", cityCode); // 如果未找到城市，打印城市代码
+  }
+  return city ? city.CityName : 'Unknown City';
+};
+
+// 计算属性：格式化后的表格数据
+const formattedTableData = computed(() => {
+  return routesStore.allRoutes.map((route) => ({
+    ...route,
+    from: formatCityName(route.from.toString()), // 确保 route.from 是字符串
+    to: formatCityName(route.to.toString()), // 确保 route.to 是字符串
+  }));
+});
+
+
+// 删除按钮事件处理
+const handleDelete = async (index: number, row: Route) => {
+  try {
+    await apiClient.delete(`/data/delete/${row.routeId}`); // 确保路径正确
+    ElMessage.success('Route deleted successfully');
+    routesStore.allRoutes.splice(index, 1);
+  } catch (error) {
+    console.error('Error deleting route:', error);
+    ElMessage.error('Failed to delete route');
+  }
+};
+
 onMounted(async () => {
   await cityStore.fetchCities();
   await cityStore.genSelectableCities();
-
+  await routesStore.fetchRoutes();
   selectableCities.value = cityStore.selectableCities;
+  allTableRoutes.value = routesStore.allRoutes;
 })
 </script>

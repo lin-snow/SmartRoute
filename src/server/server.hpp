@@ -108,7 +108,6 @@ void Server::run() {
             response["data"] = {
                 {"cities", cities}
             };
-
         
             // 构建路线列表
             nlohmann::json routes;
@@ -127,7 +126,6 @@ void Server::run() {
             // 返回构建的 JSON 数据
             crow::json::wvalue res = crow::json::load(response.dump());
 
-            std::cout << "fsfh" << std::endl;
             return res;
         } catch(std::exception& e) {
             std::cout << "Error: " << e.what() << std::endl;
