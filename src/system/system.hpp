@@ -172,15 +172,30 @@ Route* System::inputRoute() {
 }
 
 int System::findAllRoutes(int from, int to, int vehicleType, std::vector<std::vector<Route*>>& result) {
-    return graph->findAllRoutes(from, to, vehicleType, result);
+    if (from != to && (vehicleType == 1 || vehicleType == 0)) {
+        return graph->findAllRoutes(from, to, vehicleType, result);
+    } else {
+        std::cout << "Invalid from, to or vehicle type" << std::endl;
+        return ERROR;
+    }
 }
 
 int System::mostFastestWay(int from, int to, int vehicleType, std::vector<Route*>& result) {
-    return graph->mostFastestWay(from, to, vehicleType, result);
+    if (from != to && (vehicleType == 1 || vehicleType == 0)) {
+        return graph->mostFastestWay(from, to, vehicleType, result);
+    } else {
+        std::cout << "Invalid from, to or vehicle type" << std::endl;
+        return ERROR;
+    }
 }
 
 int System::mostEconomicWay(int from, int to, int vehicleType, std::vector<Route*>& result) {
-    return graph->mostEconomicWay(from, to, vehicleType, result);
+    if (from != to && (vehicleType == 1 || vehicleType == 0)) {
+        return graph->mostEconomicWay(from, to, vehicleType, result);
+    } else {
+        std::cout << "Invalid from, to or vehicle type" << std::endl;
+        return ERROR;
+    }
 }
 
 // load data from json file

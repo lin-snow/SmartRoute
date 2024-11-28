@@ -59,7 +59,7 @@
 
     <el-button type="danger" @click="deleteCity(cityToDelete)">Delete</el-button>
 
-    <h2> Edit City </h2>
+    <!-- <h2> Edit City </h2> -->
   </div>
 </template>
 
@@ -81,7 +81,7 @@ const tableData = ref<Array<{ CityName: string; CityCode: string }>>([]);
 
 
 
-const validateName = (rule: any, value: any, callback: any) => {
+const validateName = (rule: any, value: any, callback: fun) => {
   if (value === '') {
     callback(new Error('Please input the Name'))
   } else {
