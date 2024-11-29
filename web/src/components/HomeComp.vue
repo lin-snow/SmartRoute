@@ -51,6 +51,10 @@
     <router-link to="/admin">Admin</router-link>
   </el-button>
 
+  <el-button>
+    <router-link to="/about">About</router-link>
+  </el-button>
+
   </div>
 </template>
 
