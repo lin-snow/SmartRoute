@@ -112,7 +112,7 @@ class Route {
         long routeId; // unique route id
         int from; // cityCode of the starting city
         int to; // cityCode of the destination city
-        long distance; // in meters (m)
+        long distance; // in meters (km)
         long duration; // in minutes (m)
         Vehicle* vehicle; // vehicle used
         Time departureTime; // departure time

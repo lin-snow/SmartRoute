@@ -112,7 +112,7 @@ void Server::run() {
         });
 
     /* PUBLIC CONTROLLER */
-    CROW_ROUTE(app, "/data/get")
+    CROW_ROUTE(app, "/api/data/get")
     ([serverSys](){
         // return crow_json;
         try {
@@ -160,7 +160,7 @@ void Server::run() {
     });
 
     /* USER CONTROLLER */
-    CROW_ROUTE(app, "/user/query").methods("GET"_method)
+    CROW_ROUTE(app, "/api/user/query").methods("GET"_method)
     ([serverSys](const crow::request& req){
         auto query = req.url_params;
         int from = std::stoi(query.get("from"));
@@ -218,7 +218,7 @@ void Server::run() {
     });
 
     /* ADMIN CONTROLLER */
-    CROW_ROUTE(app, "/admin/login").methods("POST"_method)
+    CROW_ROUTE(app, "/api/admin/login").methods("POST"_method)
     ([](){
         // return json data
         crow::json::wvalue res;
@@ -228,7 +228,7 @@ void Server::run() {
         return res;
     });
 
-    CROW_ROUTE(app, "/admin/logout").methods("POST"_method)
+    CROW_ROUTE(app, "/api/admin/logout").methods("POST"_method)
     ([](){
         // return json data
         crow::json::wvalue res;
@@ -238,7 +238,7 @@ void Server::run() {
         return res;
     });
 
-    CROW_ROUTE(app, "/admin/city/add").methods("POST"_method)
+    CROW_ROUTE(app, "/api/admin/city/add").methods("POST"_method)
     ([serverSys](const crow::request& req){
         // return json data
         crow::multipart::message x(req);
@@ -260,7 +260,7 @@ void Server::run() {
         return res;
     });
 
-    CROW_ROUTE(app, "/admin/city/delete").methods("GET"_method)
+    CROW_ROUTE(app, "/api/admin/city/delete").methods("GET"_method)
     ([serverSys](const crow::request& req){        
         // delete city
         try {
@@ -306,7 +306,7 @@ void Server::run() {
     //     return res;
     // });
 
-    CROW_ROUTE(app, "/admin/route/add").methods("POST"_method, "OPTIONS"_method)
+    CROW_ROUTE(app, "/api/admin/route/add").methods("POST"_method, "OPTIONS"_method)
     ([serverSys](const crow::request& req){
     
         crow::multipart::message x(req);
@@ -354,7 +354,7 @@ void Server::run() {
         }
     });
 
-    CROW_ROUTE(app, "/admin/route/delete").methods("GET"_method)
+    CROW_ROUTE(app, "/api/admin/route/delete").methods("GET"_method)
     ([serverSys](const crow::request& req){
         auto query = req.url_params;
         int theRouteId = std::stoi(query.get("routeId"));
@@ -411,7 +411,7 @@ void Server::run() {
             return res;
         });
     
-    app.port(getPort()).multithreaded().run();
+    app.bindaddr(getHost()).port(getPort()).multithreaded().run();
     
     return;
 };
