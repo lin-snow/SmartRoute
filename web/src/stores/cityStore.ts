@@ -8,22 +8,24 @@ interface City {
   cityCode: string;
 }
 
+
 export const useCityStore = defineStore('allCitys', () => {
   // State
   const allCities = ref<City[]>([]);
+  const citiesCount = ref<number>(0);
   const loading = ref(true);
 
   // Actions
   const fetchCities = async () => {
     try {
       const response = await apiClient.get('data/get');
-      console.log(response.data.data.cities);
 
-      if (response.data.code != 200) {
+
+      if (response.data.code == 400 || response.data.code == 401) {
         return [];
       }
 
-      if (response.data.data.cities === null || response.data.data.cities.length === 0) {
+      if (response.data.data === null || response.data.data.cities === null || response.data.data.cities.length === 0) {
         return [];
       }
 
@@ -31,6 +33,7 @@ export const useCityStore = defineStore('allCitys', () => {
       if (response.data.data.routes.length > 0) {
         console.log('Cities fetched successfully');
         loading.value = false;
+        citiesCount.value = allCities.value.length;
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -54,6 +57,7 @@ export const useCityStore = defineStore('allCitys', () => {
             message: '删除成功',
             type: 'success',
           })
+          citiesCount.value -= 1;
     } catch (error) {
       console.error(error);
       ElNotification({
@@ -66,6 +70,7 @@ export const useCityStore = defineStore('allCitys', () => {
 
   return {
     allCities,
+    citiesCount,
     fetchCities,
     deleteCity
   }

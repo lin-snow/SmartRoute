@@ -12,6 +12,22 @@
 
 #include "graph.h"
 
+int AdjacencyList::getNumberOfRoutes() {
+    if (adjacencyList == nullptr) {
+        return 0;
+    }
+
+    int count = 0;
+
+    for (AdjacencyListPair pair : *adjacencyList) {
+        for (AdjacencyListNode node : *pair.getNodes()) {
+            count += node.getRoutes()->size();
+        }
+    }
+
+    return count;
+}
+
 bool AdjacencyList::isCityExists(City* city) {
     if (city == nullptr) {
         std::cout << "City is null" << std::endl;
@@ -346,20 +362,22 @@ void AdjacencyList::displayAdjacencyList() {
 
     // display info
     std::cout << "-------------------------------------------------------------------- " << std::endl;
-    std::cout << "Number of cities: " << numberOfCities << std::endl;
-    std::cout << "Number of routes: " << numberOfRoutes << std::endl;
+    // std::cout << "Number of cities: " << numberOfCities << std::endl;
+    // std::cout << "Number of routes: " << numberOfRoutes << std::endl;
 
-    for (City* city : *citiesList) {
-        std::cout << "City: " << city->getName() << " (" << city->getCityCode() << ")" << std::endl;
-    }
+    // for (City* city : *citiesList) {
+    //     std::cout << "City: " << city->getName() << " (" << city->getCityCode() << ")" << std::endl;
+    // }
 
-    if (routesList == nullptr) {
-        std::cout << "No routes found" << std::endl;
-    } else {
-        for (Route* route : *routesList) {
-            std::cout << "Route: " << route->getFrom() << " -> " << route->getTo() << " (" << route->getDistance() << " km, " << route->getDuration() << " minutes, " << route->getCost() << " yuan " << route->getVehicle()->getVehicleCode() << ")" << std::endl;
-        }
-    } 
+    // if (routesList == nullptr) {
+    //     std::cout << "No routes found" << std::endl;
+    // } else {
+    //     for (Route* route : *routesList) {
+    //         std::cout << "Route: " << route->getFrom() << " -> " << route->getTo() << " (" << route->getDistance() << " km, " << route->getDuration() << " minutes, " << route->getCost() << " yuan " << route->getVehicle()->getVehicleCode() << ")" << std::endl;
+    //     }
+    // } 
+
+
 
     std::cout << "--------------------------------" << std::endl;
 

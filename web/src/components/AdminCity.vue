@@ -30,7 +30,7 @@
                     <span class="font-mono mb-2 font-bold">站点统计</span>
                     <div class="mx-auto w-32 h-12 shadow-inner rounded-xl">
                       <span class="text-green-500 relative top-2">
-                        {{ cityStore.allCities.length }}
+                        {{ cityStore.citiesCount }}
                       </span>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                     <span class="font-bold font-mono">运行状况</span>
                     <div class="mx-auto w-32 h-14 shadow-inner rounded-xl text-center ">
                       <div class="mx-auto w-32 h-14 shadow-inner rounded-xl text-center ">
-                      <div v-if="cityStore.allCities.length > 0" class="text-green-500 relative top-4">
+                      <div v-if="cityStore.citiesCount > 0" class="text-green-500 relative top-4">
                         一切正常
                       </div>
                       <div v-else class="text-yellow-500 relative top-4">
@@ -128,11 +128,6 @@ const cityStore = useCityStore();
 
 const handleDelete = (index: number, row: City) => {
   cityStore.deleteCity(index, row);
-  ElNotification({
-    title: 'Success',
-    message: '删除成功',
-    type: 'success',
-  })
 }
 
 const ruleFormRef = ref<FormInstance>()
@@ -143,16 +138,13 @@ const ruleForm = reactive({
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const validateName = (rule: any, value: any, callback: any) => {
+  // 检查是否为空
   if (!value) {
     return callback(new Error('Please input the Name'));
   }
 
-  if (!cityStore.allCities || cityStore.allCities.length === 0) {
-    console.error('City data is not loaded yet!');
-    return callback(new Error('City data not available'));
-  }
-
-  if (cityStore.allCities.some((city) => city.name.toLowerCase() === value.toLowerCase())) {
+  // 检查是否已经存在
+  if (cityStore.allCities && cityStore.allCities.some((city) => city.name === value)) {
     return callback(new Error('City Name already exists'));
   }
 
@@ -161,17 +153,19 @@ const validateName = (rule: any, value: any, callback: any) => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const validateCode = (rule: any, value: any, callback: any) => {
+  // 检查是否为空
   if (!value) {
     return callback(new Error('Please input the Code'));
   }
 
-  if (!cityStore.allCities || cityStore.allCities.length === 0) {
-    console.error('City data is not loaded yet!');
-    return callback(new Error('City data not available'));
+  // 检查是否已经存在
+  if (cityStore.allCities && cityStore.allCities.some((city) => city.cityCode === value)) {
+    return callback(new Error('City Code already exists'));
   }
 
-  if (cityStore.allCities.some((city) => city.cityCode.toString() === value.toString())) {
-    return callback(new Error('City Code already exists'));
+  // 检查是否为数字
+  if (!/^\d+$/.test(value)) {
+    return callback(new Error('City Code must be a number'));
   }
 
   callback();
@@ -198,6 +192,10 @@ const submitForm = (formEl: FormInstance | undefined) => {
       apiClient.post('admin/city/add', formData) // 直接发送 formData 对象
         .then(() => {
           cityStore.fetchCities();
+
+          console.log("@@@@@@@@@@@@@")
+          console.log("All cities:", cityStore.allCities);
+
           resetForm(formEl);
 
           ElNotification({
@@ -205,6 +203,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
             message: '添加成功',
             type: 'success',
           })
+
+          cityStore.citiesCount += 1;
         })
         .catch((error) => {
           console.error('Error submitting form:', error);

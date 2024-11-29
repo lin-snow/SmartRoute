@@ -49,7 +49,7 @@ class AdjacencyList {
         int getNumberOfCities() const { return numberOfCities; }
         void setNumberOfCities(int numberOfCities) { this->numberOfCities = numberOfCities; }
 
-        int getNumberOfRoutes() const { return numberOfRoutes; }
+        int getNumberOfRoutes();
         void setNumberOfRoutes(int numberOfRoutes) { this->numberOfRoutes = numberOfRoutes; }
 
         std::vector<City*>* getCitiesList() const { return citiesList; }

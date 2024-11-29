@@ -38,6 +38,7 @@ export const useRoutesStore = defineStore('allRoutes', () => {
   // State
   const allRoutes = ref<Route[]>([]);
   const formattedAllRoutes = ref<FormattedRoute[]>([]);
+  const routesCount = ref<number>(0);
 
   const loading = ref(true);
 
@@ -58,6 +59,8 @@ export const useRoutesStore = defineStore('allRoutes', () => {
 
       await cityStore.fetchCities();
       formattedAllRoutes.value = formatAllRoutes();
+
+      routesCount.value = allRoutes.value.length;
 
     } catch (error) {
       console.error(error);
@@ -106,6 +109,7 @@ export const useRoutesStore = defineStore('allRoutes', () => {
       if (response.status === 200) {
         allRoutes.value.splice(index, 1); // 删除成功后，删除对应的行
         formattedAllRoutes.value.splice(index, 1);
+        routesCount.value -= 1;
         ElMessage.success('删除成功');
       } else {
         console.error(response);
@@ -122,6 +126,7 @@ export const useRoutesStore = defineStore('allRoutes', () => {
   return {
     allRoutes,
     formattedAllRoutes,
+    routesCount,
     fetchRoutes,
     deleteRoute,
     formatAllRoutes

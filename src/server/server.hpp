@@ -136,6 +136,24 @@ void Server::run() {
         try {
             nlohmann::json response;
 
+            // if (serverSys->getGraph()->getNumberOfCities() == 0) {
+            //     response["msg"] = "No Data Found!";
+            //     response["code"] = 401;
+            //     response["data"] = {};
+            //     std::cout << "No Data Found!" << std::endl;
+            //     crow::json::wvalue res = crow::json::load(response.dump());
+            //     return res;   
+            // }
+
+            // if (serverSys->getGraph()->getNumberOfRoutes() == 0) {
+            //     response["msg"] = "Routes Not Found!";
+            //     response["code"] = 401;
+            //     response["data"] = {};
+            //     std::cout << "Routes Not Found!" << std::endl;
+            //     crow::json::wvalue res = crow::json::load(response.dump());
+            //     return res;   
+            // }
+
             // 构建城市列表
             nlohmann::json cities;
             for (City* city : *(serverSys->getGraph()->getCitiesList())) {
@@ -172,7 +190,7 @@ void Server::run() {
                 response["code"] = 200;
             } else if (cities.size() > 0 && routes.size() == 0) {
                 response["msg"] = "Routes Not Found!";
-                response["code"] = 401;
+                response["code"] = 402;
             } else {
                 response["msg"] = "Error!";
                 response["code"] = 400;
@@ -292,7 +310,6 @@ void Server::run() {
         Result result(200, "City added successfully", city2json(city));
         crow::json::wvalue res = crow::json::load(result.success().dump());
 
-        serverSys->saveData();
 
         return res;
     });
@@ -322,7 +339,7 @@ void Server::run() {
                 res = crow::json::load(response.dump());
             }
 
-            serverSys->saveData();
+
 
             return res;
         } catch(std::exception& e) {
@@ -385,7 +402,7 @@ void Server::run() {
             Result result(200, "Route added successfully", route2json(route));
             crow::json::wvalue res = crow::json::load(result.success().dump());
 
-            serverSys->saveData();
+
 
             return res;
         } catch(std::exception& e) {
@@ -416,7 +433,7 @@ void Server::run() {
                 response["data"] = {};
             }
 
-            serverSys->saveData();
+
 
             crow::json::wvalue res = crow::json::load(response.dump());
             return res;
@@ -428,6 +445,24 @@ void Server::run() {
             crow::json::wvalue res = crow::json::load(response.dump());
             return res;
         }
+    });
+
+    CROW_ROUTE(app, "/api/admin/shutdown").methods("GET"_method)
+    ([serverSys](){
+        // return json data
+        crow::json::wvalue res;
+        res["msg"] = "Hello, Admin Shutdown!";
+        res["code"] = 200;
+
+        // save data
+        serverSys->saveData();
+        serverSys->displaySystem();
+
+        // shutdown server
+        std::cout << "Server Shutdown!" << std::endl;
+        exit(0);
+
+        return res;
     });
 
 

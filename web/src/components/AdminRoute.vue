@@ -83,7 +83,7 @@
                     <span class="font-mono mb-2 font-bold">线路统计</span>
                     <div class="mx-auto w-32 h-12 shadow-inner rounded-xl">
                       <span class="text-green-500 relative top-2">
-                        {{ routesStore.allRoutes.length }}
+                        {{ routesStore.routesCount }}
                       </span>
                     </div>
                 </div>
@@ -93,13 +93,13 @@
                 <div class="border-1 w-44 h-24 m-1 rounded-md text-center ">
                     <span class="font-bold font-mono">运行状况</span>
                     <div class="mx-auto w-32 h-14 shadow-inner rounded-xl text-center ">
-                      <div v-if="routesStore.allRoutes.length > 0" class="text-green-500 relative top-4">
+                      <div v-if="routesStore.routesCount > 0" class="text-green-500 relative top-4">
                         一切正常
                       </div>
                       <div v-else class="text-yellow-500 relative top-4">
                         无线路
                       </div>
-                    </div>
+                      </div>
                 </div>
               </tr>
             </td>
@@ -233,18 +233,24 @@ const onSubmit = async () => {
       await apiClient.post('admin/route/add', formData) // 直接发送 formData 对象
         .then((res) => {
           console.log(res);
-          cityStore.fetchCities();
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
-        ElNotification({
+          routesStore.fetchRoutes();
+          ElNotification({
             title: 'Success',
             message: '添加成功',
             type: 'success',
           })
-        routesStore.fetchRoutes();
-        onReset();
+          onReset();
+          routesStore.routesCount += 1;
+        })
+        .catch((error) => {
+          console.error('Error submitting form:', error);
+          ElNotification({
+            title: 'Error',
+            message: '添加失败',
+            type: 'error',
+          })
+        });
+
       } catch {
         ElNotification({
           title: 'Error',
