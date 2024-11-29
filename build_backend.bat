@@ -1,21 +1,27 @@
-rd /s /q app
-
-mkdir app
-
-rd /s /q build
-
-mkdir build
+@REM "Change to the build directory"
 
 cd build
 
+@REM "Run CMake"
+
 cmake -G "MinGW Makefiles" ..
+
+@REM "Run Make"
 
 mingw32-make
 
-copy /y SmartRoute.exe ..\app
+@REM "Copy the executable to the app directory"
 
-xcopy /s /e /y \data ..\app\data
+copy /y SmartRoute.exe ..\app\
 
-xcopy /s /e /y \config ..\app\config
+@REM "Copy the data directory to the app directory"
+
+xcopy /s /e /y .\data\ ..\app\data\
+
+@REM "Copy the config directory to the app directory"
+
+xcopy /s /e /y .\config\ ..\app\config\
+
+@REM "Change to the root directory"
 
 cd ..

@@ -1,0 +1,101 @@
+[
+    {
+        "arrivalTime": "14:00",
+        "cost": 200,
+        "departureTime": "09:00",
+        "distance": 1200,
+        "duration": 300,
+        "from": 1,
+        "to": 2,
+        "vehicleCode": "G1001",
+        "vehicleType": 0
+    },
+    {
+        "arrivalTime": "17:30",
+        "cost": 150,
+        "departureTime": "12:00",
+        "distance": 1500,
+        "duration": 330,
+        "from": 2,
+        "to": 3,
+        "vehicleCode": "G1002",
+        "vehicleType": 0
+    },
+    {
+        "arrivalTime": "12:30",
+        "cost": 500,
+        "departureTime": "10:00",
+        "distance": 1300,
+        "duration": 150,
+        "from": 1,
+        "to": 3,
+        "vehicleCode": "F1001",
+        "vehicleType": 0
+    },
+    {
+        "arrivalTime": "15:00",
+        "cost": 300,
+        "departureTime": "12:00",
+        "distance": 800,
+        "duration": 180,
+        "from": 1,
+        "to": 4,
+        "vehicleCode": "B2001",
+        "vehicleType": 1
+    },
+    {
+        "arrivalTime": "17:30",
+        "cost": 400,
+        "departureTime": "15:30",
+        "distance": 900,
+        "duration": 120,
+        "from": 4,
+        "to": 3,
+        "vehicleCode": "B2002",
+        "vehicleType": 1
+    },
+    {
+        "arrivalTime": "13:00",
+        "cost": 100,
+        "departureTime": "08:00",
+        "distance": 1000,
+        "duration": 300,
+        "from": 2,
+        "to": 5,
+        "vehicleCode": "G1003",
+        "vehicleType": 0
+    },
+    {
+        "arrivalTime": "19:00",
+        "cost": 350,
+        "departureTime": "15:00",
+        "distance": 2000,
+        "duration": 240,
+        "from": 5,
+        "to": 3,
+        "vehicleCode": "F1002",
+        "vehicleType": 0
+    },
+    {
+        "arrivalTime": "10:30",
+        "cost": 50,
+        "departureTime": "09:00",
+        "distance": 300,
+        "duration": 90,
+        "from": 1,
+        "to": 6,
+        "vehicleCode": "B3001",
+        "vehicleType": 1
+    },
+    {
+        "arrivalTime": "12:00",
+        "cost": 80,
+        "departureTime": "11:00",
+        "distance": 400,
+        "duration": 60,
+        "from": 6,
+        "to": 3,
+        "vehicleCode": "B3002",
+        "vehicleType": 1
+    }
+]

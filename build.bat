@@ -1,49 +1,43 @@
-@REM cd web
-
-@REM xcopy /s /e /y dist ..\app\
-
-@REM pause
-
-@REM cd app
-
-@REM .\SmartRoute.exe
+@REM "Delete the app directory"
 
 rd /s /q app
+
+@REM "Create the app directory"
+
 mkdir app
 
-echo Running backend build...
-call ./build_backend.bat
-if %errorlevel% neq 0 (
-    echo "Backend build failed, exiting..."
-    pause
-    exit /b %errorlevel%
-)
+@REM "Delete the build directory"
 
-echo Running frontend build...
-call ./build_frontend.bat
-if %errorlevel% neq 0 (
-    echo "Frontend build failed, exiting..."
-    pause
-    exit /b %errorlevel%
-)
+rd /s /q build
 
-echo Checking if dist directory exists...
-if not exist dist (
-    echo "dist directory not found!"
-    pause
-    exit /b
-)
+@REM "Create the build directory"
 
-echo Copying frontend files...
-xcopy /s /e /y dist ..\app\dist
+mkdir build
 
-echo Changing to app directory...
+@REM "Build the backend"
+
+call build_backend.bat
+
+@REM "Build the frontend"
+
+call build_frontend.bat
+
+@REM "Copy the frontend dist to the app directory(\app\dist)"
+
+xcopy /s /e /y .\dist\ ..\app\dist\
+
+@REM "Change to the root directory"
+
+cd ..
+
+@REM "Change to the app directory"
+
 cd app
-if not exist SmartRoute.exe (
-    echo "SmartRoute.exe not found in app directory!"
-    pause
-    exit /b
-)
 
-echo Running SmartRoute.exe...
+@REM "Run the application"
+
+pause
+
 .\SmartRoute.exe
+
+
