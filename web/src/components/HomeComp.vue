@@ -45,6 +45,12 @@
   <br>
   <el-button @click="queryRoutes">Query</el-button>
 
+  <br>
+  <h1>Go to Admin</h1>
+  <el-button>
+    <router-link to="/admin">Admin</router-link>
+  </el-button>
+
   </div>
 </template>
 

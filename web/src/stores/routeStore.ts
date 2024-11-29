@@ -52,7 +52,7 @@ export const useRoutesStore = defineStore('allRoutes', () => {
         loading.value = false;
       }
 
-      cityStore.fetchCities();
+      await cityStore.fetchCities();
       formattedAllRoutes.value = formatAllRoutes();
 
     } catch (error) {
@@ -61,7 +61,7 @@ export const useRoutesStore = defineStore('allRoutes', () => {
   }
 
   const formatAllRoutes = () => {
-    if (allRoutes.value.length > 0) {
+    if (allRoutes.value.length > 0 && cityStore.allCities.length > 0) {
       return allRoutes.value
         .slice() // 创建副本，避免直接修改原数组
         .sort((a, b) => b.routeId - a.routeId) // 按 routeId 降序排列
@@ -87,10 +87,12 @@ export const useRoutesStore = defineStore('allRoutes', () => {
       const fromCity = cityStore.allCities.find(city => city.name == row.from.toString());
       const toCity = cityStore.allCities.find(city => city.name == row.to.toString());
 
+      // console.log(fromCity, toCity);
+
       // 构建查询参数
       const params = {
         routeId: row.routeId,
-        from: fromCity ? fromCity.name : '',
+        from: fromCity ? fromCity.cityCode : '',
         to: toCity ? toCity.cityCode : ''
       };
 
@@ -99,6 +101,7 @@ export const useRoutesStore = defineStore('allRoutes', () => {
 
       if (response.status === 200) {
         allRoutes.value.splice(index, 1); // 删除成功后，删除对应的行
+        formattedAllRoutes.value.splice(index, 1);
         ElMessage.success('删除成功');
       } else {
         console.error(response);

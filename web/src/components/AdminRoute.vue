@@ -241,7 +241,8 @@ const handleDelete = (index: number, row: Route) => {
 
 
 //------------------------ Manage Route ------------------------
-onMounted(() => {
+onMounted(async () => {
+  await cityStore.fetchCities();
   routesStore.fetchRoutes();
 });
 </script>

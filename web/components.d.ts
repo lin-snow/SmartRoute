@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AboutComp: typeof import('./src/components/AboutComp.vue')['default']
     AdminCity: typeof import('./src/components/AdminCity.vue')['default']
+    AdminPanel: typeof import('./src/components/AdminPanel.vue')['default']
     AdminRoute: typeof import('./src/components/AdminRoute.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElButton: typeof import('element-plus/es')['ElButton']
