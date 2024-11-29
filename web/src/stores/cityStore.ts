@@ -18,7 +18,12 @@ export const useCityStore = defineStore('allCitys', () => {
     try {
       const response = await apiClient.get('data/get');
       console.log(response.data.data.cities);
-      if (response.data.data.cities === null) {
+
+      if (response.data.code != 200) {
+        return [];
+      }
+
+      if (response.data.data.cities === null || response.data.data.cities.length === 0) {
         return [];
       }
 

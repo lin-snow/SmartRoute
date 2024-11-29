@@ -69,6 +69,11 @@ void Server::run() {
     theSystem->loadData();
     theSystem->displaySystem();
 
+    // 启动服务器
+    std::cout << "------------------------------------------" << std::endl;
+    std::cout << "请使用浏览器访问： http://" << getHost() << ":" << getPort() << " 进行使用 :) 关闭可在控制台按Ctrl + C!" << std::endl;
+    std::cout << "------------------------------------------" << std::endl;
+
     std::shared_ptr<System> serverSys = this->theSystem;
 
     // 配置静态文件路径
@@ -111,6 +116,19 @@ void Server::run() {
             return res;
         });
 
+    // CROW_ROUTE(app, "/favicon.ico")
+    //     ([staticPath]() {
+    //         std::string filepath = staticPath + "/favicon.ico";
+    //         if (!std::filesystem::exists(filepath)) {
+    //             return crow::response(404, "Index Not Found");
+    //         }
+
+    //         std::string mimeType = getMimeType(filepath); // 获取 MIME 类型
+    //         crow::response res(readFile(filepath));
+    //         res.add_header("Content-Type", mimeType); // 设置 MIME 类型
+    //         return res;
+    //     });
+
     /* PUBLIC CONTROLLER */
     CROW_ROUTE(app, "/api/data/get")
     ([serverSys](){
@@ -139,9 +157,26 @@ void Server::run() {
                 }
             }
 
+            serverSys->getGraph()->displayAdjacencyList();
+
 
             // 包装成包含 "data" 和 "list" 的结构
             response["data"]["routes"] = routes;
+
+            // 判断是否有数据
+            if (cities.size() == 0 && routes.size() == 0) {
+                response["msg"] = "No Data Found!";
+                response["code"] = 401;
+            } else if (cities.size() > 0 && routes.size() > 0) {
+                response["msg"] = "Data Get Success!";
+                response["code"] = 200;
+            } else if (cities.size() > 0 && routes.size() == 0) {
+                response["msg"] = "Routes Not Found!";
+                response["code"] = 401;
+            } else {
+                response["msg"] = "Error!";
+                response["code"] = 400;
+            }
         
             // 返回构建的 JSON 数据
             crow::json::wvalue res = crow::json::load(response.dump());
@@ -257,6 +292,8 @@ void Server::run() {
         Result result(200, "City added successfully", city2json(city));
         crow::json::wvalue res = crow::json::load(result.success().dump());
 
+        serverSys->saveData();
+
         return res;
     });
 
@@ -284,6 +321,8 @@ void Server::run() {
                 response["data"] = {};
                 res = crow::json::load(response.dump());
             }
+
+            serverSys->saveData();
 
             return res;
         } catch(std::exception& e) {
@@ -346,6 +385,8 @@ void Server::run() {
             Result result(200, "Route added successfully", route2json(route));
             crow::json::wvalue res = crow::json::load(result.success().dump());
 
+            serverSys->saveData();
+
             return res;
         } catch(std::exception& e) {
             Result result(400, "Route Add Failed!", {});
@@ -374,6 +415,8 @@ void Server::run() {
                 response["code"] = 200;
                 response["data"] = {};
             }
+
+            serverSys->saveData();
 
             crow::json::wvalue res = crow::json::load(response.dump());
             return res;
@@ -411,10 +454,7 @@ void Server::run() {
             return res;
         });
 
-    // 启动服务器
-    std::cout << "------------------------------------------" << std::endl;
-    std::cout << "请使用浏览器访问： http://" << getHost() << ":" << getPort() << " 进行使用 :) 关闭可在控制台按Ctrl + C!" << std::endl;
-    std::cout << "------------------------------------------" << std::endl;
+    
     
     app.bindaddr(getHost()).port(getPort()).multithreaded().run();
     

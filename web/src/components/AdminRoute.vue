@@ -305,8 +305,10 @@ const handleDelete = (index: number, row: Route) => {
 
 //------------------------ Manage Route ------------------------
 onMounted(async () => {
-  await cityStore.fetchCities();
-  routesStore.fetchRoutes();
+  // 设置
+  if(routesStore.allRoutes.length === 0) {
+    routesStore.fetchRoutes();
+  }
 });
 </script>
 

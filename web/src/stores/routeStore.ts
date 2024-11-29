@@ -47,6 +47,10 @@ export const useRoutesStore = defineStore('allRoutes', () => {
       const response = await apiClient.get('data/get');
 
       allRoutes.value = response.data.data.routes
+      if (response.data.code != 200) {
+        return [];
+      }
+
       if (allRoutes.value.length > 0) {
         console.log('Routes fetched successfully');
         loading.value = false;

@@ -206,6 +206,19 @@ void System::loadData() {
     std::string citiesPath = "data/cities.json";
     std::string routesPath = "data/routes.json";
 
+    // 如果文件不存在，创建文件
+    if (!std::ifstream(citiesPath)) {
+        std::ofstream citiesFile(citiesPath);
+        citiesFile.close();
+    }
+
+    if (!std::ifstream(routesPath)) {
+        std::ofstream routesFile(routesPath);
+        routesFile.close();
+
+        return;
+    }
+
     // using nlohmann json
     nlohmann::json citiesJson;
     std::ifstream citiesFile(citiesPath);
@@ -244,7 +257,18 @@ void System::saveData() {
 
     // file path
     std::string citiesPath = "data/cities.json";
-    std::string routesPath = "data/routes.json";   
+    std::string routesPath = "data/routes.json";  
+
+    // 如果文件不存在，创建文件
+    if (!std::ifstream(citiesPath)) {
+        std::ofstream citiesFile(citiesPath);
+        citiesFile.close();
+    }
+
+    if (!std::ifstream(routesPath)) {
+        std::ofstream routesFile(routesPath);
+        routesFile.close();
+    }
 
     // using nlohmann json
     nlohmann::json citiesJson;
@@ -269,8 +293,12 @@ void System::saveData() {
     // save routes
     // using nlohmann json
     nlohmann::json routesJson;
-    for (Route* route : *graph->getRoutesList()) {
-        routesJson.push_back(route2json(route));
+    for (AdjacencyListPair pair : *graph->getAdjacencyList()) {
+        for (AdjacencyListNode node : *pair.getNodes()) {
+            for (Route* route : *node.getRoutes()) {
+                routesJson.push_back(route2json(route));
+            }
+        }
     }
 
     // std::cout << routesJson.dump() << std::endl;

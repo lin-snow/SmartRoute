@@ -148,7 +148,7 @@ int AdjacencyList::deleteCity(int cityCode) {
                             delete route;
                             route = nullptr;
                             it3 = node.getRoutes()->erase(it3);
-                            numberOfRoutes--;
+                            // numberOfRoutes--;
                         }
                         node.getRoutes()->clear();
                         node.setRoutes(nullptr);
@@ -187,7 +187,7 @@ int AdjacencyList::deleteCity(int cityCode) {
                             delete route;
                             route = nullptr;
                             it = node.getRoutes()->erase(it);
-                            numberOfRoutes--;
+                            // numberOfRoutes--;
                         } else {
                             it++;
                         }
@@ -233,7 +233,7 @@ int AdjacencyList::deleteRoute(int routeId, int from, int to) {
     //                                 r = nullptr;
     //                                 pair.getNodes()->erase(pair.getNodes()->begin());
 
-    //                                 numberOfRoutes--;
+                                    // numberOfRoutes--;
 
     //                                 std::cout << "Route deleted successfully" << std::endl;
     //                                 return SUCCESS;
@@ -257,7 +257,7 @@ int AdjacencyList::deleteRoute(int routeId, int from, int to) {
                             route = nullptr;
                             it = node.getRoutes()->erase(it);
 
-                            numberOfRoutes--;
+                            // numberOfRoutes--;
 
                             std::cout << "Route deleted successfully" << std::endl;
                             return SUCCESS;
@@ -291,7 +291,8 @@ int AdjacencyList::addRoute(Route* route) {
         return ERROR;
     }
 
-    route->setRouteId(numberOfRoutes + 1);
+    // 设置routeid
+    route->setRouteId(numberOfRoutes+1);
 
     routesList->push_back(route);
 
