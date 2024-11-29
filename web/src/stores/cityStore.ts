@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { apiClient } from "@/utils/axios/axios";
-import { ElMessage } from "element-plus";
+import {  ElNotification } from "element-plus";
 
 interface City {
   name: string;
@@ -44,10 +44,18 @@ export const useCityStore = defineStore('allCitys', () => {
           .catch((error) => {
             console.error(error);
           });
-      ElMessage.success('删除成功');
+          ElNotification({
+            title: 'Success',
+            message: '删除成功',
+            type: 'success',
+          })
     } catch (error) {
       console.error(error);
-      ElMessage.error('删除失败');
+      ElNotification({
+        title: 'Success',
+        message: '删除失败',
+        type: 'success',
+      })
     }
   }
 

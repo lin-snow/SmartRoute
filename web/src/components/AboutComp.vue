@@ -1,8 +1,21 @@
 <template>
-  <div>
-    <h1>About</h1>
-    <p>This is a simple web application for transportation management.</p>
-    <p>It is built with Vite, Vue 3, and Element Plus for the frontend, and Crowcpp for the backend.</p>
-    <p>Author: L1nSn0w</p>
+  <div class="text-center absolute top-1/3 left-96">
+    <h1 class="text-xl font-mono font-bold">About</h1>
+
+    <p>作者:
+      <a href="https://soopy.cn"> L1nSn0w</a>
+    </p>
+
+    <!-- 回到首页 -->
+    <el-button
+      type="primary"
+      plain
+      class="my-2 mr-1"
+    >
+      <span>
+        <el-icon class="mr-1"><homeIcon /></el-icon>
+      </span>
+      <router-link to="/" class="mr-2">返回首页</router-link>
+    </el-button>
   </div>
 </template>

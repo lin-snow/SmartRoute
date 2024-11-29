@@ -1,14 +1,10 @@
 <template>
-  <div>
-    <el-container>
-      <el-main>
-        <el-aside>
-          hello
-        </el-aside>
-
-        <el-aside>
-          <h2>Add Route</h2>
-          <el-form
+  <div class="grid grid-rows-2 gap-4">
+    <div class="mx-auto grid grid-cols-2 gap-4">
+      <div class=" border-2 border-double border-amber-700 p-1 rounded-md shadow-md ">
+      <h2 class="font-mono font-bold">添加线路</h2>
+      <div>
+        <el-form
             ref="routeFormRef"
             :model="form"
             :rules="rules"
@@ -18,7 +14,7 @@
             <el-form-item label="出发点" prop="from">
               <el-select
                 v-model="form.from"
-                placeholder="Please select your departure city"
+                placeholder="请选择你的出发点"
                 filterable
               >
                 <el-option
@@ -32,7 +28,7 @@
             <el-form-item label="目的地" prop="to">
               <el-select
                 v-model="form.to"
-                placeholder="Please select your destination city"
+                placeholder="请选择你的目的地"
                 filterable
               >
                 <el-option
@@ -50,7 +46,7 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item label="班号" prop="vehicleCode">
-              <el-input v-model="form.vehicleCode" placeholder="Enter vehicle code" />
+              <el-input v-model="form.vehicleCode" placeholder="输入班号" />
             </el-form-item>
             <el-form-item label="出发和到达时间">
               <el-time-picker
@@ -65,21 +61,70 @@
 
             </el-form-item>
             <el-form-item label="票价" prop="cost">
-              <el-input v-model.number="form.cost" placeholder="Enter cost (￥)" />
+              <el-input v-model.number="form.cost" placeholder="输入票价 (￥)" />
             </el-form-item>
             <el-form-item label="距离" prop="distance">
-              <el-input v-model.number="form.distance" placeholder="Enter distance (km)" />
+              <el-input v-model.number="form.distance" placeholder="输入距离 (km)" />
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="onSubmit">Create</el-button>
-              <el-button @click="onReset">Cancel</el-button>
+              <el-button type="primary" @click="onSubmit">创建</el-button>
+              <el-button @click="onReset">取消</el-button>
             </el-form-item>
           </el-form>
-        </el-aside>
-      </el-main>
-      <el-main>
-        <h2>Manage Route</h2>
-        <el-table :data="routesStore.formattedAllRoutes" style="width: 100%" empty-text="no routes available!">
+      </div>
+    </div>
+
+    <div class="w-full border-2 border-double border-amber-700 p-1 rounded-md shadow-md">
+      <!-- 线路统计 -->
+      <div class=" p-1 mx-auto mb-4 w-48 h-auto py-2">
+            <td class="mx-auto">
+              <tr>
+                <div class="border-1 w-44 h-24 m-1 rounded-md text-center">
+                    <span class="font-mono mb-2 font-bold">线路统计</span>
+                    <div class="mx-auto w-32 h-12 shadow-inner rounded-xl">
+                      <span class="text-green-500 relative top-2">
+                        {{ routesStore.allRoutes.length }}
+                      </span>
+                    </div>
+                </div>
+              </tr>
+
+              <tr>
+                <div class="border-1 w-44 h-24 m-1 rounded-md text-center ">
+                    <span class="font-bold font-mono">运行状况</span>
+                    <div class="mx-auto w-32 h-14 shadow-inner rounded-xl text-center ">
+                      <div v-if="routesStore.allRoutes.length > 0" class="text-green-500 relative top-4">
+                        一切正常
+                      </div>
+                      <div v-else class="text-yellow-500 relative top-4">
+                        无线路
+                      </div>
+                    </div>
+                </div>
+              </tr>
+            </td>
+        </div>
+      <!-- 回到面板 -->
+      <div class="mx-auto w-20">
+        <el-button
+          type="primary"
+          plain
+          class="mx-auto  shadow-md"
+        >
+          <span>
+            <el-icon class="mr-1"><AdminIcon /></el-icon>
+          </span>
+          <router-link to="/admin">返回面板</router-link>
+        </el-button>
+      </div>
+
+    </div>
+    </div>
+
+    <div class="border-2 border-amber-700 mx-auto h-auto rounded-md shadow-md">
+      <h2 class="font-mono font-bold mx-auto border-b-2 border-amber-400 border-dotted">线路管理</h2>
+      <div class=" w-full">
+        <el-table :data="routesStore.formattedAllRoutes" style="width: 100%" empty-text="no routes available!" height="18rem">
         <el-table-column label="Route ID" prop="routeId" />
         <el-table-column label="出发点" prop="from" />
         <el-table-column label="目的地" prop="to" />
@@ -105,8 +150,9 @@
           </template>
         </el-table-column>
       </el-table>
-      </el-main>
-    </el-container>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -114,7 +160,7 @@
 import { useRoutesStore } from '@/stores/routeStore';
 import { apiClient } from '@/utils/axios/axios';
 import { useCityStore } from '@/stores/cityStore';
-import { ElMessage, type FormInstance } from 'element-plus'
+import { ElNotification, type FormInstance } from 'element-plus'
 import { onMounted, reactive, ref } from 'vue';
 
 const routesStore = useRoutesStore();
@@ -192,14 +238,26 @@ const onSubmit = async () => {
         .catch((error) => {
           console.error('Error:', error);
         });
-        ElMessage.success('Route 添加成功');
+        ElNotification({
+            title: 'Success',
+            message: '添加成功',
+            type: 'success',
+          })
         routesStore.fetchRoutes();
         onReset();
       } catch {
-        ElMessage.error('Route 添加失败');
+        ElNotification({
+          title: 'Error',
+          message: '添加失败',
+          type: 'error',
+        });
       }
     } else {
-      ElMessage.error('请填写正确的信息');
+      ElNotification({
+        title: 'Error',
+        message: '请检查表单',
+        type: 'error',
+      });
     }
   });
 }
@@ -237,6 +295,11 @@ interface Route {
 
 const handleDelete = (index: number, row: Route) => {
   routesStore.deleteRoute(index, row);
+  ElNotification({
+    title: 'Success',
+    message: '删除成功',
+    type: 'success',
+  })
 };
 
 
@@ -246,3 +309,9 @@ onMounted(async () => {
   routesStore.fetchRoutes();
 });
 </script>
+
+<style scoped>
+.shadow-inner {
+  --tw-shadow: inset 0 0px 9px 0 rgb(39 27 18 / 15%);
+}
+</style>

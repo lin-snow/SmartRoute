@@ -3,7 +3,7 @@ import AdminPanel from '@/components/AdminPanel.vue';
 </script>
 
 <template>
-  <div>
+  <div class="w-screen h-auto">
     <AdminPanel />
   </div>
 </template>

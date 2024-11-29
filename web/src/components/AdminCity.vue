@@ -1,63 +1,123 @@
 <template>
-  <div>
-    <el-container>
-      <el-aside>
-        <h2>Manage Your Cities!</h2>
-        <el-table :data="cityStore.allCities" style="width: 100%" empty-text="no cities available!">
-        <el-table-column label="City Name" prop="name" />
-        <el-table-column label="City Code" prop="cityCode" />
-        <el-table-column label="Actions" align="right">
-          <template #default="scope">
-            <el-button
-              size="small"
-              type="danger"
-              @click="handleDelete(scope.$index, scope.row)"
-            >
-              Delete
+  <div class="h-auto w-fit grid grid-cols-2 gap-4 relative top-40 mx-auto">
+        <!-- <h2>Manage Your Cities!</h2> -->
+        <div class="border-2 rounded-md border-double p-1 mx-auto shadow  w-48 border-orange-500">
+          <div class="border-b-2">
+            <h2 class="font-mono font-bold font-black text-center">站点列表</h2>
+          </div>
+
+          <el-table :data="cityStore.allCities" style="width: 100%" empty-text="no cities available!" height="26rem">
+          <el-table-column label="Name" prop="name"/>
+          <el-table-column label="Code" prop="cityCode" />
+          <el-table-column label="Actions" align="right">
+            <template #default="scope">
+              <el-button
+                size="small"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        </div>
+      <div class="w-auto">
+        <div class="border-2 rounded-md border-double p-1 mx-auto mb-4 shadow w-48 h-auto py-2 border-orange-500">
+            <td class="mx-auto">
+              <tr>
+                <div class="border-1 w-44 h-24 m-1 shadow rounded-md text-center">
+                    <span class="font-mono mb-2 font-bold">站点统计</span>
+                    <div class="mx-auto w-32 h-12 shadow-inner rounded-xl">
+                      <span class="text-green-500 relative top-2">
+                        {{ cityStore.allCities.length }}
+                      </span>
+                    </div>
+                </div>
+              </tr>
+
+              <tr>
+                <div class="border-1 w-44 h-24 m-1 shadow rounded-md text-center ">
+                    <span class="font-bold font-mono">运行状况</span>
+                    <div class="mx-auto w-32 h-14 shadow-inner rounded-xl text-center ">
+                      <div class="mx-auto w-32 h-14 shadow-inner rounded-xl text-center ">
+                      <div v-if="cityStore.allCities.length > 0" class="text-green-500 relative top-4">
+                        一切正常
+                      </div>
+                      <div v-else class="text-yellow-500 relative top-4">
+                        无站点
+                      </div>
+                    </div>
+                    </div>
+                </div>
+              </tr>
+            </td>
+        </div>
+
+        <div class="border-2 rounded-md border-double p-1 mx-auto mb-2 shadow w-48 border-orange-500">
+        <div class="mb-2 border-b-2">
+          <h2 class="font-mono font-bold text-center">添加站点</h2>
+        </div>
+
+        <div>
+          <el-form
+          ref="ruleFormRef"
+          style="max-width: 600px"
+          :model="ruleForm"
+          status-icon
+          :rules="rules"
+          label-width="auto"
+          class="demo-ruleForm"
+        >
+          <el-form-item label="站点名" prop="name">
+            <el-input v-model="ruleForm.name" />
+          </el-form-item>
+
+          <el-form-item label="代码" prop="code">
+            <el-input
+              v-model="ruleForm.code"
+            />
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click="submitForm(ruleFormRef)">
+              创建
             </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+            <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
+          </el-form-item>
+        </el-form>
+        </div>
 
-      </el-aside>
-      <el-aside>
-        <el-form
-        ref="ruleFormRef"
-        style="max-width: 600px"
-        :model="ruleForm"
-        status-icon
-        :rules="rules"
-        label-width="auto"
-        class="demo-ruleForm"
-      >
-        <el-form-item label="City Name" prop="name">
-          <el-input v-model="ruleForm.name" />
-        </el-form-item>
+      </div>
 
-        <el-form-item label="City Code" prop="code">
-          <el-input
-            v-model="ruleForm.code"
-          />
-        </el-form-item>
 
-        <el-form-item>
-          <el-button type="primary" @click="submitForm(ruleFormRef)">
-            Submit
+      <div class="border-2 rounded-md border-double p-1 mx-auto shadow w-48 border-orange-500">
+        <div class="mx-auto w-20">
+            <el-button
+            type="primary"
+            plain
+            class="mx-auto"
+          >
+            <span>
+              <el-icon class="mr-1"><AdminIcon /></el-icon>
+            </span>
+            <router-link to="/admin">返回面板</router-link>
           </el-button>
-          <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
-        </el-form-item>
-      </el-form>
+        </div>
+      </div>
 
-      </el-aside>
-    </el-container>
+
+      </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
 import { useCityStore } from '@/stores/cityStore';
-import type { FormInstance, FormRules } from 'element-plus'
+import { ElNotification, type FormInstance, type FormRules } from 'element-plus'
 import { onMounted, reactive, ref } from 'vue';
 import { apiClient } from '@/utils/axios/axios';
+import AdminIcon from './icon/adminIcon.vue';
 
 interface City {
   name: string;
@@ -68,6 +128,11 @@ const cityStore = useCityStore();
 
 const handleDelete = (index: number, row: City) => {
   cityStore.deleteCity(index, row);
+  ElNotification({
+    title: 'Success',
+    message: '删除成功',
+    type: 'success',
+  })
 }
 
 const ruleFormRef = ref<FormInstance>()
@@ -119,8 +184,8 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 
 const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  formEl.validate((valid) => {
-    if (valid) {
+  formEl.validate(() => {
+
       console.log('submit!')
       // 提交表单
       // 创建 FormData 实例
@@ -134,13 +199,22 @@ const submitForm = (formEl: FormInstance | undefined) => {
         .then(() => {
           cityStore.fetchCities();
           resetForm(formEl);
+
+          ElNotification({
+            title: 'Success',
+            message: '添加成功',
+            type: 'success',
+          })
         })
         .catch((error) => {
           console.error('Error submitting form:', error);
+          ElNotification({
+            title: 'Error',
+            message: '添加失败',
+            type: 'error',
+          })
         });
-    } else {
-      console.log('error submit!')
-    }
+
   })
 }
 
@@ -153,3 +227,9 @@ onMounted(() => {
   cityStore.fetchCities();
 })
 </script>
+
+<style scoped>
+.shadow-inner {
+  --tw-shadow: inset 0 0px 9px 0 rgb(39 27 18 / 15%);
+}
+</style>

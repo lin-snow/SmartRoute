@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-screen h-dvh ">
     <AdminCity />
   </div>
 </template>
