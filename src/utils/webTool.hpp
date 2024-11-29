@@ -32,6 +32,24 @@ std::string getMimeType(const std::string& filepath) {
         return "image/jpeg";
     } else if (filepath.rfind(".svg") == filepath.size() - 4) {
         return "image/svg+xml";
+    } else if (filepath.rfind(".ico") == filepath.size() - 4) {
+        return "image/x-icon";
+    } else if (filepath.rfind(".ttf") == filepath.size() - 4) {
+        return "font/ttf";
+    } else if (filepath.rfind(".otf") == filepath.size() - 4) {
+        return "font/otf";
+    } else if (filepath.rfind(".woff") == filepath.size() - 5) {
+        return "font/woff";
+    } else if (filepath.rfind(".woff2") == filepath.size() - 6) {
+        return "font/woff2";
+    } else if (filepath.rfind(".eot") == filepath.size() - 4) {
+        return "font/eot";
+    } else if (filepath.rfind(".mp3") == filepath.size() - 4) {
+        return "audio/mpeg";
+    } else if (filepath.rfind(".mp4") == filepath.size() - 4) {
+        return "video/mp4";
+    } else if (filepath.rfind(".pdf") == filepath.size() - 4) {
+        return "application/pdf";
     }
     return "application/octet-stream"; // 默认类型
 }

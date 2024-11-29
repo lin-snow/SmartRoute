@@ -30,6 +30,10 @@ xcopy /s /e /y .\dist\ ..\app\dist\
 
 cd ..
 
+@REM "Copy the start script to the app directory"
+
+copy /y start.bat app\
+
 @REM "Change to the app directory"
 
 cd app
