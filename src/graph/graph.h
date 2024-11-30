@@ -43,7 +43,7 @@ class AdjacencyListPair {
 class AdjacencyList {
     public:
         AdjacencyList()
-            : numberOfCities(0), numberOfRoutes(0), citiesList(nullptr), routesList(nullptr), adjacencyList(nullptr) {}
+            : numberOfCities(0), numberOfRoutes(0), citiesList(nullptr), adjacencyList(nullptr) {}
 
         // getters and setters
         int getNumberOfCities() const { return numberOfCities; }
@@ -54,9 +54,6 @@ class AdjacencyList {
 
         std::vector<City*>* getCitiesList() const { return citiesList; }
         void setCitiesList(std::vector<City*>* citiesList) { this->citiesList = citiesList; }
-
-        std::vector<Route*>* getRoutesList() const { return routesList; }
-        void setRoutesList(std::vector<Route*>* routesList) { this->routesList = routesList; }
 
         std::vector<AdjacencyListPair>* getAdjacencyList() const { return adjacencyList; }
         void setAdjacencyList(std::vector<AdjacencyListPair>* adjacencyList) { this->adjacencyList = adjacencyList; }
@@ -82,7 +79,6 @@ class AdjacencyList {
         int numberOfRoutes;
 
         std::vector<City*>* citiesList; // list of cities
-        std::vector<Route*>* routesList; // list of routes
 
         std::vector<AdjacencyListPair>* adjacencyList;
 };

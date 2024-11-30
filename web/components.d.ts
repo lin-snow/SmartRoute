@@ -27,6 +27,7 @@ declare module 'vue' {
     ElTimePicker: typeof import('element-plus/es')['ElTimePicker']
     HomeComp: typeof import('./src/components/HomeComp.vue')['default']
     HomeIcon: typeof import('./src/components/icon/homeIcon.vue')['default']
+    LoginComp: typeof import('./src/components/LoginComp.vue')['default']
     RouteIcon: typeof import('./src/components/icon/routeIcon.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

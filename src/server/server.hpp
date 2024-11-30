@@ -85,7 +85,7 @@ void Server::run() {
     // 全局 CORS 规则
     cors.global()
         .headers("X-Custom-Header", "Upgrade-Insecure-Requests", "Content-Type") // 自定义请求头
-        .methods("GET"_method, "POST"_method, "OPTIONS"_method) // 支持的方法
+        .methods("GET"_method, "POST"_method, "PUT"_method, "DELETE"_method, "OPTIONS"_method) // 支持的方法
         .origin("*") // 允许所有来源（生产环境需限制具体来源）
         .max_age(3600); // 预检请求缓存时间（秒）
 
@@ -116,18 +116,18 @@ void Server::run() {
             return res;
         });
 
-    // CROW_ROUTE(app, "/favicon.ico")
-    //     ([staticPath]() {
-    //         std::string filepath = staticPath + "/favicon.ico";
-    //         if (!std::filesystem::exists(filepath)) {
-    //             return crow::response(404, "Index Not Found");
-    //         }
+    CROW_ROUTE(app, "/favicon.ico")
+        ([staticPath]() {
+            std::string filepath = staticPath + "/favicon.ico";
+            if (!std::filesystem::exists(filepath)) {
+                return crow::response(404, "Index Not Found");
+            }
 
-    //         std::string mimeType = getMimeType(filepath); // 获取 MIME 类型
-    //         crow::response res(readFile(filepath));
-    //         res.add_header("Content-Type", mimeType); // 设置 MIME 类型
-    //         return res;
-    //     });
+            std::string mimeType = getMimeType(filepath); // 获取 MIME 类型
+            crow::response res(readFile(filepath));
+            res.add_header("Content-Type", mimeType); // 设置 MIME 类型
+            return res;
+        });
 
     /* PUBLIC CONTROLLER */
     CROW_ROUTE(app, "/api/data/get")
@@ -135,24 +135,6 @@ void Server::run() {
         // return crow_json;
         try {
             nlohmann::json response;
-
-            // if (serverSys->getGraph()->getNumberOfCities() == 0) {
-            //     response["msg"] = "No Data Found!";
-            //     response["code"] = 401;
-            //     response["data"] = {};
-            //     std::cout << "No Data Found!" << std::endl;
-            //     crow::json::wvalue res = crow::json::load(response.dump());
-            //     return res;   
-            // }
-
-            // if (serverSys->getGraph()->getNumberOfRoutes() == 0) {
-            //     response["msg"] = "Routes Not Found!";
-            //     response["code"] = 401;
-            //     response["data"] = {};
-            //     std::cout << "Routes Not Found!" << std::endl;
-            //     crow::json::wvalue res = crow::json::load(response.dump());
-            //     return res;   
-            // }
 
             // 构建城市列表
             nlohmann::json cities;
@@ -174,9 +156,6 @@ void Server::run() {
                     }
                 }
             }
-
-            serverSys->getGraph()->displayAdjacencyList();
-
 
             // 包装成包含 "data" 和 "list" 的结构
             response["data"]["routes"] = routes;
@@ -203,11 +182,8 @@ void Server::run() {
         } catch(std::exception& e) {
             std::cout << "Error: " << e.what() << std::endl;
 
-            nlohmann::json response;
-            response["msg"] = "Data Get Failed!";
-            response["code"] = 400;
-            response["data"] = {};
-            crow::json::wvalue res = crow::json::load(response.dump());
+            Result result(400, "Data Get Failed!", {});
+            crow::json::wvalue res = crow::json::load(result.error().dump());
             return res;
         }
     });
@@ -272,23 +248,26 @@ void Server::run() {
 
     /* ADMIN CONTROLLER */
     CROW_ROUTE(app, "/api/admin/login").methods("POST"_method)
-    ([](){
+    ([](const crow::request& req){
         // return json data
-        crow::json::wvalue res;
-        res["msg"] = "Hello, Admin Login!";
-        res["code"] = 200;
+        crow::multipart::message x(req);
+        std::string username = x.get_part_by_name("username").body;
+        std::string password = x.get_part_by_name("password").body;
+        std::cout << "Username: " << username << std::endl;
+        std::cout << "Password: " << password << std::endl;
 
-        return res;
-    });
+        std::cout << "Admin Username: " << getAdminUsername() << std::endl;
+        std::cout << "Admin Password: " << getAdminPassword() << std::endl;
 
-    CROW_ROUTE(app, "/api/admin/logout").methods("POST"_method)
-    ([](){
-        // return json data
-        crow::json::wvalue res;
-        res["msg"] = "Hello, Admin Logout!";
-        res["code"] = 200;
-
-        return res;
+        if (username == getAdminUsername() && password == getAdminPassword()) {
+            Result result(200, "Admin Login Success!", {});
+            crow::json::wvalue res = crow::json::load(result.success().dump());
+            return res;
+        } else {
+            Result result(400, "Admin Login Failed!", {});
+            crow::json::wvalue res = crow::json::load(result.error().dump());
+            return res;
+        }
     });
 
     CROW_ROUTE(app, "/api/admin/city/add").methods("POST"_method)
@@ -326,28 +305,21 @@ void Server::run() {
             crow::json::wvalue res;
 
             if (serverSys->deleteCity(theCityCode) == ERROR) {
-                nlohmann::json response;
-                response["msg"] = "City Delete Failed!";
-                response["code"] = 400;
-                response["data"] = {};
-                res = crow::json::load(response.dump());
+                Result result(400, "City Delete Failed!", {});
+                crow::json::wvalue res = crow::json::load(result.error().dump());
+                return res;
             } else {
-                nlohmann::json response;
-                response["msg"] = "City deleted successfully";
-                response["code"] = 200;
-                response["data"] = {};
-                res = crow::json::load(response.dump());
+                Result result(200, "City deleted successfully", {});
+                crow::json::wvalue res = crow::json::load(result.success().dump());
+                return res;
             }
 
 
 
             return res;
         } catch(std::exception& e) {
-            nlohmann::json response;
-            response["msg"] = "City Delete Failed!";
-            response["code"] = 400;
-            response["data"] = {};
-            crow::json::wvalue res = crow::json::load(response.dump());
+            Result result(400, "City Delete Failed!", {});
+            crow::json::wvalue res = crow::json::load(result.error().dump());
             return res;
         }
     });
@@ -402,8 +374,6 @@ void Server::run() {
             Result result(200, "Route added successfully", route2json(route));
             crow::json::wvalue res = crow::json::load(result.success().dump());
 
-
-
             return res;
         } catch(std::exception& e) {
             Result result(400, "Route Add Failed!", {});
@@ -424,13 +394,13 @@ void Server::run() {
 
             // delete route
             if (serverSys->deleteRoute(theRouteId, from, to) == ERROR) {
-                response["msg"] = "Route Delete Failed!";
-                response["code"] = 400;
-                response["data"] = {};
+                Result result(400, "Route Delete Failed!", {});
+                crow::json::wvalue res = crow::json::load(result.error().dump());
+                return res;
             } else {
-                response["msg"] = "Route deleted successfully";
-                response["code"] = 200;
-                response["data"] = {};
+                Result result(200, "Route deleted successfully", {});
+                crow::json::wvalue res = crow::json::load(result.success().dump());
+                return res;
             }
 
 
@@ -438,11 +408,8 @@ void Server::run() {
             crow::json::wvalue res = crow::json::load(response.dump());
             return res;
         } catch(std::exception& e) {
-            nlohmann::json response;
-            response["msg"] = "Route Delete Failed!";
-            response["code"] = 400;
-            response["data"] = {};
-            crow::json::wvalue res = crow::json::load(response.dump());
+            Result result(400, "Route Delete Failed!", {});
+            crow::json::wvalue res = crow::json::load(result.error().dump());
             return res;
         }
     });

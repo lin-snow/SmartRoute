@@ -44,6 +44,7 @@ class Result {
             nlohmann::json response;
             response["code"] = code;
             response["msg"] = msg;
+            response["data"] = data;
 
             return response;
         }

@@ -46,6 +46,19 @@
         </span>
         停止服务
       </el-button>
+
+      <!-- Logout -->
+      <el-button
+        type="warning"
+        plain
+        class="my-2"
+        @click="logout"
+      >
+        <span>
+          <el-icon class="mr-1"><routeIcon /></el-icon>
+        </span>
+        退出登录
+      </el-button>
     </div>
   </div>
 </template>
@@ -55,6 +68,9 @@ import { apiClient } from '@/utils/axios/axios';
 import cityIcon from './icon/cityIcon.vue';
 import routeIcon from './icon/routeIcon.vue';
 import homeIcon from './icon/homeIcon.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const shutdown = () => {
   console.log('Shutting down server...');
@@ -65,5 +81,15 @@ const shutdown = () => {
     .catch((err) => {
       console.error(err);
     });
+};
+
+const logout = () => {
+  console.log('Logging out...');
+  // clear the local storage
+  localStorage.removeItem('user');
+  localStorage.removeItem('pass');
+
+  // redirect to login page
+  router.push('/login');
 };
 </script>

@@ -53,10 +53,6 @@ bool AdjacencyList::isRouteExists(Route* route) {
         return false;
     }
 
-    if (routesList == nullptr) {
-        return false;
-    }
-
     // 遍历邻接表
     for (AdjacencyListPair adjacencyListPair : *adjacencyList) {
         // 查找起点城市
@@ -149,18 +145,6 @@ int AdjacencyList::deleteCity(int cityCode) {
                         AdjacencyListNode node = *it2;
                         for (std::vector<Route*>::iterator it3 = node.getRoutes()->begin(); it3 != node.getRoutes()->end();) {
                             Route* route = *it3;
-                            // // 删除routesList中的路线
-                            // for (std::vector<Route*>::iterator it4 = routesList->begin(); it4 != routesList->end();) {
-                            //     Route* r = *it4;
-                            //     if (r->getRouteId() == route->getRouteId()) {
-                            //         delete r;
-                            //         r = nullptr;
-                            //         it4 = routesList->erase(it4);
-                            //         break;
-                            //     } else {
-                            //         it4++;
-                            //     }
-                            // }
                             delete route;
                             route = nullptr;
                             it3 = node.getRoutes()->erase(it3);
@@ -187,19 +171,6 @@ int AdjacencyList::deleteCity(int cityCode) {
                     for (std::vector<Route*>::iterator it = node.getRoutes()->begin(); it != node.getRoutes()->end();) {
                         Route* route = *it;
                         if (route->getTo() == cityCode) {
-                            // 删除routesList中的路线
-                            // for (std::vector<Route*>::iterator it1 = routesList->begin(); it1 != routesList->end();) {
-                            //     Route* r = *it1;
-                            //     if (r->getTo() == cityCode) {
-                            //         delete r;
-                            //         r = nullptr;
-                            //         it = routesList->erase(it);
-                            //         break;
-                            //     } else {
-                            //         it++;
-                            //     }
-                            // }
-
                             delete route;
                             route = nullptr;
                             it = node.getRoutes()->erase(it);
@@ -231,37 +202,6 @@ int AdjacencyList::deleteCity(int cityCode) {
 }
 
 int AdjacencyList::deleteRoute(int routeId, int from, int to) {
-    // check if route exists
-    // for (Route* route : *routesList) {
-    //     if (route->getRouteId() == routeId) {
-    //         // 获取该路线的起点和终点
-    //         int from = route->getFrom();
-    //         int to = route->getTo();
-
-    //         // 删除邻接表中的路线
-    //         for (AdjacencyListPair pair : *adjacencyList) {
-    //             if (pair.getCity()->getCityCode() == from) {
-    //                 for (AdjacencyListNode node : *pair.getNodes()) {
-    //                     if (node.getDestinationCity()->getCityCode() == to) {
-    //                         for (Route* r : *node.getRoutes()) {
-    //                             if (r->getRouteId() == routeId) {
-    //                                 delete r;
-    //                                 r = nullptr;
-    //                                 pair.getNodes()->erase(pair.getNodes()->begin());
-
-                                    // numberOfRoutes--;
-
-    //                                 std::cout << "Route deleted successfully" << std::endl;
-    //                                 return SUCCESS;
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
     for (AdjacencyListPair pair : *adjacencyList) {
         if (pair.getCity()->getCityCode() == from) {
             for (AdjacencyListNode node : *pair.getNodes()) {
@@ -297,10 +237,6 @@ int AdjacencyList::addRoute(Route* route) {
         return ERROR;
     }
 
-    if (routesList == nullptr) {
-        routesList = new std::vector<Route*>();
-    }
-
     // check if route already exists
     if (isRouteExists(route)) {
         std::cout << "Route " << route->getFrom() << " -> " << route->getTo() << " already exists" << std::endl;
@@ -309,8 +245,6 @@ int AdjacencyList::addRoute(Route* route) {
 
     // 设置routeid
     route->setRouteId(numberOfRoutes+1);
-
-    routesList->push_back(route);
 
     // add route to adjacency list
     // 查找起点城市
@@ -359,25 +293,6 @@ void AdjacencyList::displayAdjacencyList() {
         printf("Adjacency list is empty\n");
         return;
     }
-
-    // display info
-    std::cout << "-------------------------------------------------------------------- " << std::endl;
-    // std::cout << "Number of cities: " << numberOfCities << std::endl;
-    // std::cout << "Number of routes: " << numberOfRoutes << std::endl;
-
-    // for (City* city : *citiesList) {
-    //     std::cout << "City: " << city->getName() << " (" << city->getCityCode() << ")" << std::endl;
-    // }
-
-    // if (routesList == nullptr) {
-    //     std::cout << "No routes found" << std::endl;
-    // } else {
-    //     for (Route* route : *routesList) {
-    //         std::cout << "Route: " << route->getFrom() << " -> " << route->getTo() << " (" << route->getDistance() << " km, " << route->getDuration() << " minutes, " << route->getCost() << " yuan " << route->getVehicle()->getVehicleCode() << ")" << std::endl;
-    //     }
-    // } 
-
-
 
     std::cout << "--------------------------------" << std::endl;
 
