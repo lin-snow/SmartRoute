@@ -29,6 +29,8 @@
 # Executables
 *.out
 *.app
+app/
+app.zip
 
 # Recommended template: Node.gitignore
 
