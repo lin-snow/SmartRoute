@@ -7,7 +7,11 @@
       后端基于 C++ 、 CrowCpp、 NlohmannJson 、 FKYaml 、 CMake 的智能路线规划系统。
     </p>
 
-    <p>作者:
+    <p class="font-light">
+      管理员账号: <span class="text-red-500">admin</span> 密码: <span class="text-red-500">admin</span>
+    </p>
+
+    <p class="m-4">作者:
       <a href="https://soopy.cn">
         <span class="text-amber-700 underline"> L1nSn0w </span>
       </a>
@@ -17,7 +21,8 @@
     <el-button
       type="primary"
       plain
-      class="my-2 mr-1"
+      size="large"
+      class="my-2 mr-1 shadow-2xl"
     >
       <span>
         <el-icon class="mr-1"><homeIcon /></el-icon>

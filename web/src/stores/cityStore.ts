@@ -71,6 +71,7 @@ export const useCityStore = defineStore('allCitys', () => {
   return {
     allCities,
     citiesCount,
+    loading,
     fetchCities,
     deleteCity
   }

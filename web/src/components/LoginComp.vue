@@ -1,7 +1,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <template>
   <div class="w-68 mx-auto h-auto absolute top-1/3 left-1/3 ">
-    <h2 class="font-mono font-bold mx-1 my-2 italic">Login to Admin Panel</h2>
+    <h2 class="font-mono font-bold mx-1 my-2 italic">Login to <span class="text-lg italic text-sky-500">Admin Panel!</span></h2>
     <el-form
     ref="ruleFormRef"
     style="max-width: 600px"

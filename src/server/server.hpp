@@ -235,8 +235,21 @@ void Server::run() {
             data["fastestRoute"] = fastestRouteData;
             data["economicRoute"] = economicRouteData;
 
-            Result result(200, "Query Success!", data);
-            crow::json::wvalue res = crow::json::load(result.success().dump());
+
+            if (allRoutes.size() == 0 && fastestRoute.size() == 0 && economicRoute.size() == 0) {
+                response["msg"] = "No Data Found!";
+                response["code"] = 401;
+            } else if (allRoutes.size() > 0 || fastestRoute.size() > 0 || economicRoute.size() > 0) {
+                response["msg"] = "Query Success!";
+                response["code"] = 200;
+            } else {
+                response["msg"] = "Error!";
+                response["code"] = 400;
+            }
+
+            response["data"] = data;
+
+            crow::json::wvalue res = crow::json::load(response.dump());
             
             return res;
         } catch (std::exception& e) {

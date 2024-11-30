@@ -1,15 +1,15 @@
 <template>
   <div class="h-auto w-fit grid grid-cols-2 gap-4 relative top-40 mx-auto">
         <!-- <h2>Manage Your Cities!</h2> -->
-        <div class="border-2 rounded-md border-double p-1 mx-auto shadow  w-96 border-orange-500">
+        <div class="border-2 rounded-md border-double p-1 mx-auto shadow  min-w-fit border-orange-500">
           <div class="border-b-2">
-            <h2 class="font-mono font-bold font-black text-center">站点列表</h2>
+            <h2 class="font-mono font-bold text-center">站点列表</h2>
           </div>
 
-          <el-table :data="cityStore.allCities" style="width: 100%" empty-text="no cities available!" height="26rem">
-          <el-table-column label="Name" prop="name"/>
-          <el-table-column label="Code" prop="cityCode" />
-          <el-table-column label="Actions" align="center">
+          <el-table :data="cityStore.allCities" border style="width: 100%" empty-text="no cities available!" height="26rem">
+          <el-table-column label="Name" prop="name" width="120"/>
+          <el-table-column label="Code" prop="cityCode" width="90"/>
+          <el-table-column label="Actions" align="center" width="180">
             <template #default="scope">
               <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
                 Edit
@@ -27,23 +27,19 @@
         </el-table>
         </div>
       <div class="w-auto">
-        <div class="border-2 rounded-md border-double p-1 mx-auto mb-4 shadow w-48 h-auto py-2 border-orange-500">
-            <td class="mx-auto">
-              <tr>
-                <div class="border-1 w-44 h-24 m-1 shadow rounded-md text-center">
-                    <span class="font-mono mb-2 font-bold">站点统计</span>
+        <div class="border-2 rounded-md border-double p-1 mx-auto mb-4 shadow w-48 h-auto py-2 border-orange-500 grid grid-rows-2 gap-4">
+          <div class="border-1 w-44 h-24 m-1 rounded-md text-center">
+                    <span class="font-mono mb-2 font-light">站点统计</span>
                     <div class="mx-auto w-32 h-12 shadow-inner rounded-xl">
-                      <span class="text-green-500 relative top-2">
+                      <span class="text-green-500 relative top-2 font-extrabold">
                         {{ cityStore.citiesCount }}
                       </span>
                     </div>
                 </div>
-              </tr>
 
-              <tr>
-                <div class="border-1 w-44 h-24 m-1 shadow rounded-md text-center ">
-                    <span class="font-bold font-mono">运行状况</span>
-                    <div class="mx-auto w-32 h-14 shadow-inner rounded-xl text-center ">
+                <div class="border-1 w-44 h-24 m-1 rounded-md text-center ">
+                    <span class="font-light font-mono ">运行状况</span>
+                    <div class="mx-auto w-32 h-14 shadow-inner rounded-xl text-center font-bold ">
                       <div class="mx-auto w-32 h-14 shadow-inner rounded-xl text-center ">
                       <div v-if="cityStore.citiesCount > 0" class="text-green-500 relative top-4">
                         一切正常
@@ -54,8 +50,6 @@
                     </div>
                     </div>
                 </div>
-              </tr>
-            </td>
         </div>
 
         <div class="border-2 rounded-md border-double p-1 mx-auto mb-2 shadow w-48 border-orange-500">
@@ -95,12 +89,13 @@
       </div>
 
 
-      <div class="border-2 rounded-md border-double p-1 mx-auto shadow w-48 border-orange-500">
-        <div class="mx-auto w-20">
+      <div class=" p-1 mx-auto w-48 ">
+        <div class="mx-auto w-24">
             <el-button
             type="primary"
             plain
-            class="mx-auto"
+            size="large"
+            class="mx-auto shadow-2xl"
           >
             <span>
               <el-icon class="mr-1"><AdminIcon /></el-icon>

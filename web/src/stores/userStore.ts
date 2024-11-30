@@ -56,6 +56,11 @@ export const useUserStore = defineStore('queryResult', () => {
         params: queryParam.value
       });
 
+      if (response.data.code != 200) {
+        console.log("Fetch result failed!");
+        return [];
+      }
+
       allRoutesData.value = response.data.data.allRoutes;
       fastestRoute.value = response.data.data.fastestRoute;
       economicRoute.value = response.data.data.economicRoute;
@@ -106,6 +111,7 @@ export const useUserStore = defineStore('queryResult', () => {
       ...route,
       from: formatCityName(route.from.toString()),
       to: formatCityName(route.to.toString()),
+
     }));
 
     // 格式化economicRoute （将from和to转换为城市名）
@@ -114,6 +120,10 @@ export const useUserStore = defineStore('queryResult', () => {
       from: formatCityName(route.from.toString()),
       to: formatCityName(route.to.toString()),
     }));
+  }
+
+  const clearRawData = () => {
+    loading.value = true;
   }
 
   return {
@@ -127,6 +137,7 @@ export const useUserStore = defineStore('queryResult', () => {
     queryParam,
     fetchResult,
     formatData,
-    formatCityName
+    formatCityName,
+    clearRawData,
   }
 })

@@ -14,6 +14,7 @@ declare module 'vue' {
     AdminRoute: typeof import('./src/components/AdminRoute.vue')['default']
     CityIcon: typeof import('./src/components/icon/cityIcon.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
+    ElDialog: typeof import('element-plus/es')['ElDialog']
     ElForm: typeof import('element-plus/es')['ElForm']
     ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElIcon: typeof import('element-plus/es')['ElIcon']

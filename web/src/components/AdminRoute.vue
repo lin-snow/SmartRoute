@@ -1,141 +1,135 @@
 <template>
-  <div class="mx-auto grid grid-rows-2 gap-2">
-    <div class="mx-auto grid grid-cols-2 gap-4 w-1/2">
-      <div class=" border-2 border-double border-amber-700 p-1 rounded-md shadow-md ">
-      <h2 class="font-mono font-bold">添加线路</h2>
-      <div>
-        <el-form
-            ref="routeFormRef"
-            :model="form"
-            :rules="rules"
-            label-width="auto"
-            style="max-width: 600px"
-          >
-            <el-form-item label="出发点" prop="from">
-              <el-select
-                v-model="form.from"
-                placeholder="请选择你的出发点"
-                filterable
+  <div class="mx-auto grid grid-rows-2 gap-2 min-w-fit mt-4">
+    <div class="mx-auto grid grid-cols-2 gap-32 ">
+        <div class=" border-2 border-double border-amber-700 p-1 rounded-md shadow-md ">
+          <h2 class="font-mono font-bold mx-auto text-center">添加线路</h2>
+          <div>
+            <el-form
+                ref="routeFormRef"
+                :model="form"
+                :rules="rules"
+                label-width="auto"
+                style="max-width: 600px"
               >
-                <el-option
-                  v-for="city in cityStore.allCities"
-                  :key="city.cityCode"
-                  :label="city.name"
-                  :value="city.cityCode"
+                <el-form-item label="出发点" prop="from">
+                  <el-select
+                    v-model="form.from"
+                    placeholder="请选择你的出发点"
+                    filterable
+                  >
+                    <el-option
+                      v-for="city in cityStore.allCities"
+                      :key="city.cityCode"
+                      :label="city.name"
+                      :value="city.cityCode"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="目的地" prop="to">
+                  <el-select
+                    v-model="form.to"
+                    placeholder="请选择你的目的地"
+                    filterable
+                  >
+                    <el-option
+                      v-for="city in cityStore.allCities"
+                      :key="city.cityCode"
+                      :label="city.name"
+                      :value="city.cityCode"
+                    />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="交通工具类型" prop="vehicleType">
+                  <el-radio-group v-model="form.vehicleType">
+                    <el-radio :label="'0'">火车</el-radio>
+                    <el-radio :label="'1'">飞机</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+                <el-form-item label="班号" prop="vehicleCode">
+                  <el-input v-model="form.vehicleCode" placeholder="输入班号" />
+                </el-form-item>
+                <el-form-item label="出发和到达时间">
+                  <el-time-picker
+                  v-model="rangeTime"
+                  is-range
+                  range-separator="To"
+                  start-placeholder="Start time"
+                  end-placeholder="End time"
+                  format="HH:mm"
+                  @change="handleTimeChange"
                 />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="目的地" prop="to">
-              <el-select
-                v-model="form.to"
-                placeholder="请选择你的目的地"
-                filterable
-              >
-                <el-option
-                  v-for="city in cityStore.allCities"
-                  :key="city.cityCode"
-                  :label="city.name"
-                  :value="city.cityCode"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="交通工具类型" prop="vehicleType">
-              <el-radio-group v-model="form.vehicleType">
-                <el-radio :label="'0'">火车</el-radio>
-                <el-radio :label="'1'">飞机</el-radio>
-              </el-radio-group>
-            </el-form-item>
-            <el-form-item label="班号" prop="vehicleCode">
-              <el-input v-model="form.vehicleCode" placeholder="输入班号" />
-            </el-form-item>
-            <el-form-item label="出发和到达时间">
-              <el-time-picker
-              v-model="rangeTime"
-              is-range
-              range-separator="To"
-              start-placeholder="Start time"
-              end-placeholder="End time"
-              format="HH:mm"
-              @change="handleTimeChange"
-            />
 
-            </el-form-item>
-            <el-form-item label="票价" prop="cost">
-              <el-input v-model.number="form.cost" placeholder="输入票价 (￥)" />
-            </el-form-item>
-            <el-form-item label="距离" prop="distance">
-              <el-input v-model.number="form.distance" placeholder="输入距离 (km)" />
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="onSubmit">创建</el-button>
-              <el-button @click="onReset">取消</el-button>
-            </el-form-item>
-          </el-form>
-      </div>
-    </div>
-
-    <div class="w-full border-2 border-double border-amber-700 p-1 rounded-md shadow-md">
-      <!-- 线路统计 -->
-      <div class=" p-1 mx-auto mb-4 w-48 h-auto py-2">
-            <td class="mx-auto">
-              <tr>
-                <div class="border-1 w-44 h-24 m-1 rounded-md text-center">
-                    <span class="font-mono mb-2 font-bold">线路统计</span>
-                    <div class="mx-auto w-32 h-12 shadow-inner rounded-xl">
-                      <span class="text-green-500 relative top-2">
-                        {{ routesStore.routesCount }}
-                      </span>
-                    </div>
-                </div>
-              </tr>
-
-              <tr>
-                <div class="border-1 w-44 h-24 m-1 rounded-md text-center ">
-                    <span class="font-bold font-mono">运行状况</span>
-                    <div class="mx-auto w-32 h-14 shadow-inner rounded-xl text-center ">
-                      <div v-if="routesStore.routesCount > 0" class="text-green-500 relative top-4">
-                        一切正常
-                      </div>
-                      <div v-else class="text-yellow-500 relative top-4">
-                        无线路
-                      </div>
-                      </div>
-                </div>
-              </tr>
-            </td>
+                </el-form-item>
+                <el-form-item label="票价" prop="cost">
+                  <el-input v-model.number="form.cost" placeholder="输入票价 (￥)" />
+                </el-form-item>
+                <el-form-item label="距离" prop="distance">
+                  <el-input v-model.number="form.distance" placeholder="输入距离 (km)" />
+                </el-form-item>
+                <el-form-item class="ml-12 grid grid-rows-2 gap-8 mt-10">
+                  <el-button type="primary" @click="onSubmit">创建</el-button>
+                  <el-button @click="onReset">取消</el-button>
+                </el-form-item>
+              </el-form>
+          </div>
         </div>
-      <!-- 回到面板 -->
-      <div class="mx-auto w-20">
-        <el-button
-          type="primary"
-          plain
-          class="mx-auto  shadow-md"
-        >
-          <span>
-            <el-icon class="mr-1"><AdminIcon /></el-icon>
-          </span>
-          <router-link to="/admin">返回面板</router-link>
-        </el-button>
+
+      <div class="min-w-fit border-2 border-double border-amber-700 p-1 rounded-md shadow-md">
+        <!-- 线路统计 -->
+        <div class=" p-1 mx-auto mb-4 w-48 h-auto py-2 grid grid-rows-2 gap-4">
+          <div class="border-1 w-44 h-24 m-1 rounded-md text-center mx-auto">
+              <span class="font-mono mb-2 font-bold my-1">线路统计</span>
+              <div class="mx-auto w-32 h-12 shadow-inner rounded-xl">
+                <span class="text-green-500 relative top-2">
+                  {{ routesStore.routesCount }}
+                </span>
+              </div>
+          </div>
+          <div class="border-1 w-44 h-24 m-1 rounded-md text-center ">
+              <span class="font-bold font-mono">运行状况</span>
+              <div class="mx-auto w-32 h-14 shadow-inner rounded-xl text-center ">
+                <div v-if="routesStore.routesCount > 0" class="text-green-500 relative top-4">
+                  一切正常
+                </div>
+                <div v-else class="text-yellow-500 relative top-4">
+                  无线路
+                </div>
+                </div>
+          </div>
+          </div>
+        <!-- 回到面板 -->
+        <div class="mx-auto w-36">
+          <el-button
+            type="primary"
+            plain
+            size="large"
+            class="mx-auto shadow-md w-36 rounded-lg"
+          >
+            <span>
+              <el-icon class="mr-1"><AdminIcon /></el-icon>
+            </span>
+            <router-link to="/admin">返回面板</router-link>
+          </el-button>
+        </div>
+
       </div>
-
-    </div>
     </div>
 
-    <div class="border-2 border-amber-700 mx-auto h-auto rounded-md shadow-md w-7/12">
+    <div class="border-2 border-amber-700 mx-auto h-auto rounded-md shadow-md min-w-fit p-2 mb-12">
       <h2 class="font-mono font-bold mx-auto border-b-2 border-amber-400 border-dotted">线路管理</h2>
       <div class=" w-full">
-        <el-table :data="routesStore.formattedAllRoutes" style="width: 100%" empty-text="no routes available!" height="18rem">
+        <el-table :data="routesStore.formattedAllRoutes" border style="width: 100%" empty-text="no routes available!" height="18rem">
         <el-table-column label="Route ID" prop="routeId" width="90" />
         <el-table-column label="出发点" prop="from" width="95" />
         <el-table-column label="目的地" prop="to" width="95"/>
-        <el-table-column label="距离" prop="distance" width="95"/>
-        <el-table-column label="耗时" prop="duration" width="95"/>
-        <el-table-column label="费用" prop="cost" width="95"/>
+        <el-table-column label="距离(km)" prop="distance" width="95"/>
+        <el-table-column label="耗时(m)" prop="duration" width="95"/>
+        <el-table-column label="费用(￥)" prop="cost" width="95"/>
         <el-table-column label="交通工具" prop="vehicleType" width="95"/>
         <el-table-column label="班号" prop="vehicleCode" width="95"/>
         <el-table-column label="出发时间" prop="departureTime" width="95"/>
         <el-table-column label="到达时间" prop="arrivalTime" width="95"/>
-        <el-table-column label="Actions" align="center">
+        <el-table-column label="Actions" align="center" width="150">
           <template #default="scope">
             <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
               Edit
