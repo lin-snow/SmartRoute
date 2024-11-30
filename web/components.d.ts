@@ -29,6 +29,7 @@ declare module 'vue' {
     HomeComp: typeof import('./src/components/HomeComp.vue')['default']
     HomeIcon: typeof import('./src/components/icon/homeIcon.vue')['default']
     LoginComp: typeof import('./src/components/LoginComp.vue')['default']
+    LogoutIcon: typeof import('./src/components/icon/logoutIcon.vue')['default']
     RouteIcon: typeof import('./src/components/icon/routeIcon.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

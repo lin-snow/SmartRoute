@@ -95,7 +95,8 @@ onMounted(() => {
   ElNotification({
     title: '查找成功！',
     message: '已经为您找到所有可行的方案',
-    type: 'success'
+    type: 'success',
+    duration: 1000,
   })
 
   userStore.clearRawData();

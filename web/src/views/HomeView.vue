@@ -13,4 +13,5 @@
 <script setup lang="ts">
 import HomeComp from '@/components/HomeComp.vue';
 import adminIcon from '@/components/icon/adminIcon.vue';
+
 </script>

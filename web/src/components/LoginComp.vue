@@ -99,8 +99,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
         if (response.data.code === 200) {
           console.log('Login successful');
           ElNotification({
-            title: 'Login successful',
-            message: 'Welcome back!',
+            title: '登录成功！',
+            message: '尊贵的管理员，欢迎回来！',
             type: 'success',
           });
 
@@ -116,8 +116,8 @@ const submitForm = (formEl: FormInstance | undefined) => {
         } else {
           console.log('Login failed');
           ElNotification({
-            title: 'Login failed',
-            message: 'Please check your credentials',
+            title: '登录失败！',
+            message: '请检查用户名和密码',
             type: 'error',
           });
         }

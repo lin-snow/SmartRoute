@@ -79,7 +79,7 @@
         @click="logout"
       >
         <span>
-          <el-icon class="mr-1"><routeIcon /></el-icon>
+          <el-icon class="mr-1"><LogoutIcon /></el-icon>
         </span>
         退出登录
       </el-button>
@@ -93,8 +93,9 @@ import cityIcon from './icon/cityIcon.vue';
 import routeIcon from './icon/routeIcon.vue';
 import homeIcon from './icon/homeIcon.vue';
 import { useRouter } from 'vue-router';
-import { onMounted, ref } from 'vue';
+import {  ref } from 'vue';
 import { ElNotification } from 'element-plus';
+import LogoutIcon from './icon/logoutIcon.vue';
 
 const router = useRouter();
 
@@ -131,12 +132,4 @@ const logout = () => {
   router.push('/login');
 };
 
-onMounted(() => {
-  console.log('Admin Panel mounted');
-  ElNotification({
-    title: '欢迎！',
-    message: '欢迎回到控制面板!',
-    type: 'success',
-  });
-})
 </script>

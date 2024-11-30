@@ -60,6 +60,7 @@ import { useUserStore } from '@/stores/userStore';
 import { useRouter } from 'vue-router';
 import { ElNotification } from 'element-plus';
 
+
 const cityStore = useCityStore();
 const userStore = useUserStore();
 const startCity = ref<string>('');
@@ -94,4 +95,12 @@ onMounted(() => {
   cityStore.fetchCities();
   userStore.loading = true;
 });
+
+ElNotification({
+    title: '欢迎！',
+    message: '欢迎使用SmartRoute！',
+    type: 'success',
+    duration: 400,
+  });
+
 </script>
