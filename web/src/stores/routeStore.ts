@@ -24,7 +24,7 @@ interface FormattedRoute {
   to: string;
   distance: number;
   duration: number;
-  vehicleType: number;
+  vehicleType: string;
   vehicleCode: string;
   departureTime: string;
   arrivalTime: string;
@@ -76,10 +76,14 @@ export const useRoutesStore = defineStore('allRoutes', () => {
             const fromCity = userStore.formatCityName(route.from.toString());
             const toCity = userStore.formatCityName(route.to.toString());
 
+            // 修改交通工具类型 (0: 火车， 1: 飞机)
+            const vehicleType = route.vehicleType === 0 ? '火车' : '飞机';
+
             return {
                 ...route,
                 from: fromCity,
                 to: toCity,
+                vehicleType: vehicleType
             };
         });
     } else {

@@ -1,6 +1,7 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <template>
-  <div class="mx-auto">
+  <div class="w-68 mx-auto h-auto absolute top-1/3 left-1/3 ">
+    <h2 class="font-mono font-bold mx-1 my-2 italic">Login to Admin Panel</h2>
     <el-form
     ref="ruleFormRef"
     style="max-width: 600px"
@@ -10,10 +11,10 @@
     label-width="auto"
     class="demo-ruleForm"
   >
-    <el-form-item label="Username" prop="user">
+    <el-form-item label="用户名" prop="user">
       <el-input v-model="ruleForm.user" type="username" autocomplete="on" />
     </el-form-item>
-    <el-form-item label="Password" prop="pass">
+    <el-form-item label="密码" prop="pass">
       <el-input
         v-model="ruleForm.pass"
         type="password"
@@ -22,9 +23,21 @@
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="submitForm(ruleFormRef)">
-        Submit
+        登录
       </el-button>
-      <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
+      <el-button @click="resetForm(ruleFormRef)">重置</el-button>
+      <br>
+      <!-- 返回首页 -->
+      <el-button
+        type="primary"
+        plain
+        class="my-2 mx-2"
+      >
+        <span>
+          <el-icon class="mr-1"><homeIcon /></el-icon>
+        </span>
+        <router-link to="/" class="mr-2">返回首页</router-link>
+      </el-button>
     </el-form-item>
   </el-form>
   </div>

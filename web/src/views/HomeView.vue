@@ -5,7 +5,7 @@
       <span class="mr-1">
         <el-icon><adminIcon /></el-icon>
       </span>
-        <router-link to="/admin" class="mr-2">Admin</router-link>
+        <router-link to="/login" class="mr-2">Admin</router-link>
   </el-button>
   </main>
 </template>

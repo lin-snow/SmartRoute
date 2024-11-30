@@ -1,7 +1,7 @@
 <template>
   <div class="h-auto w-fit grid grid-cols-2 gap-4 relative top-40 mx-auto">
         <!-- <h2>Manage Your Cities!</h2> -->
-        <div class="border-2 rounded-md border-double p-1 mx-auto shadow  w-48 border-orange-500">
+        <div class="border-2 rounded-md border-double p-1 mx-auto shadow  w-96 border-orange-500">
           <div class="border-b-2">
             <h2 class="font-mono font-bold font-black text-center">站点列表</h2>
           </div>
@@ -9,8 +9,12 @@
           <el-table :data="cityStore.allCities" style="width: 100%" empty-text="no cities available!" height="26rem">
           <el-table-column label="Name" prop="name"/>
           <el-table-column label="Code" prop="cityCode" />
-          <el-table-column label="Actions" align="right">
+          <el-table-column label="Actions" align="center">
             <template #default="scope">
+              <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
+                Edit
+              </el-button>
+
               <el-button
                 size="small"
                 type="danger"
@@ -80,10 +84,10 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" @click="submitForm(ruleFormRef)">
+            <el-button type="primary" @click="submitForm(ruleFormRef)" class="mx-auto">
               创建
             </el-button>
-            <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
+            <el-button @click="resetForm(ruleFormRef)" class="mx-auto">Reset</el-button>
           </el-form-item>
         </el-form>
         </div>
@@ -128,6 +132,15 @@ const cityStore = useCityStore();
 
 const handleDelete = (index: number, row: City) => {
   cityStore.deleteCity(index, row);
+}
+
+const handleEdit = (index: number, row: City) => {
+  console.log('Edit:', index, row);
+  ElNotification({
+    title: 'Edit',
+    message: '开发中...',
+    type: 'info',
+  })
 }
 
 const ruleFormRef = ref<FormInstance>()

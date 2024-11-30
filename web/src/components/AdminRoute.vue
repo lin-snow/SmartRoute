@@ -1,6 +1,6 @@
 <template>
-  <div class="grid grid-rows-2 gap-4">
-    <div class="mx-auto grid grid-cols-2 gap-4">
+  <div class="mx-auto grid grid-rows-2 gap-2">
+    <div class="mx-auto grid grid-cols-2 gap-4 w-1/2">
       <div class=" border-2 border-double border-amber-700 p-1 rounded-md shadow-md ">
       <h2 class="font-mono font-bold">添加线路</h2>
       <div>
@@ -121,25 +121,26 @@
     </div>
     </div>
 
-    <div class="border-2 border-amber-700 mx-auto h-auto rounded-md shadow-md">
+    <div class="border-2 border-amber-700 mx-auto h-auto rounded-md shadow-md w-7/12">
       <h2 class="font-mono font-bold mx-auto border-b-2 border-amber-400 border-dotted">线路管理</h2>
       <div class=" w-full">
         <el-table :data="routesStore.formattedAllRoutes" style="width: 100%" empty-text="no routes available!" height="18rem">
-        <el-table-column label="Route ID" prop="routeId" />
-        <el-table-column label="出发点" prop="from" />
-        <el-table-column label="目的地" prop="to" />
-        <el-table-column label="距离" prop="distance" />
-        <el-table-column label="耗时" prop="duration" />
-        <el-table-column label="费用" prop="cost" />
-        <el-table-column label="交通工具" prop="vehicleType" />
-        <el-table-column label="班号" prop="vehicleCode" />
-        <el-table-column label="出发时间" prop="departureTime" />
-        <el-table-column label="到达时间" prop="arrivalTime" />
-        <el-table-column label="Actions" align="right">
+        <el-table-column label="Route ID" prop="routeId" width="90" />
+        <el-table-column label="出发点" prop="from" width="95" />
+        <el-table-column label="目的地" prop="to" width="95"/>
+        <el-table-column label="距离" prop="distance" width="95"/>
+        <el-table-column label="耗时" prop="duration" width="95"/>
+        <el-table-column label="费用" prop="cost" width="95"/>
+        <el-table-column label="交通工具" prop="vehicleType" width="95"/>
+        <el-table-column label="班号" prop="vehicleCode" width="95"/>
+        <el-table-column label="出发时间" prop="departureTime" width="95"/>
+        <el-table-column label="到达时间" prop="arrivalTime" width="95"/>
+        <el-table-column label="Actions" align="center">
           <template #default="scope">
-            <!-- <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
+            <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
               Edit
-            </el-button> -->
+            </el-button>
+
             <el-button
               size="small"
               type="danger"
@@ -305,6 +306,15 @@ const handleDelete = (index: number, row: Route) => {
     title: 'Success',
     message: '删除成功',
     type: 'success',
+  })
+};
+
+const handleEdit = (index: number, row: Route) => {
+  console.log('Edit:', index, row);
+  ElNotification({
+    title: 'Edit',
+    message: '开发中...',
+    type: 'info',
   })
 };
 
