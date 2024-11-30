@@ -85,57 +85,56 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 })
 
 const submitForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
+  if (!formEl) return;
   formEl.validate(async (valid) => {
     if (valid) {
-      const formData = new FormData()
-      formData.append('username', ruleForm.user)
-      formData.append('password', ruleForm.pass)
+      const formData = new FormData();
+      formData.append('username', ruleForm.user);
+      formData.append('password', ruleForm.pass);
 
-      console.log('submit!')
+      console.log('submit!');
 
-      await apiClient.post('admin/login', formData)
-        .then((response) => {
-          if (response.data.code === 200) {
-            console.log('Login successful')
-            ElNotification({
-              title: 'Login successful',
-              message: 'Welcome back!',
-              type: 'success',
-            })
-
-            // save user info to local storage
-            localStorage.setItem('user', JSON.stringify(formData.get('user')))
-            localStorage.setItem('pass', JSON.stringify(formData.get('pass')))
-
-            // clear form
-            resetForm(formEl)
-
-            // Redirect to admin panel
-            router.push('/admin')
-          } else {
-            console.log('Login failed')
-            ElNotification({
-              title: 'Login failed',
-              message: 'Please check your credentials',
-              type: 'error',
-            })
-          }
-        })
-        .catch((error) => {
-          console.error(error)
+      try {
+        const response = await apiClient.post('admin/login', formData);
+        if (response.data.code === 200) {
+          console.log('Login successful');
           ElNotification({
-            title: 'Error',
-            message: 'An error occurred',
+            title: 'Login successful',
+            message: 'Welcome back!',
+            type: 'success',
+          });
+
+          // Save user info to local storage
+          localStorage.setItem('user', JSON.stringify(ruleForm.user));
+          localStorage.setItem('pass', JSON.stringify(ruleForm.pass));
+
+          // Clear form
+          resetForm(formEl);
+
+          // Redirect to admin panel
+          router.push('/admin');
+        } else {
+          console.log('Login failed');
+          ElNotification({
+            title: 'Login failed',
+            message: 'Please check your credentials',
             type: 'error',
-          })
-        })
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        ElNotification({
+          title: 'Error',
+          message: 'An error occurred',
+          type: 'error',
+        });
+      }
     } else {
-      console.log('error submit!')
-      return false
+      console.log('error submit!');
+      // 注意：不需要 return false，这里直接退出即可
     }
-  })
-}
+  });
+};
 
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
