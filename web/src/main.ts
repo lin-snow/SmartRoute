@@ -16,3 +16,4 @@ app.use(ElementPlus)
 app.use(router)
 
 app.mount('#app')
+console.log(import.meta.env.VITE_BASE_API)

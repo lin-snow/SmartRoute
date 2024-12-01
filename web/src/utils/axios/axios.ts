@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const apiClient = axios.create({
-  baseURL: 'http://127.0.0.1:23333/api/',
+  baseURL: import.meta.env.VITE_BASE_API,
   timeout: 10000, // 10 seconds
 })
 
