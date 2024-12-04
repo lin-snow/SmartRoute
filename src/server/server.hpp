@@ -63,7 +63,6 @@ void Server::test() {
 
 void Server::run() {
     // start server
-    crow::App<crow::CORSHandler> app;
 
     // load data
     theSystem->loadData();

@@ -6,6 +6,7 @@
 #include <winsock2.h>
 #include <asio.hpp>
 #include "crow.h"
+#include "crow/middlewares/cors.h"
 #include "nlohmann/json.hpp"
 
 #include "../system/system.h"
@@ -22,7 +23,8 @@ class Server {
         void test();
 
     private:
-        crow::SimpleApp app;
+        // crow::SimpleApp app;
+        crow::App<crow::CORSHandler> app;
         std::shared_ptr<System> theSystem;
 };
 
