@@ -69,9 +69,9 @@ void Server::run() {
     theSystem->displaySystem();
 
     // 启动服务器
-    std::cout << "------------------------------------------" << std::endl;
-    std::cout << "请使用浏览器访问： http://" << getHost() << ":" << getPort() << " 进行使用 :) 关闭可在控制台按Ctrl + C!" << std::endl;
-    std::cout << "------------------------------------------" << std::endl;
+    std::cout << "--------------------------------------------------------------" << std::endl;
+    std::cout << "请使用浏览器访问： http://" << getHost() << ":" << getPort() << " 进行使用  :)  " << std::endl;
+    std::cout << "--------------------------------------------------------------" << std::endl;
 
     std::shared_ptr<System> serverSys = this->theSystem;
 

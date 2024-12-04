@@ -15,7 +15,7 @@ std::string getHost() {
 
         std::string host = root["server"][0]["host"].get_value_ref<std::string&>();
 
-        std::cout << "Host: " << host << std::endl;
+        // std::cout << "Host: " << host << std::endl;
 
         return host;
     } else {
@@ -35,7 +35,7 @@ long getPort() {
 
         long port = root["server"][1]["port"].get_value<int>();
 
-        std::cout << "Port: " << port << std::endl;
+        // std::cout << "Port: " << port << std::endl;
 
         return port;
     } else {
