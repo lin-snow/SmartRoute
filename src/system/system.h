@@ -28,6 +28,7 @@ class System {
         bool isRouteValid(Route* route);
         int addRoute(Route* theRoute);
         int deleteRoute(int routeId,int from, int to);
+        int updateRoute(long routeId, Route* newRoute);
         void displaySystem();
         City* inputCity();
         Route* inputRoute();

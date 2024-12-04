@@ -326,8 +326,6 @@ void Server::run() {
                 return res;
             }
 
-
-
             return res;
         } catch(std::exception& e) {
             Result result(400, "City Delete Failed!", {});
@@ -377,7 +375,6 @@ void Server::run() {
         std::string from = x.get_part_by_name("from").body;
         std::string to = x.get_part_by_name("to").body;
         std::string distance = x.get_part_by_name("distance").body;
-        // std::string duration = x.get_part_by_name("duration").body;
         std::string cost = x.get_part_by_name("cost").body;
         std::string vehicleType = x.get_part_by_name("vehicleType").body;
         std::string vehicleCode = x.get_part_by_name("vehicleCode").body;
@@ -450,6 +447,60 @@ void Server::run() {
         }
     });
 
+    CROW_ROUTE(app, "/api/admin/route/update").methods("PUT"_method)
+    ([serverSys](const crow::request& req){
+        crow::multipart::message x(req);
+
+        // 修改distance、 cost、 vehicleType、 vehicleCode、 departureTime、 arrivalTime
+
+        // 获取待修改的RouteId
+        std::string routeId = x.get_part_by_name("routeId").body;
+
+        // 获取新的Route信息
+        std::string from = x.get_part_by_name("from").body;
+        std::string to = x.get_part_by_name("to").body;
+        std::string distance = x.get_part_by_name("distance").body;
+        std::string cost = x.get_part_by_name("cost").body;
+        std::string vehicleType = x.get_part_by_name("vehicleType").body;
+        std::string vehicleCode = x.get_part_by_name("vehicleCode").body;
+        std::string departureTime = x.get_part_by_name("departureTime").body;
+        std::string arrivalTime = x.get_part_by_name("arrivalTime").body;
+
+        std::cout << "Route Id: " << routeId << std::endl;
+        std::cout << "From: " << from << std::endl;
+        std::cout << "To: " << to << std::endl;
+        std::cout << "Distance: " << distance << std::endl;
+        std::cout << "Cost: " << cost << std::endl;
+        std::cout << "Vehicle Type: " << vehicleType << std::endl;
+        std::cout << "Vehicle Code: " << vehicleCode << std::endl;
+        std::cout << "Departure Time: " << departureTime << std::endl;
+        std::cout << "Arrival Time: " << arrivalTime << std::endl;
+
+        Time departureTimeObj(departureTime);
+        Time arrivalTimeObj(arrivalTime);
+
+        long duration = departureTimeObj.diffInMinutes(arrivalTimeObj);
+
+        Route* newRoute = new Route(std::stoi(from), std::stoi(to), std::stol(distance), duration, new Vehicle((VehicleType)std::stoi(vehicleType), vehicleCode), Time(departureTime), Time(arrivalTime), std::stol(cost));
+
+        try {
+            if (serverSys->updateRoute(std::stol(routeId), newRoute) == SERV_ERROR) {
+                Result result(400, "Route Update Failed!", {});
+                crow::json::wvalue res = crow::json::load(result.error().dump());
+                return res;
+            } else {
+                Result result(200, "Route updated successfully", route2json(newRoute));
+                crow::json::wvalue res = crow::json::load(result.success().dump());
+                return res;
+            }
+        } catch(std::exception& e) {
+            Result result(400, "Route Update Failed!", {});
+            crow::json::wvalue res = crow::json::load(result.error().dump());
+            return res;
+        }
+
+    });
+
     CROW_ROUTE(app, "/api/admin/shutdown").methods("GET"_method)
     ([serverSys](){
         // return json data
@@ -468,17 +519,6 @@ void Server::run() {
         return res;
     });
 
-
-    // CROW_ROUTE(app, "/admin/route/update").methods("PUT"_method)
-    // ([](){
-    //     // return json data
-    //     crow::json::wvalue res;
-    //     res["msg"] = "Hello, Admin Route Update!";
-    //     res["code"] = 200;
-
-    //     return res;
-    // });
-    
     // 动态路由返回 index.html（支持前端 Vue Router 的路径）
     CROW_ROUTE(app, "/<path>")
         ([staticPath](const std::string& path) {

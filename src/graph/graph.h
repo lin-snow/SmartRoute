@@ -66,6 +66,7 @@ class AdjacencyList {
         int updateCity(City* oldCity, City* newCity);
         int addRoute(Route* route);
         int deleteRoute(int routeId, int from, int to);
+        int updateRoute(long routeId, Route* newRoute);
 
         void displayAdjacencyList();
 

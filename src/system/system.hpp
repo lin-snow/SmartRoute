@@ -105,6 +105,10 @@ int System::addRoute(Route* theRoute) {
     return ERROR;
 }
 
+int System::updateRoute(long routeId, Route* newRoute) {
+    return graph->updateRoute(routeId, newRoute);
+}
+
 int System::deleteRoute(int routeId, int from, int to) {
     if (routeId <= 0) {
         std::cout << "Invalid route id" << std::endl;

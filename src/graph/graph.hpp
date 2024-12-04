@@ -324,6 +324,72 @@ int AdjacencyList::addRoute(Route* route) {
     return SERV_SUCCESS;
 }
 
+int AdjacencyList::updateRoute(long routeId, Route* newRoute) {
+    if (newRoute == nullptr) {
+        std::cout << "The route is null!" << std::endl;
+        return SERV_ERROR;
+    }
+
+    // 检查新的route是否与其它route冲突
+    for (AdjacencyListPair pair : *adjacencyList) {
+        if (pair.getCity()->getCityCode() == newRoute->getFrom()) {
+            for (AdjacencyListNode node : *pair.getNodes()) {
+                if (node.getDestinationCity()->getCityCode() == newRoute->getTo()) {
+                    // 检查新的route是否与其它route冲突
+                    for (Route* route : *node.getRoutes()) {
+                        if (route->getRouteId() == routeId) {
+                            continue;
+                        }
+
+                        if (route->getVehicle()->getVehicleType() == newRoute->getVehicle()->getVehicleType()) {
+                            if (route->getVehicle()->getVehicleCode() == newRoute->getVehicle()->getVehicleCode()) {
+                                if (route->getDepartureTime().diffInMinutes(newRoute->getDepartureTime()) >= 0) {
+                                    if (route->getArrivalTime().diffInMinutes(newRoute->getDepartureTime()) <= 0) {
+                                        std::cout << "Route already exists" << std::endl;
+                                        return SERV_ERROR;
+                                    }
+                                } else {
+                                    if (route->getDepartureTime().diffInMinutes(newRoute->getArrivalTime()) >= 0) {
+                                        std::cout << "Route already exists" << std::endl;
+                                        return SERV_ERROR;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // 更新route
+    for (AdjacencyListPair pair : *adjacencyList) {
+        if (pair.getCity()->getCityCode() == newRoute->getFrom()) {
+            for (AdjacencyListNode node : *pair.getNodes()) {
+                if (node.getDestinationCity()->getCityCode() == newRoute->getTo()) {
+                    for (Route* route : *node.getRoutes()) {
+                        if (route->getRouteId() == routeId) {
+                            route->setFrom(newRoute->getFrom());
+                            route->setTo(newRoute->getTo());
+                            route->setDistance(newRoute->getDistance());
+                            route->setDuration(newRoute->getDuration());
+                            route->setVehicle(newRoute->getVehicle());
+                            route->setDepartureTime(newRoute->getDepartureTime());
+                            route->setArrivalTime(newRoute->getArrivalTime());
+                            route->setCost(newRoute->getCost());
+
+                            std::cout << "Route updated successfully" << std::endl;
+                            return SERV_SUCCESS;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return SERV_ERROR;
+}
+
 void AdjacencyList::displayAdjacencyList() {
     if (adjacencyList == nullptr) {
         printf("Adjacency list is empty\n");
