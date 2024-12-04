@@ -93,6 +93,10 @@ int System::deleteCity(int cityCode) {
     return graph->deleteCity(cityCode);
 }
 
+int System::updateCity(City* oldCity, City* newCity) {
+    return graph->updateCity(oldCity, newCity);
+}
+
 // Add route to the system
 int System::addRoute(Route* theRoute) {
     if (isRouteValid(theRoute)) {

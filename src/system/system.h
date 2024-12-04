@@ -24,6 +24,7 @@ class System {
         bool isCityValid(City* city);
         int addCity(City* theCity);
         int deleteCity(int cityCode);
+        int updateCity(City* oldCity, City* newCity);
         bool isRouteValid(Route* route);
         int addRoute(Route* theRoute);
         int deleteRoute(int routeId,int from, int to);

@@ -9,6 +9,7 @@
 #include <tuple>
 #include <algorithm>
 
+#include "../module/constants.h"
 
 #include "graph.h"
 
@@ -93,13 +94,13 @@ bool AdjacencyList::isRouteExists(Route* route) {
 int AdjacencyList::addCity(City* city) {
     if (city == nullptr) {
         std::cout << "City is null" << std::endl;
-        return ERROR;
+        return SERV_ERROR;
     }
 
     // check if city already exists
     if (isCityExists(city)) {
         std::cout << "City " << city->getName() << "with code " << city->getCityCode() << " already exists" << std::endl;
-        return ERROR;
+        return SERV_ERROR;
     }
 
     if (citiesList == nullptr) {
@@ -121,7 +122,7 @@ int AdjacencyList::addCity(City* city) {
 
     numberOfCities++;
 
-    return SUCCESS;
+    return SERV_SUCCESS;
 };
 
 int AdjacencyList::deleteCity(int cityCode) {
@@ -129,7 +130,7 @@ int AdjacencyList::deleteCity(int cityCode) {
     // check if city exists
     if (citiesList == nullptr) {
         std::cout << "City list is empty" << std::endl;
-        return ERROR;
+        return SERV_ERROR;
     }
 
     // 检查城市是否存在
@@ -191,14 +192,49 @@ int AdjacencyList::deleteCity(int cityCode) {
 
             // 返回结果
             std::cout << "City deleted successfully" << std::endl;
-            return SUCCESS;
+            return SERV_SUCCESS;
         } else {
             it++;
         }
     }
     
     std::cout << "City not found" << std::endl;
-    return ERROR;
+    return SERV_ERROR;
+}
+
+int AdjacencyList::updateCity(City* oldCity, City* newCity) {
+    if (oldCity == nullptr || newCity == nullptr) {
+        std::cout << "The city is null!" << std::endl;
+        return SERV_ERROR;
+    }
+
+    if (adjacencyList == nullptr) {
+        std::cout << "The AdjacencyList is nullptr! " << std::endl;
+        return SERV_ERROR;
+    }
+
+    // 检查待添加的City是否与其它已存在的City冲突
+    for (City* city : *citiesList) {
+        if (city->getName() == oldCity->getName() || city->getCityCode() == oldCity->getCityCode())
+            continue;
+
+        if (city->getName() == newCity->getName() || city->getCityCode() == newCity->getCityCode()) {
+            std::cout << "City " << newCity->getName() << " with code " << newCity->getCityCode() << " already exists" << std::endl;
+            return SERV_ERROR;
+        }
+    }
+
+    // 更新城市
+    for (City* city : *citiesList) {
+        if (city->getCityCode() == oldCity->getCityCode() && city->getName() == oldCity->getName()) {
+            city->setName(newCity->getName());
+            city->setCityCode(newCity->getCityCode());
+            std::cout << "City updated successfully" << std::endl;
+            return SERV_SUCCESS;
+        }
+    }
+
+    return SERV_ERROR;
 }
 
 int AdjacencyList::deleteRoute(int routeId, int from, int to) {
@@ -216,7 +252,7 @@ int AdjacencyList::deleteRoute(int routeId, int from, int to) {
                             // numberOfRoutes--;
 
                             std::cout << "Route deleted successfully" << std::endl;
-                            return SUCCESS;
+                            return SERV_SUCCESS;
                         } else {
                             it++;
                         }
@@ -228,19 +264,19 @@ int AdjacencyList::deleteRoute(int routeId, int from, int to) {
 
 
     std::cout << "Route not found" << std::endl;
-    return ERROR;
+    return SERV_ERROR;
 }
 
 int AdjacencyList::addRoute(Route* route) {
     if (route == nullptr) {
         std::cout << "Route is null" << std::endl;
-        return ERROR;
+        return SERV_ERROR;
     }
 
     // check if route already exists
     if (isRouteExists(route)) {
         std::cout << "Route " << route->getFrom() << " -> " << route->getTo() << " already exists" << std::endl;
-        return ERROR;
+        return SERV_ERROR;
     }
 
     // 设置routeid
@@ -260,7 +296,7 @@ int AdjacencyList::addRoute(Route* route) {
 
                     numberOfRoutes++;
 
-                    return SUCCESS;
+                    return SERV_SUCCESS;
                 }
             }
 
@@ -285,7 +321,7 @@ int AdjacencyList::addRoute(Route* route) {
 
     numberOfRoutes++;
 
-    return SUCCESS;
+    return SERV_SUCCESS;
 }
 
 void AdjacencyList::displayAdjacencyList() {
@@ -387,7 +423,7 @@ int AdjacencyList::findAllRoutes(int from, int to, int vehicleType, std::vector<
         std::cout << to << std::endl;
     }
 
-    return SUCCESS;
+    return SERV_SUCCESS;
 }
 
 // 最快到达算法
@@ -452,7 +488,7 @@ int AdjacencyList::mostFastestWay(int from, int to, int vehicleType, std::vector
     // 判断是否可达
     if (recordTable[to] == std::numeric_limits<long>::max()) {
         std::cout << "No way to reach" << std::endl;
-        return ERROR;
+        return SERV_ERROR;
     }
 
     // 回溯路径
@@ -460,7 +496,7 @@ int AdjacencyList::mostFastestWay(int from, int to, int vehicleType, std::vector
     while (currentCity != from) {
         if (routeTable.find(currentCity) == routeTable.end()) {
             std::cout << "No way to reach" << std::endl;
-            return ERROR;
+            return SERV_ERROR;
         }
         result.push_back(routeTable[currentCity]);
         currentCity = routeTable[currentCity]->getFrom();
@@ -485,7 +521,7 @@ int AdjacencyList::mostFastestWay(int from, int to, int vehicleType, std::vector
     }
     std::cout << to << std::endl;
 
-    return SUCCESS;
+    return SERV_SUCCESS;
 }
 
 int AdjacencyList::mostEconomicWay(int from, int to, int vehicleType, std::vector<Route*>& result) {
@@ -547,7 +583,7 @@ int AdjacencyList::mostEconomicWay(int from, int to, int vehicleType, std::vecto
     // 判断是否可达
     if (recordTable[to] == std::numeric_limits<long>::max()) {
         std::cout << "No way to reach" << std::endl;
-        return ERROR;
+        return SERV_ERROR;
     }
 
     // 回溯路径
@@ -555,7 +591,7 @@ int AdjacencyList::mostEconomicWay(int from, int to, int vehicleType, std::vecto
     while (currentCity != from) {
         if (routeTable.find(currentCity) == routeTable.end()) {
             std::cout << "No way to reach" << std::endl;
-            return ERROR;
+            return SERV_ERROR;
         }
         result.push_back(routeTable[currentCity]);
         currentCity = routeTable[currentCity]->getFrom();
@@ -575,6 +611,6 @@ int AdjacencyList::mostEconomicWay(int from, int to, int vehicleType, std::vecto
         std::cout << route->getFrom() << "(routeid: " << route->getRouteId() << ") -> ";
     }
 
-    return SUCCESS;
+    return SERV_SUCCESS;
 }
 

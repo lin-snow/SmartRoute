@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <iostream>
 #include <string>
 #include <winsock2.h>
@@ -18,6 +17,7 @@
 
 #include "server.h"
 
+#include "../module/constants.h"
 #include "../module/module.h"
 #include "../graph/graph.h"
 #include "../utils/jsonTool.hpp"
@@ -292,7 +292,7 @@ void Server::run() {
         std::cout << "City Code: " << cityCode << std::endl;
 
         City* city = new City(name, std::stoi(cityCode));
-        if (serverSys->addCity(city) == ERROR) {
+        if (serverSys->addCity(city) == SERV_ERROR) {
             Result result(400, "City Add Failed!", {});
             crow::json::wvalue res = crow::json::load(result.error().dump());
             return res;
@@ -316,7 +316,7 @@ void Server::run() {
 
             crow::json::wvalue res;
 
-            if (serverSys->deleteCity(theCityCode) == ERROR) {
+            if (serverSys->deleteCity(theCityCode) == SERV_ERROR) {
                 Result result(400, "City Delete Failed!", {});
                 crow::json::wvalue res = crow::json::load(result.error().dump());
                 return res;
@@ -336,15 +336,39 @@ void Server::run() {
         }
     });
 
-    // CROW_ROUTE(app, "/admin/city/update").methods("PUT"_method)
-    // ([](){
-    //     // return json data
-    //     crow::json::wvalue res;
-    //     res["msg"] = "Hello, Admin City Update!";
-    //     res["code"] = 200;
+    CROW_ROUTE(app, "/api/admin/city/update").methods("PUT"_method)
+    ([serverSys](const crow::request& req){ 
+        crow::multipart::message x(req);
+        std::string oldName = x.get_part_by_name("oldName").body;
+        std::string oldCityCode = x.get_part_by_name("oldCityCode").body;
+        std::string name = x.get_part_by_name("name").body;
+        std::string cityCode = x.get_part_by_name("cityCode").body;
 
-    //     return res;
-    // });
+        std::cout << "Old City Name: " << oldName << std::endl;
+        std::cout << "Old City Code: " << oldCityCode << std::endl;
+
+        std::cout << "City Name: " << name << std::endl;
+        std::cout << "City Code: " << cityCode << std::endl;
+
+        City* oldCity = new City(oldName, std::stoi(oldCityCode));
+        City* newCity = new City(name, std::stoi(cityCode));
+
+        try {
+            if (serverSys->updateCity(oldCity, newCity) == SERV_ERROR) {
+                Result result(400, "City Update Failed!", {});
+                crow::json::wvalue res = crow::json::load(result.error().dump());
+                return res;
+            } else {
+                Result result(200, "City updated successfully", city2json(newCity));
+                crow::json::wvalue res = crow::json::load(result.success().dump());
+                return res;
+            }
+        } catch(std::exception &e) {
+            Result result(400, "City Update Failed!", {});
+            crow::json::wvalue res = crow::json::load(result.error().dump());
+            return res;
+        }
+    });
 
     CROW_ROUTE(app, "/api/admin/route/add").methods("POST"_method, "OPTIONS"_method)
     ([serverSys](const crow::request& req){
@@ -377,7 +401,7 @@ void Server::run() {
 
         try {
             Route* route = new Route(std::stoi(from), std::stoi(to), std::stol(distance), duration, new Vehicle((VehicleType)std::stoi(vehicleType), vehicleCode), Time(departureTime), Time(arrivalTime), std::stol(cost));
-            if (serverSys->addRoute(route) == ERROR) {
+            if (serverSys->addRoute(route) == SERV_ERROR) {
                 Result result(400, "Route Add Failed!", {});
                 crow::json::wvalue res = crow::json::load(result.error().dump());
                 return res;
@@ -405,7 +429,7 @@ void Server::run() {
             nlohmann::json response;
 
             // delete route
-            if (serverSys->deleteRoute(theRouteId, from, to) == ERROR) {
+            if (serverSys->deleteRoute(theRouteId, from, to) == SERV_ERROR) {
                 Result result(400, "Route Delete Failed!", {});
                 crow::json::wvalue res = crow::json::load(result.error().dump());
                 return res;

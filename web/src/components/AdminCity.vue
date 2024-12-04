@@ -131,11 +131,6 @@ const handleDelete = (index: number, row: City) => {
 
 const handleEdit = (index: number, row: City) => {
   console.log('Edit:', index, row);
-  ElNotification({
-    title: 'Edit',
-    message: '开发中...',
-    type: 'info',
-  })
 }
 
 const ruleFormRef = ref<FormInstance>()

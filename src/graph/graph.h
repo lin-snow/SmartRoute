@@ -63,6 +63,7 @@ class AdjacencyList {
         bool isRouteExists(Route* route);
         int addCity(City* city);
         int deleteCity(int cityCode);
+        int updateCity(City* oldCity, City* newCity);
         int addRoute(Route* route);
         int deleteRoute(int routeId, int from, int to);
 
