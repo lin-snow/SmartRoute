@@ -224,6 +224,21 @@ int AdjacencyList::updateCity(City* oldCity, City* newCity) {
         }
     }
 
+    // 更新邻接表中相关的Route的From和To
+    for (AdjacencyListPair pair : *adjacencyList) {
+        for (AdjacencyListNode node : *pair.getNodes()) {
+            for (Route* route : *node.getRoutes()) {
+                if (route->getFrom() == oldCity->getCityCode()) {
+                    route->setFrom(newCity->getCityCode());
+                }
+
+                if (route->getTo() == oldCity->getCityCode()) {
+                    route->setTo(newCity->getCityCode());
+                }
+            }
+        }
+    }
+
     // 更新城市
     for (City* city : *citiesList) {
         if (city->getCityCode() == oldCity->getCityCode() && city->getName() == oldCity->getName()) {
@@ -233,6 +248,7 @@ int AdjacencyList::updateCity(City* oldCity, City* newCity) {
             return SERV_SUCCESS;
         }
     }
+
 
     return SERV_ERROR;
 }

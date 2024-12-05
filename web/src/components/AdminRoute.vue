@@ -230,10 +230,20 @@ const onSubmit = async () => {
       await apiClient.post('admin/route/add', formData) // 直接发送 formData 对象
         .then((res) => {
           console.log(res);
+          if (res.data.code !== 200) {
+            ElNotification({
+              title: 'Error',
+              message: '添加失败',
+              duration: 800,
+              type: 'error',
+            });
+            return;
+          }
           routesStore.fetchRoutes();
           ElNotification({
             title: 'Success',
             message: '添加成功',
+            duration: 1200,
             type: 'success',
           })
           onReset();
@@ -244,6 +254,7 @@ const onSubmit = async () => {
           ElNotification({
             title: 'Error',
             message: '添加失败',
+            duration: 800,
             type: 'error',
           })
         });
@@ -252,6 +263,7 @@ const onSubmit = async () => {
         ElNotification({
           title: 'Error',
           message: '添加失败',
+          duration: 800,
           type: 'error',
         });
       }
@@ -259,6 +271,7 @@ const onSubmit = async () => {
       ElNotification({
         title: 'Error',
         message: '请检查表单',
+        duration: 800,
         type: 'error',
       });
     }
@@ -307,12 +320,6 @@ const handleDelete = (index: number, row: Route) => {
 
 const handleEdit = (index: number, row: Route) => {
   router.push(`/admin/route/edit/${row.routeId}`);
-  // console.log('Edit:', index, row);
-  // ElNotification({
-  //   title: 'Edit',
-  //   message: '开发中...',
-  //   type: 'info',
-  // })
 };
 
 

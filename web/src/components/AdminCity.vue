@@ -184,7 +184,15 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.validate((isValid) => {
-    if (!isValid) return;
+    if (!isValid) {
+      ElNotification({
+        title: 'Error',
+        message: '请检查表单',
+        duration: 800,
+        type: 'error',
+      })
+      return;
+    }
 
       console.log('submit!')
       // 提交表单
@@ -198,9 +206,6 @@ const submitForm = (formEl: FormInstance | undefined) => {
       apiClient.post('admin/city/add', formData) // 直接发送 formData 对象
         .then(() => {
           cityStore.fetchCities();
-
-          console.log("@@@@@@@@@@@@@")
-          console.log("All cities:", cityStore.allCities);
 
           resetForm(formEl);
 
