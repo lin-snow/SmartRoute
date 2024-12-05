@@ -1,14 +1,8 @@
 <template>
   <div>
-      <h1>Update City</h1>
-      <p>Current city code: {{ curCityCode }}</p>
-
-      <p>name: {{ oldCity?.name }}</p>
-      <p>cityCode: {{ oldCity?.cityCode }}</p>
-
       <div class="border-2 rounded-md border-double p-1 mx-auto mb-2 shadow w-48 border-orange-500">
         <div class="mb-2 border-b-2">
-          <h2 class="font-mono font-bold text-center">更新站点</h2>
+          <h2 class="font-mono font-bold text-center">编辑站点</h2>
         </div>
 
         <div>
@@ -33,7 +27,7 @@
 
           <el-form-item>
             <el-button type="primary" @click="submitForm(ruleFormRef)" class="mx-auto">
-              创建
+              保存更改
             </el-button>
             <el-button @click="resetForm(ruleFormRef)" class="mx-auto">Reset</el-button>
           </el-form-item>

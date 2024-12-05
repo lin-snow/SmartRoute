@@ -1,11 +1,5 @@
 <template>
   <div>
-    <h1>Route Update</h1>
-    <p>Current RouteId : {{ curRouteId }}</p>
-
-    <p>From: {{ curRoute?.from }}</p>
-    <p>To: {{ curRoute?.to }}</p>
-
     <div class=" border-2 border-double border-amber-700 p-1 rounded-md shadow-md ">
           <h2 class="font-mono font-bold mx-auto text-center">编辑线路</h2>
           <div>
@@ -53,8 +47,8 @@
                   <el-input v-model.number="form.distance" placeholder="输入距离 (km)" />
                 </el-form-item>
                 <el-form-item class="ml-12 grid grid-rows-2 gap-8 mt-10">
-                  <el-button type="primary" @click="onSubmit">创建</el-button>
-                  <el-button @click="onReset">取消</el-button>
+                  <el-button type="primary" @click="onSubmit">保存更改</el-button>
+                  <el-button @click="onReset">重置</el-button>
                 </el-form-item>
               </el-form>
           </div>
@@ -71,22 +65,8 @@ import { ElNotification } from 'element-plus';
 import { apiClient } from '@/utils/axios/axios';
 import type { FormInstance } from 'element-plus';
 
-interface Route {
-  routeId: number;
-  from: number;
-  to: number;
-  distance: number;
-  duration: number;
-  vehicleType: number;
-  vehicleCode: string;
-  departureTime: string;
-  arrivalTime: string;
-  cost: number;
-}
-
 const router = useRouter();
 const routesStore = useRoutesStore();
-const curRoute = ref<Route | null>(null);
 
 // 获取当前路由参数
 const curRouteId = router.currentRoute.value.params.routeId;
@@ -213,11 +193,9 @@ const onReset = () => {
     routeFormRef.value.resetFields();
   }
   Object.assign(form, {
-    departureCity: '',
-    destinationCity: '',
     vehicleType: '',
-    vehicleName: '',
-    departureDate: '',
+    vehicleCode: '',
+    departureTime: '',
     arrivalTime: '',
     cost: null,
     distance: null,
