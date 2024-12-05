@@ -1,7 +1,5 @@
 <template>
-  <div>
     <UpdateCity />
-  </div>
 </template>
 
 <script setup lang="ts">

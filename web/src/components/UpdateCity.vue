@@ -1,45 +1,65 @@
 <template>
-      <div class="border-2 rounded-md border-double p-1 mx-auto mb-2 shadow w-48 border-orange-500">
-        <div class="mb-2 border-b-2">
-          <h2 class="font-mono font-bold text-center">编辑站点</h2>
-        </div>
-
-        <div>
-          <el-form
-          ref="ruleFormRef"
-          style="max-width: 600px"
-          :model="ruleForm"
-          status-icon
-          :rules="rules"
-          label-width="auto"
-          class="demo-ruleForm"
-        >
-          <el-form-item label="站点名" prop="name">
-            <el-input v-model="ruleForm.name" />
-          </el-form-item>
-
-          <el-form-item label="代码" prop="code">
-            <el-input
-              v-model="ruleForm.code"
-            />
-          </el-form-item>
-
-          <el-form-item>
-            <el-button type="primary" @click="submitForm(ruleFormRef)" class="mx-auto">
-              保存更改
-            </el-button>
-            <el-button @click="resetForm(ruleFormRef)" class="mx-auto">Reset</el-button>
-          </el-form-item>
-        </el-form>
-        </div>
+  <div class="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-blue-500/30 via-purple-500/30 to-pink-500/30 backdrop-blur-sm">
+    <div class="bg-white/90 rounded-xl shadow-2xl p-8 w-[32rem] max-w-[90vw] transform transition-all hover:scale-[1.01] duration-300 border border-white/20">
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-800/90">编辑站点</h2>
       </div>
+
+      <el-form
+        ref="ruleFormRef"
+        :model="ruleForm"
+        status-icon
+        :rules="rules"
+        label-width="80px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="站点名" prop="name">
+          <el-input
+            v-model="ruleForm.name"
+            class="hover:shadow-md transition-all duration-200 glassmorphism"
+            placeholder="请输入站点名称"
+          />
+        </el-form-item>
+
+        <el-form-item label="代码" prop="code">
+          <el-input
+            v-model="ruleForm.code"
+            class="hover:shadow-md transition-all duration-200 glassmorphism"
+            placeholder="请输入站点代码"
+          />
+        </el-form-item>
+
+        <el-form-item class="flex justify-end gap-3 mt-8 mb-0">
+          <el-button
+            @click="router.push('/admin/city')"
+            class="!px-6 hover:scale-105 transition-transform duration-300 shadow-md"
+          >
+            返回
+          </el-button>
+          <el-button
+            @click="resetForm(ruleFormRef)"
+            class="!px-6 hover:scale-105 transition-transform duration-300 shadow-md"
+          >
+            重置
+          </el-button>
+          <el-button
+            type="primary"
+            @click="submitForm(ruleFormRef)"
+            class="!px-6 hover:scale-105 transition-transform duration-300 shadow-md"
+          >
+            保存更改
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { reactive, ref } from 'vue';
 import { useCityStore } from '@/stores/cityStore';
-import type { FormRules, FormInstance } from 'element-plus';
+import { type FormRules, type FormInstance, ElNotification } from 'element-plus';
 
 
 
@@ -101,9 +121,18 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 })
 
 const submitForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
+  if (!formEl) return;
+
   formEl.validate(async (isValid) => {
-    if (!isValid) return;
+    if (!isValid) {
+      ElNotification({
+        title: '表单错误',
+        message: '请检查表单是否正确',
+        type: 'error',
+        duration: 1000,
+      })
+      return;
+    }
 
     console.log('submit!');
     // 提交表单
@@ -132,3 +161,21 @@ const resetForm = (formEl: FormInstance | undefined) => {
 }
 
 </script>
+
+<style scoped>
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+:deep(.el-input__wrapper) {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+:deep(.el-input__wrapper:hover) {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+}
+</style>

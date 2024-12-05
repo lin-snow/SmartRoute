@@ -1,59 +1,79 @@
 <template>
-  <div>
-    <div class=" border-2 border-double border-amber-700 p-1 rounded-md shadow-md ">
-          <h2 class="font-mono font-bold mx-auto text-center">编辑线路</h2>
-          <div>
-            <el-form
-                ref="routeFormRef"
-                :model="form"
-                :rules="rules"
-                label-width="auto"
-                style="max-width: 600px"
-              >
-                <el-form-item label="出发点" prop="from">
-                  <!-- 输入出发点 -->
-                   <input type="text" v-model="form.from" disabled />
+  <div class="min-h-screen bg-gradient py-8 px-4 flex justify-center items-center">
+    <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 border border-gray-200 glass-effect">
+      <el-button
+        class="mb-6"
+        @click="router.push('/admin/route')"
+        type="default"
+        :icon="ArrowLeft"
+      >
+        返回线路管理
+      </el-button>
 
-                </el-form-item>
-                <el-form-item label="目的地" prop="to">
-                  <!-- 输入目的地 -->
-                  <input type="text" v-model="form.to" disabled>
-                </el-form-item>
-                <el-form-item label="交通工具类型" prop="vehicleType">
-                  <el-radio-group v-model="form.vehicleType">
-                    <el-radio :label="'0'">火车</el-radio>
-                    <el-radio :label="'1'">飞机</el-radio>
-                  </el-radio-group>
-                </el-form-item>
-                <el-form-item label="班号" prop="vehicleCode">
-                  <el-input v-model="form.vehicleCode" placeholder="输入班号" />
-                </el-form-item>
-                <el-form-item label="出发和到达时间">
-                  <el-time-picker
-                  v-model="rangeTime"
-                  is-range
-                  range-separator="To"
-                  start-placeholder="Start time"
-                  end-placeholder="End time"
-                  format="HH:mm"
-                  @change="handleTimeChange"
-                />
+      <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">编辑线路信息</h2>
 
-                </el-form-item>
-                <el-form-item label="票价" prop="cost">
-                  <el-input v-model.number="form.cost" placeholder="输入票价 (￥)" />
-                </el-form-item>
-                <el-form-item label="距离" prop="distance">
-                  <el-input v-model.number="form.distance" placeholder="输入距离 (km)" />
-                </el-form-item>
-                <el-form-item class="ml-12 grid grid-rows-2 gap-8 mt-10">
-                  <el-button type="primary" @click="onSubmit">保存更改</el-button>
-                  <el-button @click="onReset">重置</el-button>
-                </el-form-item>
-              </el-form>
-          </div>
-        </div>
+      <el-form
+        ref="routeFormRef"
+        :model="form"
+        :rules="rules"
+        label-width="120px"
+        class="space-y-6"
+      >
+        <el-form-item label="出发站点代码" prop="from">
+          <!-- 输入出发点 -->
+          <input type="text" v-model="form.from" disabled />
 
+        </el-form-item>
+        <el-form-item label="目标站点代码" prop="to">
+          <!-- 输入目的地 -->
+          <input type="text" v-model="form.to" disabled>
+        </el-form-item>
+        <el-form-item label="交通工具类型" prop="vehicleType">
+          <el-radio-group v-model="form.vehicleType">
+            <el-radio :label="'0'">火车</el-radio>
+            <el-radio :label="'1'">飞机</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="班号" prop="vehicleCode">
+          <el-input v-model="form.vehicleCode" placeholder="输入班号" />
+        </el-form-item>
+        <el-form-item label="出发和到达时间">
+          <el-time-picker
+          v-model="rangeTime"
+          is-range
+          range-separator="To"
+          start-placeholder="Start time"
+          end-placeholder="End time"
+          format="HH:mm"
+          @change="handleTimeChange"
+        />
+
+        </el-form-item>
+        <el-form-item label="票价" prop="cost">
+          <el-input v-model.number="form.cost" placeholder="输入票价 (￥)" />
+        </el-form-item>
+        <el-form-item label="距离" prop="distance">
+          <el-input v-model.number="form.distance" placeholder="输入距离 (km)" />
+        </el-form-item>
+        <el-form-item class="flex justify-center gap-4 pt-6">
+          <el-button
+            type="primary"
+            @click="onSubmit"
+            class="w-32"
+            :icon="Check"
+          >
+            保存更改
+          </el-button>
+          <el-button
+            @click="onReset"
+            class="w-32"
+            :icon="RefreshLeft"
+          >
+            重置
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 
@@ -64,6 +84,7 @@ import { reactive, ref } from 'vue';
 import { ElNotification } from 'element-plus';
 import { apiClient } from '@/utils/axios/axios';
 import type { FormInstance } from 'element-plus';
+import { ArrowLeft, Check, RefreshLeft } from '@element-plus/icons-vue'
 
 const router = useRouter();
 const routesStore = useRoutesStore();
@@ -203,3 +224,54 @@ const onReset = () => {
 };
 
 </script>
+
+<style scoped>
+.bg-gradient {
+  background: linear-gradient(135deg,
+    #a8edea 0%,
+    #fed6e3 100%
+  );
+  /* 或者可以选择以下任一渐变方案：
+  background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+  background: linear-gradient(to right, #f6d365 0%, #fda085 100%);
+  background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+  */
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+}
+
+:deep(.el-form-item__label) {
+  font-weight: 600;
+  color: #374151;
+}
+
+:deep(.el-input__wrapper) {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+:deep(.el-input__wrapper:hover) {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+:deep(.el-button) {
+  transition: all 0.2s;
+}
+
+:deep(.el-button:hover) {
+  transform: translateY(-1px);
+}
+
+:deep(.el-radio__label) {
+  color: #374151;
+}
+
+:deep(.el-time-picker) {
+  width: 100%;
+}
+</style>

@@ -132,7 +132,7 @@
         <el-table-column label="Actions" align="center" width="150">
           <template #default="scope">
             <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
-              Edit
+              编辑
             </el-button>
 
             <el-button

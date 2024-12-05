@@ -1,7 +1,5 @@
 <template>
-  <div>
     <UpdateRoute />
-  </div>
 </template>
 
 <script setup lang="ts">
