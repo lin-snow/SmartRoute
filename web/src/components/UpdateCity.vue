@@ -1,5 +1,4 @@
 <template>
-  <div>
       <div class="border-2 rounded-md border-double p-1 mx-auto mb-2 shadow w-48 border-orange-500">
         <div class="mb-2 border-b-2">
           <h2 class="font-mono font-bold text-center">编辑站点</h2>
@@ -33,9 +32,7 @@
           </el-form-item>
         </el-form>
         </div>
-
       </div>
-  </div>
 </template>
 
 <script setup lang="ts">
