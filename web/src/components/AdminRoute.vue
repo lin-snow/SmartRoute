@@ -157,9 +157,11 @@ import { apiClient } from '@/utils/axios/axios';
 import { useCityStore } from '@/stores/cityStore';
 import { ElNotification, type FormInstance } from 'element-plus'
 import { onMounted, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const routesStore = useRoutesStore();
 const cityStore = useCityStore();
+const router = useRouter();
 
 //------------------------ Add Route ------------------------
 
@@ -304,12 +306,13 @@ const handleDelete = (index: number, row: Route) => {
 };
 
 const handleEdit = (index: number, row: Route) => {
-  console.log('Edit:', index, row);
-  ElNotification({
-    title: 'Edit',
-    message: '开发中...',
-    type: 'info',
-  })
+  router.push(`/admin/route/edit/${row.routeId}`);
+  // console.log('Edit:', index, row);
+  // ElNotification({
+  //   title: 'Edit',
+  //   message: '开发中...',
+  //   type: 'info',
+  // })
 };
 
 

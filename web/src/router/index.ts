@@ -40,6 +40,16 @@ const router = createRouter({
       name: 'adminRoute',
       component: () => import('../views/RouteView.vue'),
     },
+    {
+      path: '/admin/city/edit/:cityCode',
+      name: 'adminCityEdit',
+      component: () => import('../views/CityUpdateView.vue'),
+    },
+    {
+      path: '/admin/route/edit/:routeId',
+      name: 'adminRouteEdit',
+      component: () => import('../views/RouteUpdateView.vue'),
+    }
   ],
 })
 

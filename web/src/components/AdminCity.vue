@@ -115,6 +115,7 @@
 import { useCityStore } from '@/stores/cityStore';
 import { ElNotification, type FormInstance, type FormRules } from 'element-plus'
 import { onMounted, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { apiClient } from '@/utils/axios/axios';
 import AdminIcon from './icon/adminIcon.vue';
 
@@ -124,13 +125,14 @@ interface City {
 }
 
 const cityStore = useCityStore();
+const router = useRouter();
 
 const handleDelete = (index: number, row: City) => {
   cityStore.deleteCity(index, row);
 }
 
 const handleEdit = (index: number, row: City) => {
-  console.log('Edit:', index, row);
+  router.push(`/admin/city/edit/${row.cityCode}`);
 }
 
 const ruleFormRef = ref<FormInstance>()
@@ -161,14 +163,14 @@ const validateCode = (rule: any, value: any, callback: any) => {
     return callback(new Error('Please input the Code'));
   }
 
-  // 检查是否已经存在
-  if (cityStore.allCities && cityStore.allCities.some((city) => city.cityCode === value)) {
-    return callback(new Error('City Code already exists'));
-  }
-
   // 检查是否为数字
   if (!/^\d+$/.test(value)) {
     return callback(new Error('City Code must be a number'));
+  }
+
+  // 检查是否已经存在
+  if (cityStore.allCities && cityStore.allCities.some((city) => city.cityCode == value)) {
+    return callback(new Error('City Code already exists'));
   }
 
   callback();
@@ -181,7 +183,8 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 
 const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  formEl.validate(() => {
+  formEl.validate((isValid) => {
+    if (!isValid) return;
 
       console.log('submit!')
       // 提交表单

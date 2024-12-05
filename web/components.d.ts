@@ -33,6 +33,8 @@ declare module 'vue' {
     RouteIcon: typeof import('./src/components/icon/routeIcon.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    UpdateCity: typeof import('./src/components/UpdateCity.vue')['default']
+    UpdateRoute: typeof import('./src/components/UpdateRoute.vue')['default']
     UserComp: typeof import('./src/components/UserComp.vue')['default']
   }
 }

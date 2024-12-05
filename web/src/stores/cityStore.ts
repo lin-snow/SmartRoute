@@ -68,11 +68,47 @@ export const useCityStore = defineStore('allCitys', () => {
     }
   }
 
+  async function updateCity(cityForm: FormData) {
+    if (!cityForm) return;
+
+    try {
+      await apiClient.put('admin/city/update', cityForm)
+        .then((res) => {
+          if (res.data.code !== 200) {
+            ElNotification({
+              title: 'Error',
+              message: '修改失败',
+              type: 'error',
+            })
+            return;
+          }
+          fetchCities();
+          ElNotification({
+            title: 'Success',
+            message: '修改成功',
+            type: 'success',
+          })
+        })
+        .catch((error) => {
+          console.error(error);
+          ElNotification({
+            title: 'Error',
+            message: '修改失败',
+            type: 'error',
+          })
+        });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
   return {
     allCities,
     citiesCount,
     loading,
     fetchCities,
-    deleteCity
+    deleteCity,
+    updateCity,
   }
 })
