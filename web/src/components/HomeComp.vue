@@ -96,11 +96,4 @@ onMounted(() => {
   userStore.loading = true;
 });
 
-ElNotification({
-    title: '欢迎！',
-    message: '欢迎使用SmartRoute！',
-    type: 'success',
-    duration: 400,
-  });
-
 </script>
