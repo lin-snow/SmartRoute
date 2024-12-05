@@ -199,7 +199,7 @@ const onSubmit = async () => {
       }
     } else {
       ElNotification({
-        title: 'Error',
+        title: '表单错误',
         message: '请检查表单',
         duration: 800,
         type: 'error',

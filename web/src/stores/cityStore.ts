@@ -69,7 +69,15 @@ export const useCityStore = defineStore('allCitys', () => {
   }
 
   async function updateCity(cityForm: FormData) {
-    if (!cityForm) return;
+    if (!cityForm) {
+      ElNotification({
+        title: '表单错误',
+        message: '请检查表单',
+        duration: 800,
+        type: 'error',
+      })
+      return;
+    }
 
     try {
       await apiClient.put('admin/city/update', cityForm)
@@ -78,6 +86,7 @@ export const useCityStore = defineStore('allCitys', () => {
             ElNotification({
               title: 'Error',
               message: '修改失败',
+              duration: 800,
               type: 'error',
             })
             return;
@@ -86,6 +95,7 @@ export const useCityStore = defineStore('allCitys', () => {
           ElNotification({
             title: 'Success',
             message: '修改成功',
+            duration: 1200,
             type: 'success',
           })
         })
@@ -94,6 +104,7 @@ export const useCityStore = defineStore('allCitys', () => {
           ElNotification({
             title: 'Error',
             message: '修改失败',
+            duration: 800,
             type: 'error',
           })
         });

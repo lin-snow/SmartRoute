@@ -182,7 +182,16 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 })
 
 const submitForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return
+  if (!formEl) {
+    ElNotification({
+      title: '表单错误',
+      message: '请检查表单',
+      duration: 800,
+      type: 'error',
+    })
+    return;
+  }
+
   formEl.validate((isValid) => {
     if (!isValid) {
       ElNotification({
