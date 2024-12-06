@@ -1,5 +1,5 @@
 <template>
-  <div class="h-auto w-fit grid grid-cols-2 gap-4 relative top-40 mx-auto">
+  <div class="h-auto w-fit grid grid-cols-2 gap-4 relative top-20 mx-auto mb-24">
     <div class="bg-white rounded-xl shadow-lg p-6 min-w-[500px] border border-gray-200 glass-effect">
       <div class="mb-6">
         <h2 class="text-2xl font-bold text-gray-800 text-center">站点管理</h2>

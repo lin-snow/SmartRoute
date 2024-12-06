@@ -1,5 +1,5 @@
 <template>
-  <div class="h-auto w-fit grid grid-cols-[2fr_3fr] gap-4 relative top-12 mx-auto">
+  <div class="h-auto w-fit grid grid-cols-[1.5fr_3fr] gap-4 relative top-10 mx-auto">
     <!-- 左侧添加路线表单 -->
     <div class="bg-white rounded-xl shadow-lg p-4 border border-gray-200 glass-effect min-w-[400px]">
       <div class="mb-4">
