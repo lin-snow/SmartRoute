@@ -1,8 +1,9 @@
 <template>
-  <div class="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-blue-500/30 via-purple-500/30 to-pink-500/30 backdrop-blur-sm">
-    <div class="bg-white/90 rounded-xl shadow-2xl p-8 w-[32rem] max-w-[90vw] transform transition-all  duration-300 border border-white/20">
+  <div class="h-auto w-fit relative top-40 mx-auto">
+    <div class="bg-white rounded-xl shadow-lg p-6 min-w-[500px] border border-gray-200 glass-effect">
       <div class="mb-6">
-        <h2 class="text-2xl font-bold text-gray-800/90">编辑站点</h2>
+        <h2 class="text-2xl font-bold text-gray-800 text-center">编辑站点</h2>
+        <div class="w-16 h-1 bg-amber-500 mx-auto mt-2"></div>
       </div>
 
       <el-form
@@ -10,42 +11,34 @@
         :model="ruleForm"
         status-icon
         :rules="rules"
-        label-width="80px"
-        class="demo-ruleForm"
+        label-width="100px"
+        class="max-w-md mx-auto"
       >
         <el-form-item label="站点名" prop="name">
-          <el-input
-            v-model="ruleForm.name"
-            class="hover:shadow-md transition-all duration-200 glassmorphism"
-            placeholder="请输入站点名称"
-          />
+          <el-input v-model="ruleForm.name" placeholder="请输入站点名称" />
         </el-form-item>
 
         <el-form-item label="代码" prop="code">
-          <el-input
-            v-model="ruleForm.code"
-            class="hover:shadow-md transition-all duration-200 glassmorphism"
-            placeholder="请输入站点代码"
-          />
+          <el-input v-model="ruleForm.code" placeholder="请输入站点代码" />
         </el-form-item>
 
-        <el-form-item class="flex justify-end gap-3 mt-8 mb-0">
+        <el-form-item class="flex justify-center items-center gap-3 mt-6">
           <el-button
             @click="router.push('/admin/city')"
-            class="!px-6 hover:scale-105 transition-transform duration-300 shadow-md"
+            class="w-24 hover:shadow-md transition-shadow"
           >
             返回
           </el-button>
           <el-button
             @click="resetForm(ruleFormRef)"
-            class="!px-6 hover:scale-105 transition-transform duration-300 shadow-md"
+            class="w-24 hover:shadow-md transition-shadow"
           >
             重置
           </el-button>
           <el-button
             type="primary"
             @click="submitForm(ruleFormRef)"
-            class="!px-6 hover:scale-105 transition-transform duration-300 shadow-md"
+            class="w-24 hover:shadow-md transition-shadow"
           >
             保存更改
           </el-button>
@@ -163,19 +156,16 @@ const resetForm = (formEl: FormInstance | undefined) => {
 </script>
 
 <style scoped>
-.glassmorphism {
-  background: rgba(255, 255, 255, 0.7) !important;
-  backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+.glass-effect {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
 }
 
 :deep(.el-input__wrapper) {
-  background-color: transparent !important;
-  box-shadow: none !important;
+  box-shadow: 0 0 0 1px #dcdfe6 !important;
 }
 
 :deep(.el-input__wrapper:hover) {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 0 0 1px #c0c4cc !important;
 }
 </style>

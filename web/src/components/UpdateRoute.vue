@@ -2,22 +2,26 @@
   <div class="min-h-screen bg-gradient py-8 px-4 flex justify-center items-center">
     <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 border border-gray-200 glass-effect">
       <el-button
-        class="mb-6"
+        class="mb-6 hover:shadow-md transition-shadow"
         @click="router.push('/admin/route')"
-        type="default"
+        type="primary"
+        plain
         :icon="ArrowLeft"
       >
         返回线路管理
       </el-button>
 
-      <h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">编辑线路信息</h2>
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-800 text-center">编辑线路信息</h2>
+        <div class="w-16 h-1 bg-amber-500 mx-auto mt-2"></div>
+      </div>
 
       <el-form
         ref="routeFormRef"
         :model="form"
         :rules="rules"
         label-width="120px"
-        class="space-y-6"
+        class="max-w-md mx-auto"
       >
         <el-form-item label="出发站点代码" prop="from">
           <!-- 输入出发点 -->
@@ -55,18 +59,18 @@
         <el-form-item label="距离" prop="distance">
           <el-input v-model.number="form.distance" placeholder="输入距离 (km)" />
         </el-form-item>
-        <el-form-item class="flex justify-center gap-4 pt-6">
+        <el-form-item class="flex justify-center gap-4 mt-6">
           <el-button
             type="primary"
             @click="onSubmit"
-            class="w-32"
+            class="w-32 hover:shadow-md transition-shadow"
             :icon="Check"
           >
             保存更改
           </el-button>
           <el-button
             @click="onReset"
-            class="w-32"
+            class="w-32 hover:shadow-md transition-shadow"
             :icon="RefreshLeft"
           >
             重置
@@ -227,23 +231,13 @@ const onReset = () => {
 
 <style scoped>
 .bg-gradient {
-  background: linear-gradient(135deg,
-    #a8edea 0%,
-    #fed6e3 100%
-  );
-  /* 或者可以选择以下任一渐变方案：
-  background: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
-  background: linear-gradient(to right, #f6d365 0%, #fda085 100%);
-  background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
-  */
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
 }
 
 .glass-effect {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 16px;
 }
 
 :deep(.el-form-item__label) {
@@ -255,16 +249,8 @@ const onReset = () => {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-:deep(.el-input__wrapper:hover) {
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-}
-
 :deep(.el-button) {
   transition: all 0.2s;
-}
-
-:deep(.el-button:hover) {
-  transform: translateY(-1px);
 }
 
 :deep(.el-radio__label) {
@@ -273,5 +259,9 @@ const onReset = () => {
 
 :deep(.el-time-picker) {
   width: 100%;
+}
+
+.shadow-inner {
+  --tw-shadow: inset 0 0px 9px 0 rgb(39 27 18 / 15%);
 }
 </style>
