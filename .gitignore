@@ -39,8 +39,6 @@ dist/
 npm-debug.log
 yarn-error.log
 
-build/*
-
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
@@ -453,4 +451,7 @@ FodyWeavers.xsd
 .history/
 
 .VSCodeCounter/
+build/*
+
+SmartRoute.zip
 
