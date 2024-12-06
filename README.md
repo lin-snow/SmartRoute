@@ -15,10 +15,10 @@ SmartRoute 是一个前端基于 Vue3 、 Vite 、 Element Plus 、 TypeScript �
 ├── CMakeLists.txt                // Cmake配置文件
 ├── README.md                     // 项目README
 ├── LICENSE                       // MIT 开源许可证
-|
+│
 ├── app                           // (文件夹) 存放整个项目编译后的最终可执行文件
 ├── build                         // (文件夹) 存放Cmake编译链接后的文件
-|
+│
 ├── config                        // (文件夹) 存放SmartRoute的配置文件
 │   └── config.yaml               // SmartRoute的配置文件
 ├── data                          // (文件夹) 存放SmartRoute的数据文件
