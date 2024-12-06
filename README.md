@@ -54,7 +54,7 @@ SmartRoute 是一个前端基于 Vue3 、 Vite 、 Element Plus 、 TypeScript �
 │       ├── webTool.hpp           // 存放与web相关的实用组件
 │       └── yamlTool.hpp          // 存放与yaml相关的实用组件
 └── web                           // (文件夹) 存放前端的工程文件夹
-    ├── dist                      // (文件夹) 前端编译构建好的最终文件
+    └── dist                      // (文件夹) 前端编译构建好的最终文件
 
 ```
 
