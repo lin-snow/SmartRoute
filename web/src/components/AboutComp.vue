@@ -25,6 +25,13 @@
             <span class="text-amber-700 font-semibold group-hover:text-amber-500 transition-colors duration-300 border-b-2 border-amber-300"> L1nSn0w </span>
           </a>
         </p>
+
+        <p class="mt-6 text-gray-700">
+          项目地址：
+          <a href="https://github.com/lin-snow/SmartRoute/" class="group">
+            <span class="text-amber-700 font-semibold group-hover:text-amber-500 transition-colors duration-300 border-b-2 border-amber-300"> SmartRoute </span>
+          </a>
+        </p>
       </div>
 
       <!-- 回到首页 -->

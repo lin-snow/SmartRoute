@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient py-8 px-4 flex justify-center items-center">
+  <div class="min-h-screen bg-gray-50 py-8 px-4 flex justify-center items-center">
     <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-8 border border-gray-200 glass-effect">
       <el-button
         class="mb-6 hover:shadow-md transition-shadow"
