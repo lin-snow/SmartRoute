@@ -1,6 +1,6 @@
 <template>
   <div class="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-blue-500/30 via-purple-500/30 to-pink-500/30 backdrop-blur-sm">
-    <div class="bg-white/90 rounded-xl shadow-2xl p-8 w-[32rem] max-w-[90vw] transform transition-all hover:scale-[1.01] duration-300 border border-white/20">
+    <div class="bg-white/90 rounded-xl shadow-2xl p-8 w-[32rem] max-w-[90vw] transform transition-all  duration-300 border border-white/20">
       <div class="mb-6">
         <h2 class="text-2xl font-bold text-gray-800/90">编辑站点</h2>
       </div>
