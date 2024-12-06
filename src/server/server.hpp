@@ -39,7 +39,7 @@ void Server::test() {
 
     // test the mostFastestWay function
     std::vector<std::vector<Route*>> result;
-    theSystem->findAllRoutes(1, 3, 0, result);
+    theSystem->findAllRoutes(1, 3, 1, result);
 
     std::vector<Route*> fastestResult;
 
@@ -56,6 +56,12 @@ void Server::test() {
     economicResult.clear();
 
     theSystem->getGraph()->mostEconomicWay(1, 3, 1, economicResult);
+
+    std::vector<Route*> transferResult;
+
+    theSystem->getGraph()->leastTransferWay(1, 3, 1, transferResult);
+
+    // theSystem->getGraph()->leastTransferWay(1, 3, 1, transferResult);
 
     // theSystem->displaySystem();
 }
@@ -208,11 +214,16 @@ void Server::run() {
             std::vector<Route*> economicRoute;
             serverSys->mostEconomicWay(from, to, vehicleType, economicRoute);
 
+            // 返回最少换乘路线
+            std::vector<Route*> transferRoute;
+            serverSys->leastTransferWay(from, to, vehicleType, transferRoute);
+
             nlohmann::json response;
             nlohmann::json data;
             nlohmann::json allRoutesData;
             nlohmann::json fastestRouteData;
             nlohmann::json economicRouteData;
+            nlohmann::json transferRouteData;
 
             for (std::vector<Route*> routes : allRoutes) {
                 nlohmann::json oneAvailblePlan;
@@ -230,15 +241,19 @@ void Server::run() {
                 economicRouteData.push_back(route2json(r));
             }
 
+            for (Route* r : transferRoute) {
+                transferRouteData.push_back(route2json(r));
+            }
+
             data["allRoutes"] = allRoutesData;
             data["fastestRoute"] = fastestRouteData;
             data["economicRoute"] = economicRouteData;
+            data["transferRoute"] = transferRouteData;
 
-
-            if (allRoutes.size() == 0 && fastestRoute.size() == 0 && economicRoute.size() == 0) {
+            if (allRoutes.size() == 0) {
                 response["msg"] = "No Data Found!";
                 response["code"] = 401;
-            } else if (allRoutes.size() > 0 || fastestRoute.size() > 0 || economicRoute.size() > 0) {
+            } else if (allRoutes.size() > 0) {
                 response["msg"] = "Query Success!";
                 response["code"] = 200;
             } else {

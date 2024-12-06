@@ -206,6 +206,15 @@ int System::mostEconomicWay(int from, int to, int vehicleType, std::vector<Route
     }
 }
 
+int System::leastTransferWay(int from, int to, int vehicleType, std::vector<Route*>& result) {
+    if (from != to && (vehicleType == 1 || vehicleType == 0)) {
+        return graph->leastTransferWay(from, to, vehicleType, result);
+    } else {
+        std::cout << "Invalid from, to or vehicle type" << std::endl;
+        return ERROR;
+    }
+}
+
 // load data from json file
 void System::loadData() {
     std::cout << "Loading data..." << std::endl;

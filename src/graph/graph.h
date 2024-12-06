@@ -75,6 +75,7 @@ class AdjacencyList {
         int findAllRoutes(int from, int to, int vehicleType, std::vector<std::vector<Route*>>& result);
         int mostFastestWay(int from, int to, int vehicleType, std::vector<Route*>& result);
         int mostEconomicWay(int from, int to, int vehicleType, std::vector<Route*>& result);
+        int leastTransferWay(int from, int to, int vehicleType, std::vector<Route*>& result);
 
     private:
         int numberOfCities;

@@ -4,6 +4,7 @@ import { apiClient } from "@/utils/axios/axios";
 import { useCityStore } from "./cityStore";
 
 
+
 interface Route {
   routeId: number;
   from: number;
@@ -30,10 +31,12 @@ export const useUserStore = defineStore('queryResult', () => {
   const allRoutes = ref<Array<RoutePlan>>([])
   const fastestRoute = ref<Array<Route>>([])
   const economicRoute = ref<Array<Route>>([])
+  const transferRoute = ref<Array<Route>>([])
   // 格式化后的数据 (用于展示)
   const formatedAllRoutes = ref()
   const formatedFastestRoute = ref()
   const formatedEconomicRoute = ref()
+  const formatedTransferRoute = ref()
 
   const loading = ref(true);
   const cityStore = useCityStore();
@@ -64,10 +67,11 @@ export const useUserStore = defineStore('queryResult', () => {
       allRoutesData.value = response.data.data.allRoutes;
       fastestRoute.value = response.data.data.fastestRoute;
       economicRoute.value = response.data.data.economicRoute;
+      transferRoute.value = response.data.data.transferRoute;
 
       // 再封装allRoutes
       allRoutes.value = allRoutesData.value.map((routes, index) => ({
-        index: `方案${index + 1}`,
+        index: `方案${index + 1} ( 总费用 ${routes.reduce((acc, route) => acc + route.cost, 0)} ￥ - 总时间 ${routes.reduce((acc, route) => acc + route.duration, 0)} min - 中转次数 ${routes.length - 1} 次 ) `,
         routes,
       }));
 
@@ -120,6 +124,13 @@ export const useUserStore = defineStore('queryResult', () => {
       from: formatCityName(route.from.toString()),
       to: formatCityName(route.to.toString()),
     }));
+
+    // 格式化transferRoute （将from和to转换为城市名）
+    formatedTransferRoute.value = transferRoute.value.map((route) => ({
+      ...route,
+      from: formatCityName(route.from.toString()),
+      to: formatCityName(route.to.toString()),
+    }));
   }
 
   const clearRawData = () => {
@@ -130,9 +141,11 @@ export const useUserStore = defineStore('queryResult', () => {
     allRoutes,
     fastestRoute,
     economicRoute,
+    transferRoute,
     formatedAllRoutes,
     formatedFastestRoute,
     formatedEconomicRoute,
+    formatedTransferRoute,
     loading,
     queryParam,
     fetchResult,

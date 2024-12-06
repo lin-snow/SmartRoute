@@ -696,3 +696,79 @@ int AdjacencyList::mostEconomicWay(int from, int to, int vehicleType, std::vecto
     return SERV_SUCCESS;
 }
 
+// BFS求最少换乘次数
+int AdjacencyList::leastTransferWay(int from, int to, int vehicleType, std::vector<Route*>& result) {
+    // 初始化
+    std::unordered_set<int> visited; // 记录已经访问过的城市
+    std::queue<std::tuple<int, int, Time, Route*>> q; // 定义一个队列
+    std::unordered_map<int, Route*> routeTable; // 记录路径关系，用于回溯完整路径
+    std::unordered_map<int, Time> arrivalTimeTable; // 记录到达每个城市的时间
+
+    // 起点入队 , 0次换乘, 到达时间为0, 路线为空
+    q.push(std::make_tuple(from, 0, Time(0, 0), nullptr));
+    visited.insert(from);
+    arrivalTimeTable[from] = Time(0, 0);
+
+    while (!q.empty()) {
+        auto [curCity, curTransferTimes, curArrivalTime, curRoute] = q.front();
+        q.pop();
+
+        // 如果找到目标城市
+        if (curCity == to) {
+            break;
+        }
+
+        // 遍历邻接表
+        for (AdjacencyListPair pair : *adjacencyList) {
+            if (pair.getCity()->getCityCode() == curCity) {
+                // 找到起点城市
+                for (AdjacencyListNode node : *pair.getNodes()) {
+                    for (Route* route : *node.getRoutes()) {
+                        if (route->getVehicle()->getVehicleType() == vehicleType) { // 判断是否是同一种交通工具
+                            // 判断时间是否合理（当前路线的出发时间是否晚于上一条路线的到达时间）
+                            if (curArrivalTime.diffInMinutes(route->getDepartureTime()) >= 0) {
+                                // 判断是否已经访问过
+                                if (visited.find(route->getTo()) == visited.end()) {
+                                    // 入队
+                                    q.push(std::make_tuple(route->getTo(), curTransferTimes + 1, route->getArrivalTime(), route));
+                                    visited.insert(route->getTo());
+                                    routeTable[route->getTo()] = route;
+                                    arrivalTimeTable[route->getTo()] = route->getArrivalTime();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // 回溯路径
+    int currentCity = to;
+    while (currentCity != from) {
+        if (routeTable.find(currentCity) == routeTable.end()) {
+            std::cout << "No way to reach" << std::endl;
+            return SERV_ERROR;
+        }
+        result.push_back(routeTable[currentCity]);
+        currentCity = routeTable[currentCity]->getFrom();
+    }
+
+    // 反转路径
+    std::reverse(result.begin(), result.end());
+
+    // 输出结果
+    std::cout << "From " << from << " to " << to << " by " << vehicleType << std::endl;
+    std::cout << "The least transfer way is: " << std::endl;
+    std::cout << "Transfer times: " << result.size() - 1 << std::endl;
+
+    // 输出路径
+    std::cout << "Path: ";
+    for (Route* route : result) {
+        std::cout << route->getFrom() << "(routeid: " << route->getRouteId() << ") -> ";
+    }
+    std::cout << to << std::endl;
+
+    return SERV_SUCCESS;
+}
+

@@ -3,10 +3,10 @@ SmartRoute 是一个前端基于 Vue3 、 Vite 、 Element Plus 、 TypeScript �
 后端基于 C++ 、 CrowCpp、 NlohmannJson 、 FKYaml 、 CMake 的智能路线规划系统。
 
 ## 运行样例
-...
+![SmartRoute](./docs/homepage.png)
 
 ## 项目结构
-```
+``` shell
 .
 ├── build.bat                     // 编译整个项目的bat脚本
 ├── build_backend.bat             // 编译后端的bat脚本
@@ -60,19 +60,39 @@ SmartRoute 是一个前端基于 Vue3 、 Vite 、 Element Plus 、 TypeScript �
 
 ## 食用方式
 ### 快速上手
-1. 双击运行app目录下的  `start.bat` 文件即可启动项目的前后端
+- 法一（推荐）
+1. 从Github 的 Release 可直接下载已经编译完的完整可执行文件
+2. 解压后直接运行里面的 `start.bat` 文件即可使用
 
 
-### 从零编译
-1. 配置`Mingw64` + `Cmake` + `Nodejs` 环境后
-2. 双击运行根目录的 `build.bat` 后等待构建前后端
-3. 导航到 `app` 目录下执行 `start.bat` 文件即可启动
+- 法二
+1. 配置 [`Mingw64`](https://www.mingw-w64.org/) + [`Cmake`](https://cmake.org/) + [`Nodejs`](https://nodejs.org/) 环境后
+2. clone repo 到本地 `git clone https://github.com/lin-snow/SmartRoute.git`
+3. 导航到`web` 目录下执行 `npm i` ，等待执行完成
+4. 执行项目根目录下的 `build.bat`  文件等待编译完成
+5. 项目启动后打开浏览器访问 `http://127.0.0.1:23333` 即可使用
 
 ## TODOS
-...
+- [x] 实现所有功能基本可用
+- [ ] 实现Log日志
+- [ ] 算法优化，如最省时、最省钱、最少换成等...
+- [ ] 更好的UI / UX
+- [ ] 完善的文档
+- [ ] 实现一键构建所需运行环境
+- [ ] ~~更丰富的服务，如对规划完的路线提供一键订票~~
+- [ ] ~~跨平台~~  
 
 ## 为什么会有SmartRoute?
-...
+本项目起源于本鼠鼠的大二数据结构课设中的一个题目，由于本人不会qt，然后又在往后端开发发展，所以索性拿这个课设过一下前后端开发，算是一次练习吧！
+
+## 那为什么要使用C++开发后端呢？
+一是出于好奇，想尝试一下什么体验，二是可以顺便学一学Cmake和Cpp等。
 
 # 致谢
-writing...
+[Asio](https://think-async.com/Asio/) : Asio is a cross-platform C++ library for network and low-level I/O programming that provides developers with a consistent asynchronous model using a modern C++ approach.
+
+[CrowCpp](https://github.com/CrowCpp/Crow) : A Fast and Easy to use microframework for the web.
+
+[Nlohmann Json](https://github.com/nlohmann/json) : JSON for Modern C++
+
+[fkYAML](https://github.com/fktn-k/fkYAML) : A C++ header-only YAML library

@@ -1,5 +1,71 @@
 [
     {
+        "arrivalTime": "00:30",
+        "cost": 1500,
+        "departureTime": "23:05",
+        "distance": 1500,
+        "duration": 330,
+        "from": 1,
+        "to": 3,
+        "vehicleCode": "FF1222",
+        "vehicleType": 1
+    },
+    {
+        "arrivalTime": "14:00",
+        "cost": 200,
+        "departureTime": "09:00",
+        "distance": 1200,
+        "duration": 300,
+        "from": 1,
+        "to": 2,
+        "vehicleCode": "GF1001",
+        "vehicleType": 1
+    },
+    {
+        "arrivalTime": "17:30",
+        "cost": 150,
+        "departureTime": "14:05",
+        "distance": 1500,
+        "duration": 330,
+        "from": 2,
+        "to": 3,
+        "vehicleCode": "FF1002",
+        "vehicleType": 1
+    },
+    {
+        "arrivalTime": "6:00",
+        "cost": 200,
+        "departureTime": "03:00",
+        "distance": 1200,
+        "duration": 300,
+        "from": 1,
+        "to": 5,
+        "vehicleCode": "GF1001",
+        "vehicleType": 1
+    },
+    {
+        "arrivalTime": "11:00",
+        "cost": 150,
+        "departureTime": "10:45",
+        "distance": 1500,
+        "duration": 330,
+        "from": 5,
+        "to": 4,
+        "vehicleCode": "FF1002",
+        "vehicleType": 1
+    },
+    {
+        "arrivalTime": "12:20",
+        "cost": 150,
+        "departureTime": "11:45",
+        "distance": 1500,
+        "duration": 330,
+        "from": 4,
+        "to": 3,
+        "vehicleCode": "FT2202",
+        "vehicleType": 1
+    },
+    {
         "arrivalTime": "14:00",
         "cost": 200,
         "departureTime": "09:00",
