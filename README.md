@@ -61,6 +61,9 @@ SmartRoute 是一个智能路线规划系统，提供高效、便捷的路径规
 
 ```
 
+## 邻接表结构
+![AdjacencyList Structure](./docs/AdjacencyListStructure.png)
+
 ## 快速上手
 ### 方法一（推荐）
 1. 下载 [Release](https://github.com/lin-snow/SmartRoute/releases) 中的完整可执行文件；
