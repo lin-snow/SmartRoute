@@ -42,7 +42,7 @@ onMounted(() => {
     title: '欢迎！',
     message: '欢迎使用SmartRoute！',
     type: 'success',
-    duration: 1500,
+    duration: 600,
   });
 });
 </script>
