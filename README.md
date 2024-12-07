@@ -8,8 +8,6 @@ SmartRoute 是一个智能路线规划系统，提供高效、便捷的路径规
 ## 运行样例
 ![SmartRoute](./docs/homepage.png)
 
-![RouteMap](./docs/RouteMap.png)
-
 ## 项目结构
 ``` shell
 .
