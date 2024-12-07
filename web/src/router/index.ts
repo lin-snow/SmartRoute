@@ -49,6 +49,11 @@ const router = createRouter({
       path: '/admin/route/edit/:routeId',
       name: 'adminRouteEdit',
       component: () => import('../views/RouteUpdateView.vue'),
+    },
+    {
+      path: '/routemap',
+      name: 'routeMap',
+      component: () => import('../views/RouteMapView.vue'),
     }
   ],
 })
