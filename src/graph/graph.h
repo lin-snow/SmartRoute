@@ -71,7 +71,10 @@ class AdjacencyList {
         void displayAdjacencyList();
 
         // algorithms
-        void dfsFindRoutes(int from, int to, int vehicleType, std::vector<std::vector<Route*>>& result, std::vector<Route*> currentRoute, std::unordered_set<int> visited, std::vector<AdjacencyListPair>* adjacencyList, Time previousArrivalTime);
+        void dfsFindRoutes(int from, int to, int vehicleType, std::vector<std::vector<Route*>>& result, 
+                            std::vector<Route*> currentRoute, std::unordered_set<int> visited, 
+                            std::vector<AdjacencyListPair>* adjacencyList, Time previousArrivalTime);
+                            
         int findAllRoutes(int from, int to, int vehicleType, std::vector<std::vector<Route*>>& result);
         int mostFastestWay(int from, int to, int vehicleType, std::vector<Route*>& result);
         int mostEconomicWay(int from, int to, int vehicleType, std::vector<Route*>& result);

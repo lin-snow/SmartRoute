@@ -72,7 +72,7 @@ class Vehicle {
         void setVehicleCode(const std::string &vehicleCode) { this->vehicleCode = vehicleCode; }
 
     private:
-        VehicleType vehicleType; // BUS or TRAIN
+        VehicleType vehicleType; // TRAIN or PLANE
         std::string vehicleCode; // 型号 e.g. "G1234" or "CA9091"
 };
 
