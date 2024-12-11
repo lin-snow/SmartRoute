@@ -454,5 +454,7 @@ FodyWeavers.xsd
 .VSCodeCounter/
 build/*
 
+docs/DSdoc/*
+docs/3123004449林奕宏.doc
 SmartRoute.zip
 
