@@ -50,7 +50,8 @@ build_app() {
 
 run_app() {
     echo ">>> 运行 SmartRoute"
-    ./app/SmartRoute
+    cd app
+    ./SmartRoute
 }
 
 # 主逻辑
