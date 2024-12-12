@@ -1,58 +1,62 @@
-# Linux使用的编译脚本
-set -e
+#!/bin/bash
 
-echo "Building Backend ..."
+set -e  # 遇到错误立即退出
 
-# 删除build目录
-rm -rf build && mkdir build
+# 清理并创建固定目录
+clean_build_dir() {
+    echo ">>> 清理并创建 build 目录"
+    rm -rf build
+    mkdir -p build
+}
 
-# 进入build目录
-cd build
+clean_dist_dir() {
+    echo ">>> 清理并创建 dist 目录"
+    rm -rf web/dist
+    mkdir -p web/dist
+}
 
-# 编译
-cmake .. && make
+build_backend() {
+    echo ">>> 开始构建后端"
+    clean_build_dir
+    cd build
+    cmake .. && make
+    cd ..
+    echo ">>> 后端构建完成"
+}
 
-# 返回上级目录
-cd ..
+build_frontend() {
+    echo ">>> 开始构建前端"
+    cd web
+    npm install
+    clean_dist_dir
+    npm run build:dev
+    cp -r dist ../build
+    cd ..
+    echo ">>> 前端构建完成"
+}
 
-echo "Building Backend Done."
+build_app() {
+    echo ">>> 开始构建应用"
+    rm -rf app
+    mkdir -p app
+    cd build
+    cp SmartRoute ../app
+    cp -r dist ../app
+    cp -r config ../app
+    cp -r data ../app
+    cd ..
+    echo ">>> 应用构建完成"
+}
 
-echo "Building Frontend ..."
+run_app() {
+    echo ">>> 运行 SmartRoute"
+    ./app/SmartRoute
+}
 
-# 进入web目录
-cd web
-
-# 安装依赖
-npm install
-
-# 清除dist目录
-rm -rf dist
-
-# 构建
-npm run build:dev
-
-# 复制dist目录到build目录
-cp -r dist ../build
-
-# 返回上级目录
-cd ..
-
-echo "Building Frontend Done."
-
-echo "Building App ..."
-
-# 删除app目录
-rm -rf app && mkdir app
-
-cd build && cp SmartRoute ../app && cp -r dist ../app && cp -r config ../app && cp -r data ../app
-
-cd .. && cd app
-
-echo "Building App Done."
-
-echo "Build Dond."
-
-# 运行SmartRoute
-./SmartRoute
-
-
+# 主逻辑
+echo "========== 开始构建项目 =========="
+build_backend
+build_frontend
+build_app
+run_app
+echo "========== 项目构建完成 =========="
