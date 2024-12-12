@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.30) # 指定最低 CMake 版本
-project(SmartRoute VERSION 2.1) # 指定项目名称和版本
+project(SmartRoute VERSION 1.0) # 指定项目名称和版本
 
 # 设置 C++ 标准为 C++17
 set(CMAKE_CXX_STANDARD 17)
@@ -38,11 +38,13 @@ target_include_directories(SmartRoute PRIVATE
     ${FKYAML_INCLUDE_DIR}
 )
 
+if (MINGW) 
 target_compile_options(SmartRoute 
     PRIVATE 
     $<$<CXX_COMPILER_ID:MSVC>:/bigobj> 
 	$<$<CXX_COMPILER_ID:GNU>:-Wa,-mbig-obj>
 )
+endif()
 
 # 平台相关链接库
 if(WIN32)
