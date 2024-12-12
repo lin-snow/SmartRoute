@@ -85,7 +85,7 @@ int System::addCity(City* theCity) {
     if (isCityValid(theCity)) {
         return graph->addCity(theCity);
     }
-    return ERROR;
+    return SERV_ERROR;
 }
 
 int System::deleteCity(int cityCode) {
@@ -101,7 +101,7 @@ int System::addRoute(Route* theRoute) {
     if (isRouteValid(theRoute)) {
         return graph->addRoute(theRoute);
     }
-    return ERROR;
+    return SERV_ERROR;
 }
 
 int System::updateRoute(long routeId, Route* newRoute) {
@@ -111,7 +111,7 @@ int System::updateRoute(long routeId, Route* newRoute) {
 int System::deleteRoute(int routeId, int from, int to) {
     if (routeId <= 0) {
         std::cout << "Invalid route id" << std::endl;
-        return ERROR;
+        return SERV_ERROR;
     }
 
     return graph->deleteRoute(routeId, from, to);
@@ -183,7 +183,7 @@ int System::findAllRoutes(int from, int to, int vehicleType, std::vector<std::ve
         return graph->findAllRoutes(from, to, vehicleType, result);
     } else {
         std::cout << "Invalid from, to or vehicle type" << std::endl;
-        return ERROR;
+        return SERV_ERROR;
     }
 }
 
@@ -192,7 +192,7 @@ int System::mostFastestWay(int from, int to, int vehicleType, std::vector<Route*
         return graph->mostFastestWay(from, to, vehicleType, result);
     } else {
         std::cout << "Invalid from, to or vehicle type" << std::endl;
-        return ERROR;
+        return SERV_ERROR;
     }
 }
 
@@ -201,7 +201,7 @@ int System::mostEconomicWay(int from, int to, int vehicleType, std::vector<Route
         return graph->mostEconomicWay(from, to, vehicleType, result);
     } else {
         std::cout << "Invalid from, to or vehicle type" << std::endl;
-        return ERROR;
+        return SERV_ERROR;
     }
 }
 
@@ -210,7 +210,7 @@ int System::leastTransferWay(int from, int to, int vehicleType, std::vector<Rout
         return graph->leastTransferWay(from, to, vehicleType, result);
     } else {
         std::cout << "Invalid from, to or vehicle type" << std::endl;
-        return ERROR;
+        return SERV_ERROR;
     }
 }
 
