@@ -7,8 +7,8 @@
 
 
 int main() {
-    system("chcp 65001"); // UTF-8
-    system("cls"); // clear screen
+    // system("chcp 65001"); // UTF-8
+    system("clear"); // clear screen
 
     /* Start the system */
     start();

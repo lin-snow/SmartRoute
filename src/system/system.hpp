@@ -329,6 +329,6 @@ void System::saveData() {
         std::cout << "Unable to open file" << std::endl;
     }
 
-    system("pause");
+    // system("pause");
 }
 
