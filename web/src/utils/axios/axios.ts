@@ -1,5 +1,8 @@
 import axios from 'axios'
 
+// 动态读取 API 地址
+// const apiBase = window.__VITE_BASE_API__ || import.meta.env.VITE_BASE_API || 'http://localhost:23333/api';
+
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_BASE_API,
   timeout: 10000, // 10 seconds

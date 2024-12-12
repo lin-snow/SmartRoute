@@ -29,7 +29,7 @@ build_frontend() {
     cd web
     npm install
     clean_dist_dir
-    npm run build:dev
+    npm run build:prod
     cp -r dist ../build
     cd ..
     echo ">>> 前端构建完成"
