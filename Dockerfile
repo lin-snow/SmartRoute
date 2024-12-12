@@ -1,5 +1,5 @@
-# 使用 Ubuntu 22.04 LTS 作为基础镜像
-FROM ubuntu:22.04
+# 使用官方的 Ubuntu 作为基础镜像
+FROM ubuntu:latest
 
 # 设置工作目录
 WORKDIR /app
@@ -9,60 +9,57 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # 更新系统并安装必要的工具和依赖
 RUN apt update && apt install -y \
-    software-properties-common \
+    bash \
     build-essential \
     wget \
     curl \
     git \
-    libssl-dev \
-    libpthread-stubs0-dev \
-    apt-transport-https \
-    ca-certificates \
-    lsb-release \
-    gnupg \
     unzip \
-    snapd \
+    xz-utils \
+    dos2unix \
     && apt clean
 
-# 安装 CMake（使用 snap 安装最新版本）
-RUN snap install cmake --classic
+# 安装 CMake（从官网下载最新版本）
+RUN curl -L https://github.com/Kitware/CMake/releases/download/v3.31.2/cmake-3.31.2-linux-x86_64.sh -o cmake.sh \
+    && chmod +x cmake.sh \
+    && ./cmake.sh --skip-license --prefix=/usr/local \
+    && rm cmake.sh
 
-# 安装最新版本的 GCC 和 G++
-RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test && apt update && apt install -y \
-    gcc-13 \
-    g++-13 \
-    && apt clean
+# 下载 Node.js 预构建的二进制文件
+RUN wget https://nodejs.org/dist/v22.12.0/node-v22.12.0-linux-x64.tar.xz
 
-# 设置 GCC 和 G++ 的默认版本
-RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 100 \
-    && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-13 100
+# 解压 Node.js 二进制文件
+RUN tar -xJf node-v22.12.0-linux-x64.tar.xz -C /usr/local
 
-# 安装 fnm (Fast Node Manager) 以安装指定版本的 Node.js
-RUN curl -fsSL https://fnm.vercel.app/install | bash
+# 设置 Node.js 的路径
+ENV PATH=/usr/local/node-v22.12.0-linux-x64/bin:$PATH
 
-# 激活 fnm
-RUN echo 'source ~/.bashrc' >> ~/.bashrc
+# 清理下载的 tar.xz 文件
+RUN rm node-v22.12.0-linux-x64.tar.xz
 
-# 下载并安装 Node.js 22 版本
-RUN bash -c "source ~/.bashrc && fnm use --install-if-missing 22"
-
-# 验证 Node.js 和 npm 版本
-RUN bash -c "source ~/.bashrc && node -v && npm -v"
+# 验证 Node.js 安装
+RUN node -v
+RUN npm -v
 
 # 拷贝项目的所有文件到容器中
 COPY . /app
 
+RUN cd /app
+
+# 将 build.sh 文件转换为 Unix 风格的换行符
+RUN dos2unix build.sh
+
 # 确保 build.sh 文件可执行
-RUN chmod +x /app/build.sh
+RUN chmod +x build.sh
 
 # 执行 build.sh 脚本来编译前后端，并生成 app 文件夹
-RUN bash /app/build.sh
+RUN bash build.sh
 
-# 将生成的可执行文件和其他必要的文件复制到容器中
-COPY app /app
+# # 将生成的可执行文件和其他必要的文件复制到容器中
+# COPY app /app
 
 # 暴露服务端口
 EXPOSE 23333
 
 # 容器启动时，进入 /app 目录并执行 SmartRoute
-CMD ["bash", "-c", "cd /app && ./SmartRoute"]
+CMD ["bash", "-c", "cd app && ./SmartRoute"]

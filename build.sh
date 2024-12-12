@@ -61,10 +61,10 @@ build_app
 echo "========== 项目构建完成 =========="
 
 
-# 询问是否运行
-read -p "是否运行 SmartRoute? (y/n) " -n 1 -r
+# # 询问是否运行
+# read -p "是否运行 SmartRoute? (y/n) " -n 1 -r
 
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    run_app
-fi
+# if [[ $REPLY =~ ^[Yy]$ ]]; then
+#     run_app
+# fi
 

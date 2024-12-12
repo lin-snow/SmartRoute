@@ -70,7 +70,12 @@ SmartRoute 是一个智能路线规划系统，提供高效、便捷的路径规
 2. 解压缩后，双击运行 `start.bat` 启动服务；
 3. 打开浏览器，访问 [http://127.0.0.1:23333](http://127.0.0.1:23333) 即可使用。
 
-### 方法二
+### 方法二 
+1. 安装好Docker的机器
+2. 运行 `docker run -d -p 23333:23333 sn0wl1n/smartroute:latest` 
+3. 访问机器的`ip:23333`使用
+
+### 方法三
 1. 配置环境：安装 [`Mingw64`](https://www.mingw-w64.org/)、[`Cmake`](https://cmake.org/) 和 [`Nodejs`](https://nodejs.org/)；
 2. 克隆项目：`git clone https://github.com/lin-snow/SmartRoute.git`；
 3. 安装前端依赖：进入 `web` 目录运行 `npm install`；
@@ -86,7 +91,7 @@ SmartRoute 是一个智能路线规划系统，提供高效、便捷的路径规
 
 ### 新特性
 - [ ] 提供一键安装环境的脚本
-- [ ] ~~支持多平台运行（Windows/Linux/MacOS）~~
+- [x] 支持多平台运行（Windows/Linux/MacOS）
 - [ ] 路线规划完成后提供预定功能（暂缓）
  
 
