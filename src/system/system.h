@@ -5,7 +5,6 @@
 #include "../module/module.h"
 #include "../graph/graph.h"
 
-#include <winsock2.h>
 #include <asio.hpp>
 #include "crow.h"
 #include "nlohmann/json.hpp"

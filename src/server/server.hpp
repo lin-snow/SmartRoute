@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <string>
-#include <winsock2.h>
 #include <asio.hpp>
 #include "crow.h"
 #include "nlohmann/json.hpp"

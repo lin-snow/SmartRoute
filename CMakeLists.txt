@@ -44,11 +44,18 @@ target_compile_options(SmartRoute
 	$<$<CXX_COMPILER_ID:GNU>:-Wa,-mbig-obj>
 )
 
-# 链接 Windows Socket 库
-target_link_libraries(SmartRoute PRIVATE ws2_32 mswsock)
+# 平台相关链接库
+if(WIN32)
+    target_link_libraries(SmartRoute PRIVATE ws2_32 mswsock)
+elseif(UNIX)
+    find_package(Threads REQUIRED)
+    target_link_libraries(SmartRoute PRIVATE Threads::Threads)
+endif()
 
-# 静态链接选项
-target_link_options(SmartRoute PRIVATE -static -static-libgcc -static-libstdc++)
+# 静态链接控制（仅限 Windows）
+if(WIN32 AND USE_STATIC_LINKING)
+    target_link_options(SmartRoute PRIVATE -static -static-libgcc -static-libstdc++)
+endif()
 
 # 添加自定义命令
 # 将配置文件config.yaml复制到输出目录
@@ -62,3 +69,4 @@ add_custom_command(TARGET SmartRoute POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/data $<TARGET_FILE_DIR:SmartRoute>/data
 )
+

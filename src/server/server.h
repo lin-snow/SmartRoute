@@ -3,7 +3,6 @@
 #include <iostream>
 #include <memory>
 #include <string>
-#include <winsock2.h>
 #include <asio.hpp>
 #include "crow.h"
 #include "crow/middlewares/cors.h"
