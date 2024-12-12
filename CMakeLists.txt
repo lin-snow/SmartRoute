@@ -40,9 +40,13 @@ target_include_directories(SmartRoute PRIVATE
 
 if (MINGW) 
 target_compile_options(SmartRoute 
-    PRIVATE 
-    $<$<CXX_COMPILER_ID:MSVC>:/bigobj> 
+    PRIVATE  
 	$<$<CXX_COMPILER_ID:GNU>:-Wa,-mbig-obj>
+)
+elseif(MSVC)
+target_compile_options(SmartRoute 
+    PRIVATE  
+    $<$<CXX_COMPILER_ID:MSVC>:/bigobj>
 )
 endif()
 
