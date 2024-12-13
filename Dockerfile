@@ -55,9 +55,6 @@ RUN chmod +x build.sh
 # 执行 build.sh 脚本来编译前后端，并生成 app 文件夹
 RUN bash build.sh
 
-# # 将生成的可执行文件和其他必要的文件复制到容器中
-# COPY app /app
-
 # 暴露服务端口
 EXPOSE 23333
 

@@ -4,7 +4,8 @@ import axios from 'axios'
 // const apiBase = window.__VITE_BASE_API__ || import.meta.env.VITE_BASE_API || 'http://localhost:23333/api';
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_BASE_API,
+  // baseURL: import.meta.env.VITE_BASE_API,
+  baseURL: window.location.origin + '/api',
   timeout: 10000, // 10 seconds
 })
 
