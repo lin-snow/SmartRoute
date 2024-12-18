@@ -11,9 +11,11 @@ SmartRoute 是一个智能路线规划系统，提供高效、便捷的路径规
 ## 项目结构
 ``` shell
 .
-├── build.bat                     // 编译整个项目的bat脚本
+├── build.bat                     // 编译整个项目的bat脚本（Windows）
+├── build.sh					// 编译整个项目的sh脚本 （Linux）
 ├── build_backend.bat             // 编译后端的bat脚本
 ├── build_frontend.bat            // 编译前端的bat脚本
+├── Dockerfile					// Dockerfile
 ├── start.bat                     // 编译后的app启动脚本
 ├── CMakeLists.txt                // Cmake配置文件
 ├── README.md                     // 项目README
@@ -93,7 +95,7 @@ SmartRoute 是一个智能路线规划系统，提供高效、便捷的路径规
 - [ ] 提供一键安装环境的脚本
 - [x] 支持多平台运行（Windows/Linux/MacOS）
 - [ ] 路线规划完成后提供预定功能（暂缓）
- 
+
 
 ## 为什么会有SmartRoute?
 本项目起源于本鼠鼠的大二数据结构课设中的一个题目，由于本人不会qt，然后又在往后端开发发展，所以索性拿这个课设学一下前后端开发，算是一次练习吧！
